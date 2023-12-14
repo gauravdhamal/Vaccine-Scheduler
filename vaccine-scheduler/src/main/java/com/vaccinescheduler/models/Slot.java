@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,18 +23,20 @@ public class Slot {
     private Integer availableCount;
 
     /**
+     * Bidirectional
+     * We can get the doctor information from slot.
+     * This is the owning side of relationship between doctor and slot.
+     */
+    @ManyToOne
+    @JoinColumn(name = "slots")
+    private Person doctor;
+
+    /**
+     * Uni-directional
      * This is for searching slots according to vaccine name.
      * Doctor can give only one type of vaccine in time slot (e.g. 10-12).
      * We can return all the slots available for particular vaccine by name.
      */
     @OneToOne
     private Vaccine vaccine;
-
-    /**
-     * This is the owner field of relationship between user(doctor) and slot.
-     * "Many" slots belong to "One" doctor.
-     */
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private User doctor;
 }
