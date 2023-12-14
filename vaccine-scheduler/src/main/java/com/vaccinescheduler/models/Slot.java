@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -18,8 +20,9 @@ public class Slot {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer slotId;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDate slotDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private Integer availableCount;
 
     /**
@@ -28,7 +31,7 @@ public class Slot {
      * This is the owning side of relationship between doctor and slot.
      */
     @ManyToOne
-    @JoinColumn(name = "slots")
+    @JoinColumn(name = "doctorId")
     private Person doctor;
 
     /**

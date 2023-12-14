@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentDetails {
+public class PaymentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer paymentId;
@@ -40,6 +40,6 @@ public class PaymentDetails {
      * Bidirectional
      * "One" payment belongs to only "One" appointment.
      */
-    @OneToOne(mappedBy = "paymentDetails", cascade = CascadeType.ALL)
-    private AppointmentDetails appointmentDetails;
+    @OneToOne(mappedBy = "paymentDetail", cascade = CascadeType.ALL)
+    private AppointmentDetail appointmentDetail;
 }

@@ -35,13 +35,6 @@ public class Inventory {
     private Person manager;
 
     /**
-     * Bidirectional
-     * mappedBy "inventory" field in Hospital class.
-     */
-    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL)
-    private Hospital hospital;
-
-    /**
      * Uni-directional
      * "One" inventory contain "Many" vaccines.
      */

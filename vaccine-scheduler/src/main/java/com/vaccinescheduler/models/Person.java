@@ -77,7 +77,7 @@ public class Person {
      * MappedBy patient filed inside AppointmentDetails class.
      */
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private List<AppointmentDetails> appointmentDetailsList = new ArrayList<>();
+    private List<AppointmentDetail> appointmentDetails = new ArrayList<>();
 
 //    /**
 //     * Bidirectional

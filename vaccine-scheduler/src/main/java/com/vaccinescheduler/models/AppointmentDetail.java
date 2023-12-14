@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,12 +14,13 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentDetails {
+public class AppointmentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer appointmentDetailsId;
 
-    private LocalDateTime appointmentDateTime;
+    private LocalDate appointmentDate;
+    private String appointmentTime;
     private LocalDateTime createdAt;
     private Boolean vaccinated;
 
@@ -40,20 +42,11 @@ public class AppointmentDetails {
 
     /**
      * Bidirectional
-     * "Many" appointments can belong to "One" hospital.
-     * This is the owning side for relationship between Hospital and AppointmentDetails.
-     * The reason for this field is if we want to get all appointments from hospital.
-     */
-    @ManyToOne
-    @JoinColumn(name = "hospitalId")
-    private Hospital hospital;
-
-    /**
-     * Bidirectional
+     * "Many" appointments can belong to "One" patient.
      * This is the owning side for relationship between patient and appointmentDetails.
      */
     @ManyToOne
-    @JoinColumn(name = "personId")
+    @JoinColumn(name = "patientId")
     private Person patient;
 
     /**
@@ -62,5 +55,5 @@ public class AppointmentDetails {
      */
     @OneToOne
     @JoinColumn(name = "paymentId")
-    private PaymentDetails paymentDetails;
+    private PaymentDetail paymentDetail;
 }

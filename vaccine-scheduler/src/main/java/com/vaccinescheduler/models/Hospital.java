@@ -33,11 +33,10 @@ public class Hospital {
     private Integer availableSlots;
 
     /**
-     * Bidirectional
+     * Uni-directional
      * This is the owner side of relationship between hospital and inventory.
      */
     @OneToOne
-    @JoinColumn(name = "inventoryId")
     private Inventory inventory;
 
     /**
@@ -45,14 +44,14 @@ public class Hospital {
      * "One" hospital can have multiple payments data.
      */
     @OneToMany
-    private List<PaymentDetails> paymentDetails = new ArrayList<>();
+    private List<PaymentDetail> paymentDetails = new ArrayList<>();
 
     /**
-     * Bidirectional
+     * Uni-directional
      * "One" hospital can have multiple appointments data.
      */
-    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
-    private List<AppointmentDetails> appointmentDetails = new ArrayList<>();
+    @OneToMany
+    private List<AppointmentDetail> appointmentDetails = new ArrayList<>();
 
     /**
      * Bidirectional
