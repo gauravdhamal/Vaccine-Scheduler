@@ -44,28 +44,46 @@ public class PersonServiceImpl implements PersonService {
         if(personById.isPresent()) {
             Person oldPerson = personById.get();
             Person updatedPerson = modelMapper.map(personRequest, Person.class);
-            if(oldPerson.getRole().toLowerCase().endsWith("admin")) {
-                return this.updateAdmin(oldPerson, updatedPerson);
-            } else if(oldPerson.getRole().toLowerCase().endsWith("doctor")) {
-                return this.updateDoctor(oldPerson, updatedPerson);
-            } else {
-                return this.updatePatient(oldPerson, updatedPerson);
+            if(updatedPerson.getFirstName() != null) {
+                oldPerson.setFirstName(updatedPerson.getFirstName());
             }
+            if(updatedPerson.getLastName() != null) {
+                oldPerson.setLastName(updatedPerson.getLastName());
+            }
+            if(updatedPerson.getDateOfBirth() != null) {
+                oldPerson.setDateOfBirth(updatedPerson.getDateOfBirth());
+            }
+            if(updatedPerson.getGender() != null) {
+                oldPerson.setGender(updatedPerson.getGender());
+            }
+            if(updatedPerson.getRole() != null) {
+                if(updatedPerson.getRole().equalsIgnoreCase("admin")) oldPerson.setRole("ROLE_ADMIN");
+                else if(updatedPerson.getRole().equalsIgnoreCase("doctor")) {
+                    oldPerson.setRole("ROLE_DOCTOR");
+                    if(updatedPerson.getSpecialization() != null) {
+                        oldPerson.setSpecialization(updatedPerson.getSpecialization());
+                    }
+                }
+                else oldPerson.setRole("ROLE_PATIENT");
+            }
+            if(updatedPerson.getAge() != null) {
+                oldPerson.setAge(updatedPerson.getAge());
+            }
+            if(updatedPerson.getAddress().getCity() != null) {
+                oldPerson.getAddress().setCity(updatedPerson.getAddress().getCity());
+            }
+            if(updatedPerson.getAddress().getEmail() != null) {
+                oldPerson.getAddress().setEmail(updatedPerson.getAddress().getEmail());
+            }
+            if(updatedPerson.getAddress().getPhone() != null) {
+                oldPerson.getAddress().setPhone(updatedPerson.getAddress().getPhone());
+            }
+            oldPerson = personRepo.save(oldPerson);
+            PersonResponse personResponse = modelMapper.map(oldPerson, PersonResponse.class);
+            return personResponse;
         } else {
             throw new GeneralException("Person not found with ID : "+personId);
         }
-    }
-    private PersonResponse updateAdmin(Person oldPerson, Person updatedPerson) {
-        if(updatedPerson.getInventory() != null) {
-
-        }
-        return null;
-    }
-    private PersonResponse updatePatient(Person oldPerson, Person updatedPerson) {
-        return null;
-    }
-    private PersonResponse updateDoctor(Person oldPerson, Person updatedPerson) {
-        return null;
     }
     @Override
     public PersonResponse getPerson(Integer personId) throws GeneralException {
