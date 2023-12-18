@@ -4,6 +4,7 @@ import com.vaccinescheduler.dtos.request.InventoryRequest;
 import com.vaccinescheduler.dtos.request.VaccineList;
 import com.vaccinescheduler.dtos.response.InventoryResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
+import com.vaccinescheduler.models.Inventory;
 import com.vaccinescheduler.models.Vaccine;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public interface InventoryService {
     InventoryResponse getInventory(Integer inventoryId) throws GeneralException;
     InventoryResponse updateInventory(Integer inventoryId, InventoryRequest inventoryRequest) throws GeneralException;
     Boolean deleteInventory(Integer inventoryId) throws GeneralException;
+    List<InventoryResponse> getAllInventories() throws GeneralException;
     List<Vaccine> getAllVaccinesByInventoryId(Integer inventoryId) throws GeneralException;
     String assignManagerToInventory(Integer inventoryId, Integer managerId) throws GeneralException;
     String addVaccinesToInventory(VaccineList vaccineList) throws GeneralException;

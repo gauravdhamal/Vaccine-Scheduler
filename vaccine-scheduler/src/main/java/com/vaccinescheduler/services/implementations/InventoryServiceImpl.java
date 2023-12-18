@@ -80,6 +80,21 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
+    public List<InventoryResponse> getAllInventories() throws GeneralException {
+        List<Inventory> inventories = inventoryRepo.findAll();
+        if(!inventories.isEmpty()) {
+            List<InventoryResponse> inventoryResponses = new ArrayList<>();
+            for(Inventory inventory : inventories) {
+                InventoryResponse inventoryResponse = modelMapper.map(inventory, InventoryResponse.class);
+                inventoryResponses.add(inventoryResponse);
+            }
+            return inventoryResponses;
+        } else {
+            throw new GeneralException("No any inventory found in database.");
+        }
+    }
+
+    @Override
     public List<Vaccine> getAllVaccinesByInventoryId(Integer inventoryId) throws GeneralException {
         Optional<Inventory> inventoryById = inventoryRepo.findById(inventoryId);
         if(inventoryById.isPresent()) {
@@ -140,6 +155,7 @@ public class InventoryServiceImpl implements InventoryService {
                     vaccineFoundCheck = true;
                     vaccineFoundResult.append(vaccineId+" ");
                     Vaccine vaccine = vaccineById.get();
+                    vaccines.add(vaccine);
                 } else {
                     vaccineNotFoundCheck = true;
                     vaccineNotFoundResult.append(vaccineId+" ");
