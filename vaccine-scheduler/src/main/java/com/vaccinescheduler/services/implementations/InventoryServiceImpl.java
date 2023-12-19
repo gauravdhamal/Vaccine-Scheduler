@@ -1,7 +1,7 @@
 package com.vaccinescheduler.services.implementations;
 
 import com.vaccinescheduler.dtos.request.InventoryRequest;
-import com.vaccinescheduler.dtos.request.VaccineList;
+import com.vaccinescheduler.dtos.request.VaccineListRequest;
 import com.vaccinescheduler.dtos.response.InventoryResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.models.Inventory;
@@ -139,8 +139,8 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public String addVaccinesToInventory(VaccineList vaccineList) throws GeneralException {
-        Integer inventoryId = vaccineList.getInventoryId();
+    public String addVaccinesToInventory(VaccineListRequest vaccineListRequest) throws GeneralException {
+        Integer inventoryId = vaccineListRequest.getInventoryId();
         Optional<Inventory> inventoryById = inventoryRepo.findById(inventoryId);
         if(inventoryById.isPresent()) {
             Inventory inventory = inventoryById.get();
@@ -149,7 +149,7 @@ public class InventoryServiceImpl implements InventoryService {
             StringBuilder vaccineNotFoundResult = new StringBuilder();
             Boolean vaccineFoundCheck = false;
             StringBuilder vaccineFoundResult = new StringBuilder();
-            for(Integer vaccineId : vaccineList.getVaccineIds()) {
+            for(Integer vaccineId : vaccineListRequest.getVaccineIds()) {
                 Optional<Vaccine> vaccineById = vaccineRepo.findById(vaccineId);
                 if(vaccineById.isPresent()) {
                     vaccineFoundCheck = true;

@@ -1,13 +1,10 @@
 package com.vaccinescheduler.dtos.response;
 
 import com.vaccinescheduler.models.Address;
-import com.vaccinescheduler.models.Inventory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.OneToOne;
 
 @Getter
 @Setter
@@ -21,4 +18,7 @@ public class HospitalResponse {
     private String hospitalType;
     private Address address;
     private Integer availableSlots;
+    private Integer inventoryId;
+    private String inventoryVaccineCount;
+    private String inventoryStatus;
 }

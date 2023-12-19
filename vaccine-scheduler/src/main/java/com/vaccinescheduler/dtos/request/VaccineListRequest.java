@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-public class VaccineList {
+public class VaccineListRequest {
     private Integer inventoryId;
     private List<Integer> vaccineIds;
 }
