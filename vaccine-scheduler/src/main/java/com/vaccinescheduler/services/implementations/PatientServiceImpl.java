@@ -22,22 +22,26 @@ public class PatientServiceImpl implements PatientService {
     private ModelMapper modelMapper;
     @Override
     public List<AppointmentResponse> getAppointments(Integer patientId) throws GeneralException {
-        Optional<Person> personById = personRepo.findById(patientId);
-        if(personById.isPresent()) {
-            Person person = personById.get();
-            if(!person.getAppointmentDetails().isEmpty()) {
-                List<AppointmentResponse> appointmentResponses = new ArrayList<>();
-                List<AppointmentDetail> appointmentDetails = person.getAppointmentDetails();
-                for(AppointmentDetail appointmentDetail : appointmentDetails) {
-                    AppointmentResponse appointmentResponse = modelMapper.map(appointmentDetail, AppointmentResponse.class);
-                    appointmentResponses.add(appointmentResponse);
+        Optional<Person> patientById = personRepo.findById(patientId);
+        if(patientById.isPresent()) {
+            Person patient = patientById.get();
+            if(patient.getRole().toLowerCase().endsWith("patient")) {
+                if(!patient.getAppointmentDetails().isEmpty()) {
+                    List<AppointmentResponse> appointmentResponses = new ArrayList<>();
+                    List<AppointmentDetail> appointmentDetails = patient.getAppointmentDetails();
+                    for(AppointmentDetail appointmentDetail : appointmentDetails) {
+                        AppointmentResponse appointmentResponse = modelMapper.map(appointmentDetail, AppointmentResponse.class);
+                        appointmentResponses.add(appointmentResponse);
+                    }
+                    return appointmentResponses;
+                } else {
+                    throw new GeneralException("No appointments have been scheduled or completed in the past, and there are no upcoming appointments either.");
                 }
-                return appointmentResponses;
             } else {
-                throw new GeneralException("There are no any appointments scheduled or which was completed in past.");
+                throw new GeneralException("Id : { "+patient.getPersonId()+" }, Username : { "+patient.getUsername()+" }, Role : { "+patient.getRole()+" } Selected user is not a patient enter correct patientId.");
             }
         } else {
-            throw new GeneralException("Patient not found in database.");
+            throw new GeneralException("Patient not found in database with ID : "+patientId);
         }
     }
 }

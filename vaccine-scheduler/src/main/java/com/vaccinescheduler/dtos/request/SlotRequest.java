@@ -1,7 +1,6 @@
 package com.vaccinescheduler.dtos.request;
 
-import com.vaccinescheduler.models.Person;
-import com.vaccinescheduler.models.Vaccine;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +14,10 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SlotRequest {
-    private Integer slotId;
     private LocalDate slotDate;
+    @ApiModelProperty(example = "13:00:00")
     private LocalTime startTime;
+    @ApiModelProperty(example = "18:00:00")
     private LocalTime endTime;
     private Integer availableCount;
     private Integer vaccineId;

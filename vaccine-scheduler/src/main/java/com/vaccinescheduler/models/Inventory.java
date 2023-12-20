@@ -24,6 +24,9 @@ public class Inventory {
     private String batchNumber;
     private String storageTemperature;
     private LocalDateTime lastUpdated;
+    /**
+     * in-stock and out-of-stock
+     */
     private String status;
 
     /**

@@ -19,34 +19,35 @@ public class AdminServiceImpl implements AdminService {
     private InventoryRepo inventoryRepo;
     @Override
     public String updateInventoryManager(Integer adminId, Integer inventoryId) throws GeneralException {
-        Optional<Person> personById = personRepo.findById(adminId);
-        if(personById.isPresent()) {
-            Person admin = personById.get();
-            Optional<Inventory> inventoryById = inventoryRepo.findById(inventoryId);
-            if(inventoryById.isPresent()) {
-                Inventory inventory = inventoryById.get();
-                if(admin.getRole().toLowerCase().endsWith("admin")) {
-                    if(inventory.getManager() != null) {
-                        if(inventory.getManager().getPersonId() == admin.getPersonId()) {
-                            inventory.setManager(admin);
-                            admin.setInventory(inventory);
-                            admin = personRepo.save(admin);
+        Optional<Person> managerById = personRepo.findById(adminId);
+        if(managerById.isPresent()) {
+            Person manager = managerById.get();
+            if(manager.getRole().toLowerCase().endsWith("admin")) {
+                if(manager.getInventory() == null) {
+                    Optional<Inventory> inventoryById = inventoryRepo.findById(inventoryId);
+                    if(inventoryById.isPresent()) {
+                        Inventory inventory = inventoryById.get();
+                        if(inventory.getManager() != null) {
+                            Person oldManager = inventory.getManager();
+                            inventory.setManager(manager);
+                            manager.setInventory(inventory);
+                            personRepo.save(manager);
                             inventoryRepo.save(inventory);
-                            return "{ "+admin.getUsername()+" } added to inventory { "+inventoryId+" } as a manager.";
+                            return "Manager with ID : { "+manager.getPersonId()+" } registered with the inventory : { "+inventoryId+" }. Old manager Id : { "+oldManager.getPersonId()+" } has been removed.";
                         } else {
-                            throw new GeneralException("Admin { "+adminId+" } does not belongs to inventory { "+inventoryId+" }.");
+                            return "Something wrong while { updateInventoryManager }.";
                         }
                     } else {
-                        throw new GeneralException("Inventory don't have any manager assigned to it.");
+                        throw new GeneralException("Inventory not found with ID : "+inventoryId);
                     }
                 } else {
-                    throw new GeneralException("ID : { "+adminId+" }, username : { "+admin.getUsername()+" } is not a admin. Enter correct admin ID.");
+                    throw new GeneralException("Manager is already assigned to another inventory ID : { "+manager.getInventory().getInventoryId()+" }. Can't be registered with this one.");
                 }
             } else {
-                throw new GeneralException("Inventory not found with ID : "+inventoryId);
+                throw new GeneralException("ID : { "+manager.getPersonId()+" }, Username : { "+manager.getUsername()+" }, Role : { "+manager.getRole()+" } is not a admin. Enter correct admin ID.");
             }
         } else {
-            throw new GeneralException("Person not found with ID : "+adminId+". Enter the correct admin ID.");
+            throw new GeneralException("Admin not found with ID : "+adminId+". Enter the correct admin ID.");
         }
     }
 }

@@ -15,6 +15,4 @@ public class InventoryRequest {
     private Integer vaccineCount;
     private String batchNumber;
     private String storageTemperature;
-    private LocalDateTime lastUpdated;
-    private String status;
 }

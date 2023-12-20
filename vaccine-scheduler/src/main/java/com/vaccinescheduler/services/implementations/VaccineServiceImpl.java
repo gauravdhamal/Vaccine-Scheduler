@@ -1,6 +1,7 @@
 package com.vaccinescheduler.services.implementations;
 
 import com.vaccinescheduler.dtos.request.VaccineRequest;
+import com.vaccinescheduler.dtos.response.VaccineResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.models.Vaccine;
 import com.vaccinescheduler.repositories.VaccineRepo;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,7 +22,7 @@ public class VaccineServiceImpl implements VaccineService {
     @Autowired
     private ModelMapper modelMapper;
     @Override
-    public Vaccine createVaccine(VaccineRequest vaccineRequest) throws GeneralException {
+    public VaccineResponse createVaccine(VaccineRequest vaccineRequest) throws GeneralException {
         Vaccine vaccine = modelMapper.map(vaccineRequest, Vaccine.class);
         if(vaccine.getDiscount() != null) {
             StringBuilder tempDiscount = new StringBuilder(vaccine.getDiscount());
@@ -35,24 +38,29 @@ public class VaccineServiceImpl implements VaccineService {
             LocalDate manufacturedDate = vaccine.getManufacturedDate();
             LocalDate expiryDate = manufacturedDate.plusYears(1);
             vaccine.setExpirationDate(expiryDate);
-            return vaccineRepo.save(vaccine);
+            vaccine = vaccineRepo.save(vaccine);
+            VaccineResponse vaccineResponse = modelMapper.map(vaccine, VaccineResponse.class);
+            vaccineResponse.setAgeRange(vaccine.getMinAge()+" - "+vaccine.getMaxAge());
+            return vaccineResponse;
         }
         return null;
     }
 
     @Override
-    public Vaccine getVaccine(Integer vaccineId) throws GeneralException {
+    public VaccineResponse getVaccine(Integer vaccineId) throws GeneralException {
         Optional<Vaccine> vaccineById = vaccineRepo.findById(vaccineId);
         if(vaccineById.isPresent()) {
             Vaccine vaccine = vaccineById.get();
-            return vaccine;
+            VaccineResponse vaccineResponse = modelMapper.map(vaccine, VaccineResponse.class);
+            vaccineResponse.setAgeRange(vaccine.getMinAge()+" - "+vaccine.getMaxAge());
+            return vaccineResponse;
         } else {
             throw new GeneralException("Vaccine not found with ID : "+vaccineId);
         }
     }
 
     @Override
-    public Vaccine updateVaccine(Integer vaccineId, VaccineRequest vaccineRequest) throws GeneralException {
+    public VaccineResponse updateVaccine(Integer vaccineId, VaccineRequest vaccineRequest) throws GeneralException {
         Optional<Vaccine> vaccineById = vaccineRepo.findById(vaccineId);
         if(vaccineById.isPresent()) {
             Vaccine oldVaccine = vaccineById.get();
@@ -84,8 +92,9 @@ public class VaccineServiceImpl implements VaccineService {
                 oldVaccine.setMinAge(updatedVaccine.getMinAge());
             }
             oldVaccine = vaccineRepo.save(oldVaccine);
-            Vaccine vaccine = modelMapper.map(oldVaccine, Vaccine.class);
-            return vaccine;
+            VaccineResponse vaccineResponse = modelMapper.map(oldVaccine, VaccineResponse.class);
+            vaccineResponse.setAgeRange(oldVaccine.getMinAge()+" - "+oldVaccine.getMaxAge());
+            return vaccineResponse;
         } else {
             throw new GeneralException("Vaccine not found with ID : "+vaccineId);
         }
@@ -100,6 +109,73 @@ public class VaccineServiceImpl implements VaccineService {
             return true;
         } else {
             throw new GeneralException("Vaccine not found with ID : "+vaccineId);
+        }
+    }
+
+    @Override
+    public List<VaccineResponse> getAllVaccines() throws GeneralException {
+        List<Vaccine> vaccines = vaccineRepo.findAll();
+        if(!vaccines.isEmpty()) {
+            List<VaccineResponse> vaccineResponses = new ArrayList<>();
+            for(Vaccine vaccine : vaccines) {
+                VaccineResponse vaccineResponse = modelMapper.map(vaccine, VaccineResponse.class);
+                vaccineResponse.setAgeRange(vaccine.getMinAge()+" - "+vaccine.getMaxAge());
+                vaccineResponses.add(vaccineResponse);
+            }
+            return vaccineResponses;
+        } else {
+            throw new GeneralException("No any vaccine found in database.");
+        }
+    }
+
+    @Override
+    public List<VaccineResponse> getVaccinesForAdult() throws GeneralException {
+        Optional<List<Vaccine>> adultVaccines = vaccineRepo.getAdultVaccines();
+        if(adultVaccines.isPresent() && !adultVaccines.get().isEmpty()) {
+            List<Vaccine> vaccines = adultVaccines.get();
+            List<VaccineResponse> vaccineResponses = new ArrayList<>();
+            for(Vaccine vaccine : vaccines) {
+                VaccineResponse vaccineResponse = modelMapper.map(vaccine, VaccineResponse.class);
+                vaccineResponse.setAgeRange(vaccine.getMinAge()+" - "+ vaccine.getMaxAge());
+                vaccineResponses.add(vaccineResponse);
+            }
+            return vaccineResponses;
+        } else {
+            throw new GeneralException("No any vaccines found for adult.");
+        }
+    }
+
+    @Override
+    public List<VaccineResponse> getVaccinesForChild() throws GeneralException {
+        Optional<List<Vaccine>> childVaccines = vaccineRepo.getChildVaccines();
+        if(childVaccines.isPresent() && !childVaccines.get().isEmpty()) {
+            List<Vaccine> vaccines = childVaccines.get();
+            List<VaccineResponse> vaccineResponses = new ArrayList<>();
+            for(Vaccine vaccine : vaccines) {
+                VaccineResponse vaccineResponse = modelMapper.map(vaccine, VaccineResponse.class);
+                vaccineResponse.setAgeRange(vaccine.getMinAge()+" - "+ vaccine.getMaxAge());
+                vaccineResponses.add(vaccineResponse);
+            }
+            return vaccineResponses;
+        } else {
+            throw new GeneralException("No any vaccines found for child.");
+        }
+    }
+
+    @Override
+    public List<VaccineResponse> findVaccineByName(String vaccineName) throws GeneralException {
+        Optional<List<Vaccine>> vaccinesByVaccineName = vaccineRepo.findByVaccineName(vaccineName);
+        if(vaccinesByVaccineName.isPresent() && !vaccinesByVaccineName.get().isEmpty()) {
+            List<Vaccine> vaccines = vaccinesByVaccineName.get();
+            List<VaccineResponse> vaccineResponses = new ArrayList<>();
+            for(Vaccine vaccine : vaccines) {
+                VaccineResponse vaccineResponse = modelMapper.map(vaccine, VaccineResponse.class);
+                vaccineResponse.setAgeRange(vaccine.getMinAge()+" - "+vaccine.getMaxAge());
+                vaccineResponses.add(vaccineResponse);
+            }
+            return vaccineResponses;
+        } else {
+            throw new GeneralException("No any vaccine found with name : "+vaccineName);
         }
     }
 }

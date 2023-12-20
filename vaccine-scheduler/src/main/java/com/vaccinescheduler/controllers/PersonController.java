@@ -24,7 +24,7 @@ public class PersonController {
     @PutMapping("/update/{personId}")
     public ResponseEntity<PersonResponse> updatePerson(@PathVariable(value = "personId") Integer personId,@RequestBody PersonRequest personRequest) throws GeneralException {
         PersonResponse personResponse = personService.updatePerson(personId, personRequest);
-        return new ResponseEntity<>(personResponse, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(personResponse, HttpStatus.OK);
     }
     @GetMapping("/get/{personId}")
     public ResponseEntity<PersonResponse> getPerson(@PathVariable(value = "personId") Integer personId) throws GeneralException {
@@ -44,7 +44,7 @@ public class PersonController {
     @DeleteMapping("/delete/{personId}")
     public ResponseEntity<Boolean> deletePerson(@PathVariable(value = "personId") Integer personId) throws GeneralException {
         Boolean deleted = personService.deletePerson(personId);
-        return new ResponseEntity<>(deleted, HttpStatus.OK);
+        return new ResponseEntity<>(deleted, HttpStatus.NO_CONTENT);
     }
     @GetMapping("/all")
     public ResponseEntity<List<PersonResponse>> getAllPerson() throws GeneralException {
