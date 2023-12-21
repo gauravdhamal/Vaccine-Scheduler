@@ -15,8 +15,6 @@ import java.time.LocalTime;
 public class SlotResponse {
     private Integer slotId;
     private LocalDate slotDate;
-//    private LocalTime startTime;
-//    private LocalTime endTime;
     private String slotTiming;
     private Integer availableCount;
     private Integer doctorId;
@@ -24,4 +22,6 @@ public class SlotResponse {
     private String doctorUsername;
     private Integer vaccineId;
     private String vaccineName;
+    private Double vaccineOriginalPrice;
+    private String vaccineDiscount;
 }

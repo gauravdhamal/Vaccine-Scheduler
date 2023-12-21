@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -121,7 +123,9 @@ public class SlotServiceImpl implements SlotService {
 
     @Override
     public List<SlotResponse> getAllSlotsByVaccineName(String vaccineName) throws GeneralException {
-        List<Slot> slotsByVaccineVaccineName = slotRepo.findByVaccineVaccineName(vaccineName);
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+        List<Slot> slotsByVaccineVaccineName = slotRepo.findByVaccineVaccineNameAndSlotDateAfterOrSlotDateEqualsAndStartTimeAfter(vaccineName, currentDate, currentDate, currentTime);
         if(!slotsByVaccineVaccineName.isEmpty()) {
             List<SlotResponse> slotResponses = new ArrayList<>();
             for(Slot slot : slotsByVaccineVaccineName) {
