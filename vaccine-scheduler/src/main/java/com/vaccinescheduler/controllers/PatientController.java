@@ -1,6 +1,7 @@
 package com.vaccinescheduler.controllers;
 
 import com.vaccinescheduler.dtos.response.AppointmentResponse;
+import com.vaccinescheduler.dtos.response.PersonResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,10 @@ public class PatientController {
     public ResponseEntity<List<AppointmentResponse>> getAppointments(@PathVariable(value = "patientId") Integer patientId) throws GeneralException {
         List<AppointmentResponse> appointments = patientService.getAppointments(patientId);
         return new ResponseEntity<>(appointments, HttpStatus.ACCEPTED);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<PersonResponse>> getAllPatients() throws GeneralException {
+        List<PersonResponse> allPatients = patientService.getAllPatients();
+        return new ResponseEntity<>(allPatients, HttpStatus.OK);
     }
 }

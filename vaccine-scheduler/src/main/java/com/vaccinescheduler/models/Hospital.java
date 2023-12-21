@@ -27,10 +27,6 @@ public class Hospital {
      */
     private String hospitalType;
     private Address address;
-    /**
-     * It is calculated as per slots available in each doctor.
-     */
-    private Integer availableSlots;
 
     /**
      * Uni-directional

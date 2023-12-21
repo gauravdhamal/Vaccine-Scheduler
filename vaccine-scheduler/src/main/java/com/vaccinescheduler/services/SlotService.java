@@ -12,5 +12,6 @@ public interface SlotService {
     SlotResponse getSlot(Integer slotId) throws GeneralException;
     SlotResponse updateSlot(Integer slotId, SlotRequest slotRequest) throws GeneralException;
     Boolean deleteSlot(Integer slotId) throws GeneralException;
-    List<Slot> getAllSlots() throws GeneralException;
+    List<SlotResponse> getAllSlots() throws GeneralException;
+    List<SlotResponse> getAllSlotsByVaccineName(String vaccineName) throws GeneralException;
 }

@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ public class SlotServiceImpl implements SlotService {
             slot.setVaccine(vaccine);
             slot = slotRepo.save(slot);
             SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
+            slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
             return slotResponse;
         } else {
             throw new GeneralException("Vaccine not found with Id : { "+vaccineId+" }. Enter correct ID.");
@@ -45,6 +47,7 @@ public class SlotServiceImpl implements SlotService {
         if(slotById.isPresent()) {
             Slot slot = slotById.get();
             SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
+            slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
             return slotResponse;
         } else {
             throw new GeneralException("Slot not fount with Id : "+slotId);
@@ -81,6 +84,7 @@ public class SlotServiceImpl implements SlotService {
             }
             oldSlot = slotRepo.save(oldSlot);
             SlotResponse slotResponse = modelMapper.map(oldSlot, SlotResponse.class);
+            slotResponse.setSlotTiming(oldSlot.getStartTime()+" - "+oldSlot.getEndTime());
             return slotResponse;
         } else {
             throw new GeneralException("Slot not fount with Id : "+slotId);
@@ -100,12 +104,34 @@ public class SlotServiceImpl implements SlotService {
     }
 
     @Override
-    public List<Slot> getAllSlots() throws GeneralException {
+    public List<SlotResponse> getAllSlots() throws GeneralException {
         List<Slot> slots = slotRepo.findAll();
         if(!slots.isEmpty()) {
-            return slots;
+            List<SlotResponse> slotResponses = new ArrayList<>();
+            for(Slot slot : slots) {
+                SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
+                slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
+                slotResponses.add(slotResponse);
+            }
+            return slotResponses;
         } else {
             throw new GeneralException("No any slot found in database.");
+        }
+    }
+
+    @Override
+    public List<SlotResponse> getAllSlotsByVaccineName(String vaccineName) throws GeneralException {
+        List<Slot> slotsByVaccineVaccineName = slotRepo.findByVaccineVaccineName(vaccineName);
+        if(!slotsByVaccineVaccineName.isEmpty()) {
+            List<SlotResponse> slotResponses = new ArrayList<>();
+            for(Slot slot : slotsByVaccineVaccineName) {
+                SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
+                slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
+                slotResponses.add(slotResponse);
+            }
+            return slotResponses;
+        } else {
+            throw new GeneralException("No any slots available for vaccine : "+vaccineName);
         }
     }
 }

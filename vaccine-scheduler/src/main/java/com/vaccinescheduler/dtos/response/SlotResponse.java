@@ -15,8 +15,9 @@ import java.time.LocalTime;
 public class SlotResponse {
     private Integer slotId;
     private LocalDate slotDate;
-    private LocalTime startTime;
-    private LocalTime endTime;
+//    private LocalTime startTime;
+//    private LocalTime endTime;
+    private String slotTiming;
     private Integer availableCount;
     private Integer doctorId;
     private String doctorFirstName;

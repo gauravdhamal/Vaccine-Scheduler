@@ -18,4 +18,5 @@ public interface HospitalService {
     List<PaymentDetailResponse> getAllPayments(Integer hospitalId) throws GeneralException;
     List<AppointmentResponse> getAllAppointments(Integer hospitalId) throws GeneralException;
     String addDoctorsToHospital(DoctorListRrquest doctorListRrquest) throws GeneralException;
+    List<HospitalResponse> getAllHospitals() throws GeneralException;
 }

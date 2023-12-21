@@ -1,6 +1,7 @@
 package com.vaccinescheduler.services.implementations;
 
 import com.vaccinescheduler.dtos.response.AppointmentResponse;
+import com.vaccinescheduler.dtos.response.PersonResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.models.AppointmentDetail;
 import com.vaccinescheduler.models.Person;
@@ -42,6 +43,21 @@ public class PatientServiceImpl implements PatientService {
             }
         } else {
             throw new GeneralException("Patient not found in database with ID : "+patientId);
+        }
+    }
+
+    public List<PersonResponse> getAllPatients() throws GeneralException {
+        Optional<List<Person>> personByRole = personRepo.findByRole("ROLE_PATIENT");
+        if(personByRole.isPresent() && !personByRole.get().isEmpty()) {
+            List<Person> patients = personByRole.get();
+            List<PersonResponse> personResponses = new ArrayList<>();
+            for(Person patient : patients) {
+                PersonResponse personResponse = modelMapper.map(patient, PersonResponse.class);
+                personResponses.add(personResponse);
+            }
+            return personResponses;
+        } else {
+            throw new GeneralException("No any patient found in database.");
         }
     }
 }

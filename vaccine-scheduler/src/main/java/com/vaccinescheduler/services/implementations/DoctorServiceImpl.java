@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
@@ -31,16 +32,19 @@ public class DoctorServiceImpl implements DoctorService {
         Optional<Person> doctorById = personRepo.findById(doctorId);
         if(doctorById.isPresent()) {
             Person doctor = doctorById.get();
-            if(doctor.getHospital() != null) {
-                if(doctor.getRole().toLowerCase().endsWith("doctor")) {
+            if(doctor.getRole().toLowerCase().endsWith("doctor")) {
+                if(doctor.getHospital() != null) {
                     Hospital hospital = doctor.getHospital();
                     HospitalResponse hospitalResponse = modelMapper.map(hospital, HospitalResponse.class);
+                    List<Person> doctors = hospital.getDoctors();
+                    List<String> doctorInfo = (doctors.stream().map(tempDoctor -> "Id : '"+tempDoctor.getPersonId() + "' , Username : '" + tempDoctor.getUsername() + "' , Slots : '" + tempDoctor.getSlots().size()+"'").collect(Collectors.toList()));
+                    hospitalResponse.setDoctorDetails(doctorInfo);
                     return hospitalResponse;
                 } else {
-                    throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
+                    throw new GeneralException("Doctor with ID { "+doctorId+" } is not associated with any hospital.");
                 }
             } else {
-                throw new GeneralException("Doctor with ID { "+doctorId+" } is not associated with any hospital.");
+                throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
             }
         } else {
             throw new GeneralException("Doctor not found with ID : "+doctorId);
@@ -53,32 +57,39 @@ public class DoctorServiceImpl implements DoctorService {
         Optional<Person> doctorById = personRepo.findById(doctorId);
         if(doctorById.isPresent()) {
             Person doctor = doctorById.get();
-            List<Slot> slots = new ArrayList<>();
-            StringBuilder someSlotsFoundResult = new StringBuilder();
-            Boolean someSlotsFoundCheck = false;
-            StringBuilder allSlotsFoundResult = new StringBuilder();
-            Boolean allSlotsFoundCheck = false;
-            for(Integer slotId : addSlots.getSlotIds()) {
-                Optional<Slot> slotById = slotRepo.findById(slotId);
-                if(slotById.isPresent()) {
-                    allSlotsFoundCheck = true;
-                    allSlotsFoundResult.append(slotId+" ");
-                    slots.add(slotById.get());
-                } else {
-                    someSlotsFoundCheck = true;
-                    someSlotsFoundResult.append(slotId+" ");
+            if(doctor.getRole().toLowerCase().endsWith("doctor")) {
+                List<Slot> slots = new ArrayList<>();
+                StringBuilder someSlotsFoundResult = new StringBuilder();
+                Boolean someSlotsFoundCheck = false;
+                StringBuilder allSlotsFoundResult = new StringBuilder();
+                Boolean allSlotsFoundCheck = false;
+                for(Integer slotId : addSlots.getSlotIds()) {
+                    Optional<Slot> slotById = slotRepo.findById(slotId);
+                    if(slotById.isPresent()) {
+                        Slot slot = slotById.get();
+                        allSlotsFoundCheck = true;
+                        allSlotsFoundResult.append("'"+slotId+"'"+" ");
+                        slots.add(slot);
+                        slot.setDoctor(doctor);
+                        slotRepo.save(slot);
+                    } else {
+                        someSlotsFoundCheck = true;
+                        someSlotsFoundResult.append("'"+slotId+"'"+" ");
+                    }
                 }
-            }
-            if(allSlotsFoundCheck && someSlotsFoundCheck) {
-                doctor.getSlots().addAll(slots);
-                personRepo.save(doctor);
-                return allSlotsFoundResult+": Slots added to records. Some slots not found : "+someSlotsFoundResult;
-            } else if(allSlotsFoundCheck) {
-                doctor.getSlots().addAll(slots);
-                personRepo.save(doctor);
-                return allSlotsFoundResult+": Slots added to records.";
+                if(allSlotsFoundCheck && someSlotsFoundCheck) {
+                    doctor.getSlots().addAll(slots);
+                    personRepo.save(doctor);
+                    return "{ "+allSlotsFoundResult+"} : Slots added to doctor records ID : { "+doctor.getPersonId()+" }, Username : { "+doctor.getUsername()+" }. Some slots not found : { "+someSlotsFoundResult+" }.";
+                } else if(allSlotsFoundCheck) {
+                    doctor.getSlots().addAll(slots);
+                    personRepo.save(doctor);
+                    return "{ "+allSlotsFoundResult+"} : Slots added to doctor records ID : { "+doctor.getPersonId()+" }, Username : { "+doctor.getUsername()+" }.";
+                } else {
+                    return "No any slot found with ID : "+someSlotsFoundResult;
+                }
             } else {
-                return "No any slot found with ID : "+someSlotsFoundResult;
+                throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
             }
         } else {
             throw new GeneralException("Doctor not found with ID : "+doctorId);
@@ -90,18 +101,38 @@ public class DoctorServiceImpl implements DoctorService {
         Optional<Person> doctorById = personRepo.findById(doctorId);
         if(doctorById.isPresent()) {
             Person doctor = doctorById.get();
-            if(!doctor.getPatients().isEmpty()) {
-                List<PersonResponse> personResponses = new ArrayList<>();
-                for (Person person : doctor.getPatients()) {
-                    PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
-                    personResponses.add(personResponse);
+            if(doctor.getRole().toLowerCase().endsWith("doctor")) {
+                if(!doctor.getPatients().isEmpty()) {
+                    List<PersonResponse> personResponses = new ArrayList<>();
+                    for (Person person : doctor.getPatients()) {
+                        PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
+                        personResponses.add(personResponse);
+                    }
+                    return personResponses;
+                } else {
+                    throw new GeneralException("No any patients found in the records.");
                 }
-                return personResponses;
             } else {
-                throw new GeneralException("No any patients found in the records.");
+                throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
             }
         } else {
             throw new GeneralException("Doctor not found with ID : "+doctorId);
+        }
+    }
+
+    @Override
+    public List<PersonResponse> getAllDoctors() throws GeneralException {
+        Optional<List<Person>> personByRole = personRepo.findByRole("ROLE_DOCTOR");
+        if(personByRole.isPresent() && !personByRole.get().isEmpty()) {
+            List<Person> doctors = personByRole.get();
+            List<PersonResponse> personResponses = new ArrayList<>();
+            for(Person doctor : doctors) {
+                PersonResponse personResponse = modelMapper.map(doctor, PersonResponse.class);
+                personResponses.add(personResponse);
+            }
+            return personResponses;
+        } else {
+            throw new GeneralException("No any doctor found in database.");
         }
     }
 }

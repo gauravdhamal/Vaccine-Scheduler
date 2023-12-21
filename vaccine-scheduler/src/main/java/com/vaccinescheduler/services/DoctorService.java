@@ -11,4 +11,5 @@ public interface DoctorService {
     HospitalResponse getAssignedHospitalByDoctorId(Integer doctorId) throws GeneralException;
     String addSlotsByDoctorId(AddSlots addSlots) throws GeneralException;
     List<PersonResponse> getVaccinatedPatientsByDoctorId(Integer doctorId) throws GeneralException;
+    List<PersonResponse> getAllDoctors() throws GeneralException;
 }

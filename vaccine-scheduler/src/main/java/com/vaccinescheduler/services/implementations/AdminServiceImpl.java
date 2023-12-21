@@ -1,14 +1,18 @@
 package com.vaccinescheduler.services.implementations;
 
+import com.vaccinescheduler.dtos.response.PersonResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.models.Inventory;
 import com.vaccinescheduler.models.Person;
 import com.vaccinescheduler.repositories.InventoryRepo;
 import com.vaccinescheduler.repositories.PersonRepo;
 import com.vaccinescheduler.services.AdminService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +21,8 @@ public class AdminServiceImpl implements AdminService {
     private PersonRepo personRepo;
     @Autowired
     private InventoryRepo inventoryRepo;
+    @Autowired
+    private ModelMapper modelMapper;
     @Override
     public String updateInventoryManager(Integer adminId, Integer inventoryId) throws GeneralException {
         Optional<Person> managerById = personRepo.findById(adminId);
@@ -48,6 +54,22 @@ public class AdminServiceImpl implements AdminService {
             }
         } else {
             throw new GeneralException("Admin not found with ID : "+adminId+". Enter the correct admin ID.");
+        }
+    }
+
+    @Override
+    public List<PersonResponse> getAllAdmins() throws GeneralException {
+        Optional<List<Person>> personByRole = personRepo.findByRole("ROLE_ADMIN");
+        if(personByRole.isPresent() && !personByRole.get().isEmpty()) {
+            List<Person> admins = personByRole.get();
+            List<PersonResponse> personResponses = new ArrayList<>();
+            for(Person admin : admins) {
+                PersonResponse personResponse = modelMapper.map(admin, PersonResponse.class);
+                personResponses.add(personResponse);
+            }
+            return personResponses;
+        } else {
+            throw new GeneralException("No any admins found in database.");
         }
     }
 }

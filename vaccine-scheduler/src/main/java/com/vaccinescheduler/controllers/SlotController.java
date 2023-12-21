@@ -38,8 +38,13 @@ public class SlotController {
         return new ResponseEntity<>(deleted, HttpStatus.NO_CONTENT);
     }
     @GetMapping("/all")
-    public ResponseEntity<List<Slot>> getAllSlots() throws GeneralException {
-        List<Slot> allSlots = slotService.getAllSlots();
-        return new ResponseEntity<>(allSlots, HttpStatus.OK);
+    public ResponseEntity<List<SlotResponse>> getAllSlots() throws GeneralException {
+        List<SlotResponse> slotResponses = slotService.getAllSlots();
+        return new ResponseEntity<>(slotResponses, HttpStatus.OK);
+    }
+    @GetMapping("/getSlotsByVaccineName/{vaccineName}")
+    public ResponseEntity<List<SlotResponse>> getAllSlotsByVaccineName(@PathVariable(value = "vaccineName") String vaccineName) throws GeneralException {
+        List<SlotResponse> slotResponses = slotService.getAllSlotsByVaccineName(vaccineName);
+        return new ResponseEntity<>(slotResponses, HttpStatus.OK);
     }
 }

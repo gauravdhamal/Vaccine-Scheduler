@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,8 +20,8 @@ public class HospitalResponse {
     private String operatingHours;
     private String hospitalType;
     private Address address;
-    private Integer availableSlots;
     private Integer inventoryId;
     private String inventoryVaccineCount;
     private String inventoryStatus;
+    private List<String> doctorDetails = new ArrayList<>();
 }

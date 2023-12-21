@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HospitalServiceImpl implements HospitalService {
@@ -43,6 +44,9 @@ public class HospitalServiceImpl implements HospitalService {
         if(hospitalById.isPresent()) {
             Hospital hospital = hospitalById.get();
             HospitalResponse hospitalResponse = modelMapper.map(hospital, HospitalResponse.class);
+            List<Person> doctors = hospital.getDoctors();
+            List<String> doctorInfo = (doctors.stream().map(doctor -> "Id : '"+doctor.getPersonId() + "' , Username : '" + doctor.getUsername() + "' , Slots : '" + doctor.getSlots().size()+"'").collect(Collectors.toList()));
+            hospitalResponse.setDoctorDetails(doctorInfo);
             return hospitalResponse;
         } else {
             throw new GeneralException("Hospital not found with ID : "+hospitalId);
@@ -80,6 +84,9 @@ public class HospitalServiceImpl implements HospitalService {
             }
             oldHospital = hospitalRepo.save(oldHospital);
             HospitalResponse hospitalResponse = modelMapper.map(oldHospital, HospitalResponse.class);
+            List<Person> doctors = oldHospital.getDoctors();
+            List<String> doctorInfo = (doctors.stream().map(doctor -> "Id : '"+doctor.getPersonId() + "' , Username : '" + doctor.getUsername() + "' , Slots : '" + doctor.getSlots().size()+"'").collect(Collectors.toList()));
+            hospitalResponse.setDoctorDetails(doctorInfo);
             return hospitalResponse;
         } else {
             throw new GeneralException("Hospital not found with ID : "+hospitalId);
@@ -111,7 +118,7 @@ public class HospitalServiceImpl implements HospitalService {
                     hospitalRepo.save(hospital);
                     return "Inventory with ID : { "+inventoryId+" } assigned to hospital with ID : { "+hospitalId+" }";
                 } else {
-                    throw new GeneralException("Inventory already registered to hospital.");
+                    throw new GeneralException("Hospital already registered to another inventory with ID : "+hospital.getInventory().getInventoryId());
                 }
             } else {
                 throw new GeneralException("Inventory not found with ID : "+inventoryId);
@@ -135,7 +142,7 @@ public class HospitalServiceImpl implements HospitalService {
                 }
                 return paymentDetailResponses;
             } else {
-                throw new GeneralException("No any payment information available in hospital records.");
+                throw new GeneralException("Id : { "+hospitalId+" }, Name : { "+hospital.getHospitalName()+" }. No any payment information available in hospital records.");
             }
         } else {
             throw new GeneralException("Hospital not found with ID : "+hospitalId);
@@ -156,7 +163,7 @@ public class HospitalServiceImpl implements HospitalService {
                 }
                 return appointmentResponses;
             } else {
-                throw new GeneralException("No any appointment information available in hospital records.");
+                throw new GeneralException("Id : { "+hospitalId+" }, Name : { "+hospital.getHospitalName()+" }. No any appointment information available in hospital records.");
             }
         } else {
             throw new GeneralException("Hospital not found with ID : "+hospitalId);
@@ -182,30 +189,47 @@ public class HospitalServiceImpl implements HospitalService {
                     if(doctor.getRole().toLowerCase().endsWith("doctor")) {
                         if(doctor.getHospital() == null) {
                             validDoctorCheck = true;
-                            validDoctorResult.append(doctorId+" ");
+                            validDoctorResult.append("'"+doctorId+"'"+" ");
                             doctors.add(doctor);
                             doctor.setHospital(hospital);
                             personRepo.save(doctor);
                         }
                     } else {
                         invalidDoctorCheck = true;
-                        invalidDoctorResult.append(doctorId+" ");
+                        invalidDoctorResult.append("'"+doctorId+"'"+" ");
                     }
                 }
             }
             if(validDoctorCheck && invalidDoctorCheck) {
                 hospital.getDoctors().addAll(doctors);
                 hospitalRepo.save(hospital);
-                return validDoctorResult+"} : Some doctors registered to hospital. Found some invalid doctor ids : { "+invalidDoctorResult+" }";
+                return "{ "+validDoctorResult+"} : Some doctors registered to hospital. Found some invalid doctor ids : { "+invalidDoctorResult+"}";
             } else if(validDoctorCheck) {
                 hospital.getDoctors().addAll(doctors);
                 hospitalRepo.save(hospital);
-                return validDoctorResult+" } : doctors registered to hospital.";
+                return "{ "+validDoctorResult+" } : doctors registered to hospital.";
             } else {
-                return "Invalid doctor ids : { "+invalidDoctorResult+" }";
+                return "Invalid doctor ids : { "+invalidDoctorResult+"}";
             }
         } else {
             throw new GeneralException("Hospital not found with ID : "+hospitalId);
+        }
+    }
+
+    @Override
+    public List<HospitalResponse> getAllHospitals() throws GeneralException {
+        List<Hospital> hospitalList = hospitalRepo.findAll();
+        if(!hospitalList.isEmpty()) {
+            List<HospitalResponse> hospitalResponses = new ArrayList<>();
+            for(Hospital hospital : hospitalList) {
+                HospitalResponse hospitalResponse = modelMapper.map(hospital, HospitalResponse.class);
+                List<Person> doctors = hospital.getDoctors();
+                hospitalResponse.setDoctorDetails(doctors.stream().map(doctor -> "Id : '"+doctor.getPersonId()+"' , Username : '"+doctor.getUsername()+"' , Slots : '"+doctor.getSlots().size()+"'").collect(Collectors.toList()));
+                hospitalResponses.add(hospitalResponse);
+            }
+            return hospitalResponses;
+        } else {
+            throw new GeneralException("No any hospital found in database.");
         }
     }
 }
