@@ -30,4 +30,7 @@ public class Vaccine {
     private Integer maxAge;
     private String discount;
     private Double discountedPrice;
+    private Integer dosesRequired;
+    private Integer daysBetweenDoses;
+    private Boolean boosterDose;
 }

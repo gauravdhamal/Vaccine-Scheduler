@@ -91,6 +91,15 @@ public class VaccineServiceImpl implements VaccineService {
             if(updatedVaccine.getMinAge() != null) {
                 oldVaccine.setMinAge(updatedVaccine.getMinAge());
             }
+            if(updatedVaccine.getBoosterDose()) {
+                oldVaccine.setBoosterDose(updatedVaccine.getBoosterDose());
+            }
+            if(updatedVaccine.getDosesRequired() != null) {
+                oldVaccine.setDosesRequired(updatedVaccine.getDosesRequired());
+            }
+            if(updatedVaccine.getDaysBetweenDoses() != null) {
+                oldVaccine.setDaysBetweenDoses(updatedVaccine.getDaysBetweenDoses());
+            }
             oldVaccine = vaccineRepo.save(oldVaccine);
             VaccineResponse vaccineResponse = modelMapper.map(oldVaccine, VaccineResponse.class);
             vaccineResponse.setAgeRange(oldVaccine.getMinAge()+" - "+oldVaccine.getMaxAge());

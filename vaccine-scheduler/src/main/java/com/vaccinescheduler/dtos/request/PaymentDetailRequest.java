@@ -14,11 +14,8 @@ import java.time.LocalDate;
 @Setter
 @Getter
 public class PaymentDetailRequest {
-    private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private String gender;
-    private Integer age;
     @Column(unique = true)
     private String aadhaarNumber;
     private Address address;

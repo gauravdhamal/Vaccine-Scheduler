@@ -19,4 +19,7 @@ public class VaccineRequest {
     private Integer minAge;
     private Integer maxAge;
     private String discount;
+    private int dosesRequired;
+    private int daysBetweenDoses;
+    private Boolean boosterDose;
 }

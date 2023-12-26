@@ -1,9 +1,6 @@
 package com.vaccinescheduler.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class AppointmentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +20,7 @@ public class AppointmentDetail {
     private LocalDate appointmentDate;
     private String appointmentTime;
     private LocalDateTime createdAt;
-    private Boolean vaccinated;
+    private String doseNumber;
     private String bookingFor;
     private String firstName;
     private String gender;
@@ -31,10 +29,10 @@ public class AppointmentDetail {
     private String email;
 
     /**
-     * Uni-directional
+     * Bidirectional
      * For information about doctor.
      */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "doctorId")
     private Person doctor;
 

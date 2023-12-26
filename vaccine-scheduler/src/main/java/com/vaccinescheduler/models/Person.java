@@ -63,28 +63,42 @@ public class Person {
     private List<Slot> slots = new ArrayList<>();
 
     /**
-     * Uni-directional
-     * This field is for doctor purpose.
-     * "One" doctor can have "Many" patients to whom they gave vaccine dose.
-     */
-    @OneToMany
-    private List<Person> patients = new ArrayList<>();
-
-    /**
      * Bidirectional
      * This field is for patient purpose.
+     * By using this field we can get list of appointments booked by patient.
      * "One" patient can have "Many" appointments scheduled.
      * MappedBy patient filed inside AppointmentDetails class.
      */
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private List<AppointmentDetail> appointmentDetails = new ArrayList<>();
+    private List<AppointmentDetail> appointmentDetailsForPatients = new ArrayList<>();
+
+    /**
+     * Bidirectional
+     * This field is for doctor purpose.
+     * By using this field we can get list of patients who booked vaccine for specific doctor.
+     * "One" doctor can have "Many" appointments records.
+     * MappedBy doctor filed inside AppointmentDetails class.
+     */
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<AppointmentDetail> doctorAppointmentDetails = new ArrayList<>();
 
     /**
      * Bidirectional
      * This filed is for patient purpose.
+     * By using this field we can get list vaccination taken by patient.
      * "One" patient can have "Many" vaccination taken in the past.
      * MappedBy patient filed inside VaccinationDetails class.
      */
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-    private List<VaccinationDetail> vaccinationDetails = new ArrayList<>();
+    private List<VaccinationDetail> vaccinationDetailsForPatients = new ArrayList<>();
+
+    /**
+     * Bidirectional
+     * This filed is for doctor purpose.
+     * By using this field we can get list of patients who took vaccine from specific doctor.
+     * "One" doctor can have "Many" vaccination records.
+     * MappedBy doctor filed inside VaccinationDetails class.
+     */
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<VaccinationDetail> doctorVaccinationDetails = new ArrayList<>();
 }

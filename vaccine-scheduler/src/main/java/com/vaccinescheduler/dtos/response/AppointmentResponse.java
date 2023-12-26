@@ -13,24 +13,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppointmentResponse {
-    private Integer appointmentDetailsId;
+    private Integer appointmentDetailId;
     private LocalDate appointmentDate;
     private String appointmentTime;
     private LocalDateTime createdAt;
-    private Boolean vaccinated;
-//    private Person doctor;
+    private String doseNumber;
     private Integer doctorId;
     private String doctorFirstName;
     private String doctorSpecialization;
-//    private Vaccine vaccine;
     private Integer vaccineId;
     private String vaccineName;
-//    private Person patient;
     private Integer patientId;
     private String patientFirstName;
     private String patientUsername;
     private String patientAadhaarNumber;
-//    private PaymentDetail paymentDetail;
     private Integer paymentDetailPaymentId;
     private String paymentDetailTransactionStatus;
     private Integer paymentDetailAmount;

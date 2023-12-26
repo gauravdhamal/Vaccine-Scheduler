@@ -23,6 +23,8 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
     @Autowired
     private InventoryRepo inventoryRepo;
     @Autowired
+    private PersonRepo personRepo;
+    @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private AppointmentDetailRepo appointmentDetailRepo;
@@ -71,9 +73,9 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                         appointmentDetail.setVaccine(requiredVaccine);
                                         appointmentDetail.setCreatedAt(LocalDateTime.now());
                                         appointmentDetail.setDoctor(requiredDoctor);
-                                        appointmentDetail.setVaccinated(false);
                                         appointmentDetail.setAppointmentTime(slot.getStartTime() + " - " + slot.getEndTime());
                                         appointmentDetail.setHospital(hospital);
+                                        appointmentDetail.setDoseNumber(appointmentDetailRequest.getDoseNumber());
                                         Inventory inventory = hospital.getInventory();
                                         Integer vaccineCount = inventory.getVaccineCount();
                                         vaccineCount--;
@@ -86,6 +88,8 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                         appointmentDetail = appointmentDetailRepo.save(appointmentDetail);
                                         hospital.getAppointmentDetails().add(appointmentDetail);
                                         hospitalRepo.save(hospital);
+                                        requiredDoctor.getDoctorAppointmentDetails().add(appointmentDetail);
+                                        personRepo.save(requiredDoctor);
                                         AppointmentDetailResponse appointmentDetailResponse = modelMapper.map(appointmentDetail, AppointmentDetailResponse.class);
                                         String message = "Dear " + appointmentDetailRequest.getFirstName() + ", your appointment has been booked. "
                                                 + "We look forward to providing you with excellent service. "
@@ -105,7 +109,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                             throw new GeneralException("No any doctor available in hospital right now. Check after some time");
                         }
                     } else {
-                        throw new GeneralException("No any vaccine available in inventory. Check again tomorrow.");
+                        throw new GeneralException("No any vaccine available in inventory of hospital ID : { "+hospitalId+" }. Go to another hospital.");
                     }
                 } else {
                     throw new GeneralException("Inventory not available at selected hospital ID : { "+hospitalId+" }. Go to another hospital.");

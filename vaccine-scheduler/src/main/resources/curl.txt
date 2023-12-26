@@ -1,0 +1,70 @@
+# Hospitals
+curl -X POST "http://localhost:8888/hospital/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"hospitalName\": \"Noble Hospital\", \"hospitalPinCode\": \"412802\", \"hospitalType\": \"Clinic\", \"operatingHours\": \"10:00 - 18:00\", \"city\": \"Satara\", \"email\": \"noblehospital@gmail.com\", \"phone\": \"02169 252749\"}"
+
+curl -X POST "http://localhost:8888/hospital/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"hospitalName\": \"Pawar Hospital\", \"hospitalPinCode\": \"412802\", \"hospitalType\": \"Child Specialist\", \"operatingHours\": \"09:00 - 18:00\", \"city\": \"Shirwal\", \"email\": \"pawarhospital@gmail.com\", \"phone\": \"02169 232343\"}"
+
+# Persons
+curl -X POST "http://localhost:8888/person/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"aadhaarNumber\": \"780603273819\", \"address\": { \"city\": \"Satara\", \"email\": \"gd@gmail.com\", \"phone\": \"8623892486\" }, \"age\": 26, \"dateOfBirth\": \"1997-09-11\", \"firstName\": \"Gaurav\", \"gender\": \"Male\", \"lastName\": \"Dhamal\", \"password\": \"Gaurav@123\", \"role\": \"admin\", \"username\": \"gauravdhamal\"}"
+
+curl -X POST "http://localhost:8888/person/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"aadhaarNumber\": \"780603273817\", \"address\": { \"city\": \"Satara\", \"email\": \"ad@gmail.com\", \"phone\": \"8624892486\" }, \"age\": 29, \"dateOfBirth\": \"1995-02-21\", \"firstName\": \"Amit\", \"gender\": \"Male\", \"lastName\": \"Dhake\", \"password\": \"Amit@123\", \"role\": \"admin\", \"username\": \"amitdhake\"}"
+
+curl -X POST "http://localhost:8888/person/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"aadhaarNumber\": \"780603273818\", \"address\": { \"city\": \"Satara\", \"email\": \"sv@gmail.com\", \"phone\": \"8723892487\" }, \"age\": 24, \"dateOfBirth\": \"1999-09-11\", \"firstName\": \"Swapnil\", \"gender\": \"Male\", \"lastName\": \"Vhantale\", \"password\": \"Swapnil@123\", \"role\": \"patient\", \"username\": \"swapnilvhantale\"}"
+
+curl -X POST "http://localhost:8888/person/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"aadhaarNumber\": \"780603273813\", \"address\": { \"city\": \"Ayodhya\", \"email\": \"ay@gmail.com\", \"phone\": \"8723894387\" }, \"age\": 23, \"dateOfBirth\": \"2000-11-11\", \"firstName\": \"Aman\", \"gender\": \"Male\", \"lastName\": \"Yadav\", \"password\": \"Aman@123\", \"role\": \"patient\", \"username\": \"amanyadav\"}"
+
+curl -X POST "http://localhost:8888/person/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"aadhaarNumber\": \"780603273816\", \"address\": { \"city\": \"Satara\", \"email\": \"ps@gmail.com\", \"phone\": \"8624882486\" }, \"age\": 28, \"dateOfBirth\": \"1996-10-05\", \"firstName\": \"Priya\", \"gender\": \"Female\", \"lastName\": \"Shinde\", \"password\": \"Priya@123\", \"role\": \"doctor\", \"specialization\": \"vaccinator\", \"username\": \"priyashinde\"}"
+
+curl -X POST "http://localhost:8888/person/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"aadhaarNumber\": \"780603273815\", \"address\": { \"city\": \"Satara\", \"email\": \"hb@gmail.com\", \"phone\": \"8611892486\" }, \"age\": 26, \"dateOfBirth\": \"1995-05-21\", \"firstName\": \"Hemant\", \"gender\": \"Male\", \"lastName\": \"Bhalke\", \"password\": \"Hemant@123\", \"role\": \"doctor\", \"specialization\": \"vaccinator\", \"username\": \"hemantbhalke\"}"
+
+# Vaccines
+curl -X POST "http://localhost:8888/vaccine/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"discount\": \"10%\", \"manufacturedDate\": \"2023-12-20\", \"maxAge\": 17, \"minAge\": 0, \"originalPrice\": 1000.00, \"vaccineManufacturer\": \"Serum Institute Pune\", \"vaccineName\": \"BCG\", \"boosterDose\": false, \"daysBetweenDoses\": 90, \"dosesRequired\": 2 }"
+
+curl -X POST "http://localhost:8888/vaccine/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"discount\": \"5%\", \"manufacturedDate\": \"2023-12-20\", \"maxAge\": 90, \"minAge\": 18, \"originalPrice\": 1200.00, \"vaccineManufacturer\": \"Serum Institute Pune\", \"vaccineName\": \"Covishield\", \"boosterDose\": true, \"daysBetweenDoses\": 90, \"dosesRequired\": 3 }"
+
+curl -X POST "http://localhost:8888/vaccine/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"discount\": \"10%\", \"manufacturedDate\": \"2023-01-15\", \"maxAge\": 6, \"minAge\": 2, \"originalPrice\": 50.00, \"vaccineManufacturer\": \"HealthCo\", \"vaccineName\": \"DTaP Vaccine\", \"boosterDose\": false, \"daysBetweenDoses\": 90, \"dosesRequired\": 2 }"
+
+curl -X POST "http://localhost:8888/vaccine/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"discount\": \"15%\", \"manufacturedDate\": \"2023-02-28\", \"maxAge\": 6, \"minAge\": 1, \"originalPrice\": 60.00, \"vaccineManufacturer\": \"WellnessPharma\", \"vaccineName\": \"MMR Vaccine\", \"boosterDose\": false, \"daysBetweenDoses\": 90, \"dosesRequired\": 2 }"
+
+curl -X POST "http://localhost:8888/vaccine/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"discount\": \"5%\", \"manufacturedDate\": \"2023-03-10\", \"maxAge\": 2, \"minAge\": 0, \"originalPrice\": 30.00, \"vaccineManufacturer\": \"MediCare\", \"vaccineName\": \"Hepatitis B Vaccine\", \"boosterDose\": false, \"daysBetweenDoses\": 90, \"dosesRequired\": 2 }"
+
+curl -X POST "http://localhost:8888/vaccine/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"discount\": \"12%\", \"manufacturedDate\": \"2023-01-05\", \"maxAge\": 99, \"minAge\": 18, \"originalPrice\": 25.00, \"vaccineManufacturer\": \"WellnessPharma\", \"vaccineName\": \"Flu Vaccine for Adults\", \"boosterDose\": false, \"daysBetweenDoses\": 90, \"dosesRequired\": 2 }"
+
+curl -X POST "http://localhost:8888/vaccine/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"discount\": \"8%\", \"manufacturedDate\": \"2023-02-15\", \"maxAge\": 99, \"minAge\": 25, \"originalPrice\": 35.00, \"vaccineManufacturer\": \"MediCare\", \"vaccineName\": \"Tetanus Booster Shot\", \"boosterDose\": false, \"daysBetweenDoses\": 90, \"dosesRequired\": 2 }"
+
+curl -X POST "http://localhost:8888/vaccine/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"discount\": \"10%\", \"manufacturedDate\": \"2023-03-20\", \"maxAge\": 99, \"minAge\": 50, \"originalPrice\": 50.00, \"vaccineManufacturer\": \"HealthCo\", \"vaccineName\": \"Shingles Vaccine\", \"boosterDose\": false, \"daysBetweenDoses\": 90, \"dosesRequired\": 2 }"
+
+# Inventories
+curl -X POST "http://localhost:8888/inventory/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"batchNumber\": \"batch-02\", \"storageTemperature\": \"-10°C\", \"vaccineCount\": 1000 }"
+
+curl -X POST "http://localhost:8888/inventory/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"batchNumber\": \"batch-01\", \"storageTemperature\": \"-10°C\", \"vaccineCount\": 500 }"
+
+# Slots
+curl -X POST "http://localhost:8888/slot/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"availableCount\": 8, \"endTime\": \"12:00:00\", \"slotDate\": \"2023-12-28\", \"startTime\": \"09:30:00\", \"vaccineId\": 9}"
+
+curl -X POST "http://localhost:8888/slot/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"availableCount\": 5, \"endTime\": \"16:00:00\", \"slotDate\": \"2023-12-28\", \"startTime\": \"12:30:00\", \"vaccineId\": 10}"
+
+curl -X POST "http://localhost:8888/slot/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"availableCount\": 10, \"endTime\": \"18:00:00\", \"slotDate\": \"2023-12-28\", \"startTime\": \"16:30:00\", \"vaccineId\": 11}"
+
+curl -X POST "http://localhost:8888/slot/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"availableCount\": 12, \"endTime\": \"12:00:00\", \"slotDate\": \"2023-12-29\", \"startTime\": \"09:30:00\", \"vaccineId\": 11}"
+
+curl -X POST "http://localhost:8888/slot/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"availableCount\": 7, \"endTime\": \"16:00:00\", \"slotDate\": \"2023-12-29\", \"startTime\": \"12:30:00\", \"vaccineId\": 10}"
+
+curl -X POST "http://localhost:8888/slot/create" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"availableCount\": 15, \"endTime\": \"18:00:00\", \"slotDate\": \"2023-12-29\", \"startTime\": \"16:30:00\", \"vaccineId\": 9}"
+
+# Add some slots to doctor
+
+curl -X PUT "http://localhost:8888/doctor/addSlots" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"doctorId\": 7, \"slotIds\": [ 19,23,21 ]}"
+
+curl -X PUT "http://localhost:8888/doctor/addSlots" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"doctorId\": 8, \"slotIds\": [22,20,24 ]}"
+
+# Add inventory to hospital
+
+curl -X PUT "http://localhost:8888/hospital/addInventoryToHospital/1/17" -H "accept: */*"
+
+# Add doctors to hospital
+
+curl -X PUT "http://localhost:8888/hospital/addDoctorsToHospital" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"doctorIds\": [ 7,8 ], \"hospitalId\": 1}"
+
+# Add vaccines to inventory
+
+curl -X PUT "http://localhost:8888/inventory/addVaccinesToInventory" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"inventoryId\": 17, \"vaccineIds\": [ 9,10,11,12,13,14,15,16 ]}"

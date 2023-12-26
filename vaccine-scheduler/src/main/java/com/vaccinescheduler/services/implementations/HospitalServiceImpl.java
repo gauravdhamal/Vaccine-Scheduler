@@ -198,6 +198,9 @@ public class HospitalServiceImpl implements HospitalService {
                         invalidDoctorCheck = true;
                         invalidDoctorResult.append("'"+doctorId+"'"+" ");
                     }
+                } else {
+                    invalidDoctorCheck = true;
+                    invalidDoctorResult.append("'"+doctorId+"'"+" ");
                 }
             }
             if(validDoctorCheck && invalidDoctorCheck) {
@@ -207,7 +210,7 @@ public class HospitalServiceImpl implements HospitalService {
             } else if(validDoctorCheck) {
                 hospital.getDoctors().addAll(doctors);
                 hospitalRepo.save(hospital);
-                return "{ "+validDoctorResult+" } : doctors registered to hospital.";
+                return "{ "+validDoctorResult+"} : doctors registered to hospital.";
             } else {
                 return "Invalid doctor ids : { "+invalidDoctorResult+"}";
             }

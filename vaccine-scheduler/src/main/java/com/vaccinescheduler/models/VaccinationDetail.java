@@ -21,13 +21,15 @@ public class VaccinationDetail {
 
     private LocalDate vaccinatedDate;
     private LocalTime vaccinatedTime;
-    private Boolean vaccinated;
+    private Boolean vaccinationStatus;
+    private String doseNumber;
+    private LocalDate nextAppointmentDate;
 
     /**
-     * Uni-directional
+     * Bidirectional
      * For information about doctor.
      */
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "doctorId")
     private Person doctor;
 

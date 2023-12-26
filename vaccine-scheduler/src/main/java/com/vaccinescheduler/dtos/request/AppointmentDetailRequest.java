@@ -15,6 +15,10 @@ public class AppointmentDetailRequest {
      * Self, Other
      */
     private String bookingFor;
+    /**
+     * "first", "second", "third", "booster"
+     */
+    private String doseNumber;
     private String gender;
     private Integer age;
     private String phone;

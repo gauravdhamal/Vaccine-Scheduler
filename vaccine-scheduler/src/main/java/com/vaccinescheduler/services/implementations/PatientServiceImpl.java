@@ -27,9 +27,9 @@ public class PatientServiceImpl implements PatientService {
         if(patientById.isPresent()) {
             Person patient = patientById.get();
             if(patient.getRole().toLowerCase().endsWith("patient")) {
-                if(!patient.getAppointmentDetails().isEmpty()) {
+                if(!patient.getAppointmentDetailsForPatients().isEmpty()) {
                     List<AppointmentResponse> appointmentResponses = new ArrayList<>();
-                    List<AppointmentDetail> appointmentDetails = patient.getAppointmentDetails();
+                    List<AppointmentDetail> appointmentDetails = patient.getAppointmentDetailsForPatients();
                     for(AppointmentDetail appointmentDetail : appointmentDetails) {
                         AppointmentResponse appointmentResponse = modelMapper.map(appointmentDetail, AppointmentResponse.class);
                         appointmentResponses.add(appointmentResponse);

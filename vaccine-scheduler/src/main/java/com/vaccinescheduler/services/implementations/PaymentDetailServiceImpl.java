@@ -3,11 +3,9 @@ package com.vaccinescheduler.services.implementations;
 import com.vaccinescheduler.dtos.request.PaymentDetailRequest;
 import com.vaccinescheduler.dtos.response.PaymentDetailResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
-import com.vaccinescheduler.models.AppointmentDetail;
-import com.vaccinescheduler.models.PaymentDetail;
-import com.vaccinescheduler.models.Person;
-import com.vaccinescheduler.models.Vaccine;
+import com.vaccinescheduler.models.*;
 import com.vaccinescheduler.repositories.AppointmentDetailRepo;
+import com.vaccinescheduler.repositories.HospitalRepo;
 import com.vaccinescheduler.repositories.PaymentDetailRepo;
 import com.vaccinescheduler.repositories.PersonRepo;
 import com.vaccinescheduler.services.PaymentDetailService;
@@ -29,6 +27,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
     @Autowired
     private AppointmentDetailRepo appointmentDetailRepo;
     @Autowired
+    private HospitalRepo hospitalRepo;
+    @Autowired
     private ModelMapper modelMapper;
     @Override
     public PaymentDetailResponse createPaymentDetail(Integer appointmentDetailId, PaymentDetailRequest paymentDetailRequest) throws GeneralException {
@@ -48,7 +48,13 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
                 Vaccine vaccine = appointmentDetail.getVaccine();
                 Double requiredAmount = vaccine.getDiscountedPrice();
                 if(paidAmount.equals(requiredAmount)) {
-                    Person patient = modelMapper.map(paymentDetailRequest, Person.class);
+                    Person patient = modelMapper.map(appointmentDetail, Person.class);
+                    patient.setAadhaarNumber(paymentDetailRequest.getAadhaarNumber());
+                    patient.setUsername(paymentDetailRequest.getUsername());
+                    patient.setPassword(paymentDetailRequest.getPassword());
+                    patient.setAddress(paymentDetailRequest.getAddress());
+                    patient.setLastName(paymentDetailRequest.getLastName());
+                    patient.setDateOfBirth(paymentDetailRequest.getDateOfBirth());
                     String aadhaarNumber = patient.getAadhaarNumber();
                     Optional<Person> patientByAadhaarNumber = personRepo.findByAadhaarNumber(aadhaarNumber);
                     if(patientByAadhaarNumber.isPresent()) throw new GeneralException("Person already present in database with aadhaarNumber : { "+aadhaarNumber+" } Enter your aadhar number..");
@@ -68,8 +74,11 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
                     appointmentDetail.setPaymentDetail(paymentDetail);
                     appointmentDetail.setPatient(patient);
                     Person doctor = appointmentDetail.getDoctor();
-                    doctor.getPatients().add(patient);
+                    doctor.getDoctorAppointmentDetails().add(appointmentDetail);
                     personRepo.save(doctor);
+                    Hospital hospital = appointmentDetail.getHospital();
+                    hospital.getPaymentDetails().add(paymentDetail);
+                    hospitalRepo.save(hospital);
                     PaymentDetailResponse paymentDetailResponse = modelMapper.map(paymentDetail, PaymentDetailResponse.class);
                     return paymentDetailResponse;
                 } else {

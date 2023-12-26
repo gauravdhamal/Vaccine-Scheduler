@@ -1,13 +1,12 @@
 package com.vaccinescheduler.services.implementations;
 
 import com.vaccinescheduler.dtos.request.AddSlots;
+import com.vaccinescheduler.dtos.response.AppointmentResponse;
 import com.vaccinescheduler.dtos.response.HospitalResponse;
 import com.vaccinescheduler.dtos.response.PersonResponse;
 import com.vaccinescheduler.dtos.response.SlotResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
-import com.vaccinescheduler.models.Hospital;
-import com.vaccinescheduler.models.Person;
-import com.vaccinescheduler.models.Slot;
+import com.vaccinescheduler.models.*;
 import com.vaccinescheduler.repositories.PersonRepo;
 import com.vaccinescheduler.repositories.SlotRepo;
 import com.vaccinescheduler.services.DoctorService;
@@ -81,7 +80,7 @@ public class DoctorServiceImpl implements DoctorService {
                 if(allSlotsFoundCheck && someSlotsFoundCheck) {
                     doctor.getSlots().addAll(slots);
                     personRepo.save(doctor);
-                    return "{ "+allSlotsFoundResult+"} : Slots added to doctor records ID : { "+doctor.getPersonId()+" }, Username : { "+doctor.getUsername()+" }. Some slots not found : { "+someSlotsFoundResult+" }.";
+                    return "{ "+allSlotsFoundResult+"} : Slots added to doctor records ID : { "+doctor.getPersonId()+" }, Username : { "+doctor.getUsername()+" }. Some slots not found : { "+someSlotsFoundResult+"}.";
                 } else if(allSlotsFoundCheck) {
                     doctor.getSlots().addAll(slots);
                     personRepo.save(doctor);
@@ -103,15 +102,18 @@ public class DoctorServiceImpl implements DoctorService {
         if(doctorById.isPresent()) {
             Person doctor = doctorById.get();
             if(doctor.getRole().toLowerCase().endsWith("doctor")) {
-                if(!doctor.getPatients().isEmpty()) {
+                if(!doctor.getDoctorAppointmentDetails().isEmpty()) {
+                    List<VaccinationDetail> vaccinationDetails = doctor.getDoctorVaccinationDetails();
+                    System.out.println("vaccinationDetails getVaccinatedPatientsByDoctorId : "+vaccinationDetails);
                     List<PersonResponse> personResponses = new ArrayList<>();
-                    for (Person person : doctor.getPatients()) {
-                        PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
+                    for(VaccinationDetail vaccinationDetail : vaccinationDetails) {
+                        Person patient = vaccinationDetail.getPatient();
+                        PersonResponse personResponse = modelMapper.map(patient, PersonResponse.class);
                         personResponses.add(personResponse);
                     }
                     return personResponses;
                 } else {
-                    throw new GeneralException("No any patients found in the records.");
+                    throw new GeneralException("No any patients found in the vaccinationDetails records.");
                 }
             } else {
                 throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
@@ -120,6 +122,57 @@ public class DoctorServiceImpl implements DoctorService {
             throw new GeneralException("Doctor not found with ID : "+doctorId);
         }
     }
+
+    @Override
+    public List<PersonResponse> getPatientsFromAppointmentsByDoctorId(Integer doctorId) throws GeneralException {
+        Optional<Person> doctorById = personRepo.findById(doctorId);
+        if(doctorById.isPresent()) {
+            Person doctor = doctorById.get();
+            if(doctor.getRole().toLowerCase().endsWith("doctor")) {
+                if(!doctor.getDoctorAppointmentDetails().isEmpty()) {
+                    List<AppointmentDetail> appointmentDetails = doctor.getDoctorAppointmentDetails();
+                    System.out.println("appointmentDetails getPatientsFromAppointmentsByDoctorId : "+appointmentDetails);
+                    List<PersonResponse> personResponses = new ArrayList<>();
+                    for(AppointmentDetail appointmentDetail : appointmentDetails) {
+                        Person patient = appointmentDetail.getPatient();
+                        PersonResponse personResponse = modelMapper.map(patient, PersonResponse.class);
+                        personResponses.add(personResponse);
+                    }
+                    return personResponses;
+                } else {
+                    throw new GeneralException("No any patients found in the appointmentDetails records.");
+                }
+            } else {
+                throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
+            }
+        } else {
+            throw new GeneralException("Doctor not found with ID : "+doctorId);
+        }
+    }
+
+    @Override
+    public List<AppointmentResponse> getAppointmentDetailsByDoctorId(Integer doctorId) throws GeneralException {
+        Optional<Person> doctorById = personRepo.findById(doctorId);
+        if(doctorById.isPresent()) {
+            Person doctor = doctorById.get();
+            if(doctor.getRole().toLowerCase().endsWith("doctor")) {
+                List<AppointmentDetail> appointmentDetails = doctor.getDoctorAppointmentDetails();
+                System.out.println("appointmentDetails getAppointmentDetailsByDoctorId : "+appointmentDetails);
+                List<AppointmentResponse> appointmentResponses = new ArrayList<>();
+                for(AppointmentDetail appointmentDetail : appointmentDetails) {
+                    AppointmentResponse appointmentResponse = modelMapper.map(appointmentDetail, AppointmentResponse.class);
+                    appointmentResponses.add(appointmentResponse);
+                }
+                return appointmentResponses;
+            } else {
+                throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
+            }
+        } else {
+            throw new GeneralException("Doctor not found with ID : "+doctorId);
+        }
+    }
+//    @Override
+//    public List<AppointmentResponse> getVaccinationDetailsByDoctorId(Integer doctorId) throws GeneralException {}
 
     @Override
     public List<PersonResponse> getAllDoctors() throws GeneralException {
@@ -148,6 +201,7 @@ public class DoctorServiceImpl implements DoctorService {
                     List<SlotResponse> slotResponses = new ArrayList<>();
                     for(Slot slot : slots) {
                         SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
+                        slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
                         slotResponses.add(slotResponse);
                     }
                     return slotResponses;
@@ -156,6 +210,21 @@ public class DoctorServiceImpl implements DoctorService {
                 }
             } else {
                 throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
+            }
+        } else {
+            throw new GeneralException("Doctor not found with ID : "+doctorId);
+        }
+    }
+
+    @Override
+    public Person getOriginalDoctor(Integer doctorId) throws GeneralException {
+        Optional<Person> personById = personRepo.findById(doctorId);
+        if(personById.isPresent()) {
+            Person person = personById.get();
+            if(person.getRole().toLowerCase().endsWith("doctor")) {
+                return person;
+            } else {
+                throw new GeneralException("Username : { "+person.getUsername()+" } is a { "+person.getRole()+" }. Person must be doctor. Enter correct ID.");
             }
         } else {
             throw new GeneralException("Doctor not found with ID : "+doctorId);

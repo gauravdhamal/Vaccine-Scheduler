@@ -1,10 +1,12 @@
 package com.vaccinescheduler.controllers;
 
 import com.vaccinescheduler.dtos.request.AddSlots;
+import com.vaccinescheduler.dtos.response.AppointmentResponse;
 import com.vaccinescheduler.dtos.response.HospitalResponse;
 import com.vaccinescheduler.dtos.response.PersonResponse;
 import com.vaccinescheduler.dtos.response.SlotResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
+import com.vaccinescheduler.models.Person;
 import com.vaccinescheduler.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,16 @@ public class DoctorController {
         List<PersonResponse> vaccinatedPatientsByDoctorId = doctorService.getVaccinatedPatientsByDoctorId(doctorId);
         return new ResponseEntity<>(vaccinatedPatientsByDoctorId, HttpStatus.OK);
     }
+    @GetMapping("/getPatientsFromAppointmentsByDoctorId/{doctorId}")
+    public ResponseEntity<List<PersonResponse>> getPatientsFromAppointmentsByDoctorId(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
+        List<PersonResponse> patientsFromAppointmentsByDoctorId = doctorService.getPatientsFromAppointmentsByDoctorId(doctorId);
+        return new ResponseEntity<>(patientsFromAppointmentsByDoctorId, HttpStatus.OK);
+    }
+    @GetMapping("/getAppointmentDetailsByDoctorId/{doctorId}")
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentDetailsByDoctorId(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
+        List<AppointmentResponse> appointmentDetailsByDoctorId = doctorService.getAppointmentDetailsByDoctorId(doctorId);
+        return new ResponseEntity<>(appointmentDetailsByDoctorId, HttpStatus.OK);
+    }
     @GetMapping("/all")
     public ResponseEntity<List<PersonResponse>> getAllDoctors() throws GeneralException {
         List<PersonResponse> allDoctors = doctorService.getAllDoctors();
@@ -42,5 +54,10 @@ public class DoctorController {
     public ResponseEntity<List<SlotResponse>> getAllSlots(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
         List<SlotResponse> allSlots = doctorService.getAllSlots(doctorId);
         return new ResponseEntity<>(allSlots, HttpStatus.OK);
+    }
+    @GetMapping("/originalDoctor/{doctorId}")
+    public ResponseEntity<Person> getOriginalDoctor(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
+        Person person = doctorService.getOriginalDoctor(doctorId);
+        return new ResponseEntity<>(person, HttpStatus.OK);
     }
 }
