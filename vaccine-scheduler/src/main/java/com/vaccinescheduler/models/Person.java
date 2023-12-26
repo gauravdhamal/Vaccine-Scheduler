@@ -79,12 +79,12 @@ public class Person {
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<AppointmentDetail> appointmentDetails = new ArrayList<>();
 
-//    /**
-//     * Bidirectional
-//     * This filed is for patient purpose.
-//     * "One" patient can have "Many" vaccination taken in the past.
-//     * MappedBy patient filed inside VaccinationDetails class.
-//     */
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    private List<VaccinationDetails> vaccinationDetailsList = new ArrayList<>();
+    /**
+     * Bidirectional
+     * This filed is for patient purpose.
+     * "One" patient can have "Many" vaccination taken in the past.
+     * MappedBy patient filed inside VaccinationDetails class.
+     */
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<VaccinationDetail> vaccinationDetails = new ArrayList<>();
 }

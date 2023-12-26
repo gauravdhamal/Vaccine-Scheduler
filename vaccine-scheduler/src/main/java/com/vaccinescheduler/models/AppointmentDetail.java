@@ -17,12 +17,18 @@ import java.time.LocalDateTime;
 public class AppointmentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer appointmentDetailsId;
+    private Integer appointmentDetailId;
 
     private LocalDate appointmentDate;
     private String appointmentTime;
     private LocalDateTime createdAt;
     private Boolean vaccinated;
+    private String bookingFor;
+    private String firstName;
+    private String gender;
+    private Integer age;
+    private String phone;
+    private String email;
 
     /**
      * Uni-directional
@@ -56,4 +62,12 @@ public class AppointmentDetail {
     @OneToOne
     @JoinColumn(name = "paymentId")
     private PaymentDetail paymentDetail;
+
+    /**
+     * Bidirectional
+     * "Many" appointments can belong to "One" hospital.
+     */
+    @ManyToOne
+    @JoinColumn(name = "hospitalId")
+    private Hospital hospital;
 }

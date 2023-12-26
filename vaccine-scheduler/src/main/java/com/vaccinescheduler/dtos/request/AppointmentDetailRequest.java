@@ -5,19 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import java.time.LocalDate;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicDetailsRequest {
+public class AppointmentDetailRequest {
     private String firstName;
-    private String lastName;
-    private LocalDate dateOfBirth;
+    /**
+     * Self, Other
+     */
+    private String bookingFor;
     private String gender;
     private Integer age;
-    @Column(unique = true)
-    private String aadhaarNumber;
+    private String phone;
+    private String email;
 }

@@ -3,6 +3,7 @@ package com.vaccinescheduler.services.implementations;
 import com.vaccinescheduler.dtos.request.AddSlots;
 import com.vaccinescheduler.dtos.response.HospitalResponse;
 import com.vaccinescheduler.dtos.response.PersonResponse;
+import com.vaccinescheduler.dtos.response.SlotResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.models.Hospital;
 import com.vaccinescheduler.models.Person;
@@ -133,6 +134,31 @@ public class DoctorServiceImpl implements DoctorService {
             return personResponses;
         } else {
             throw new GeneralException("No any doctor found in database.");
+        }
+    }
+
+    @Override
+    public List<SlotResponse> getAllSlots(Integer doctorId) throws GeneralException {
+        Optional<Person> doctorById = personRepo.findById(doctorId);
+        if(doctorById.isPresent()) {
+            Person doctor = doctorById.get();
+            if(doctor.getRole().toLowerCase().endsWith("doctor")) {
+                List<Slot> slots = doctor.getSlots();
+                if(!slots.isEmpty()) {
+                    List<SlotResponse> slotResponses = new ArrayList<>();
+                    for(Slot slot : slots) {
+                        SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
+                        slotResponses.add(slotResponse);
+                    }
+                    return slotResponses;
+                } else {
+                    throw new GeneralException("No any slots available for selected doctor ID : "+doctorId);
+                }
+            } else {
+                throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
+            }
+        } else {
+            throw new GeneralException("Doctor not found with ID : "+doctorId);
         }
     }
 }

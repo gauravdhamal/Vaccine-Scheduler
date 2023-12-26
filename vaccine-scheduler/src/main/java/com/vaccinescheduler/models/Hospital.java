@@ -43,11 +43,18 @@ public class Hospital {
     private List<PaymentDetail> paymentDetails = new ArrayList<>();
 
     /**
-     * Uni-directional
-     * "One" hospital can have multiple appointments data.
+     * Bidirectional
+     * "One" hospital can have "Many" appointments data.
      */
-    @OneToMany
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
     private List<AppointmentDetail> appointmentDetails = new ArrayList<>();
+
+    /**
+     * Bidirectional
+     * "One" hospital can have "Many" vaccination data.
+     */
+    @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL)
+    private List<VaccinationDetail> vaccinationDetails = new ArrayList<>();
 
     /**
      * Bidirectional

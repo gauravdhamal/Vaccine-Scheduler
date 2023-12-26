@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
     @Autowired
     private PaymentDetailService paymentDetailService;
-    @PostMapping("/pay")
-    public ResponseEntity<PaymentDetailResponse> createPaymentDetail(@RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
-        PaymentDetailResponse paymentDetailResponse = paymentDetailService.createPaymentDetail(paymentDetailRequest);
+    @PostMapping("/pay/{appointmentDetailId}")
+    public ResponseEntity<PaymentDetailResponse> createPaymentDetail(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId, @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
+        PaymentDetailResponse paymentDetailResponse = paymentDetailService.createPaymentDetail(appointmentDetailId, paymentDetailRequest);
         return new ResponseEntity<>(paymentDetailResponse, HttpStatus.CREATED);
     }
     @PutMapping("/update/{paymentDetailId}")

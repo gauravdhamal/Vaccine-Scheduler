@@ -19,7 +19,7 @@ public class PaymentDetail {
     private Integer paymentId;
 
     private LocalDateTime createdDateTime;
-    private Integer amount;
+    private Double amount;
     /**
      * cash, card
      */

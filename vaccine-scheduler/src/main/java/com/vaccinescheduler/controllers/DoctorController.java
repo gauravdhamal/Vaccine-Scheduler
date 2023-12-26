@@ -3,6 +3,7 @@ package com.vaccinescheduler.controllers;
 import com.vaccinescheduler.dtos.request.AddSlots;
 import com.vaccinescheduler.dtos.response.HospitalResponse;
 import com.vaccinescheduler.dtos.response.PersonResponse;
+import com.vaccinescheduler.dtos.response.SlotResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.services.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,10 @@ public class DoctorController {
     public ResponseEntity<List<PersonResponse>> getAllDoctors() throws GeneralException {
         List<PersonResponse> allDoctors = doctorService.getAllDoctors();
         return new ResponseEntity<>(allDoctors, HttpStatus.OK);
+    }
+    @GetMapping("/get/{doctorId}/allSlots")
+    public ResponseEntity<List<SlotResponse>> getAllSlots(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
+        List<SlotResponse> allSlots = doctorService.getAllSlots(doctorId);
+        return new ResponseEntity<>(allSlots, HttpStatus.OK);
     }
 }

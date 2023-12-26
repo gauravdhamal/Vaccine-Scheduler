@@ -1,6 +1,6 @@
 package com.vaccinescheduler.services.implementations;
 
-import com.vaccinescheduler.dtos.request.BasicDetailsRequest;
+import com.vaccinescheduler.dtos.request.AppointmentDetailRequest;
 import com.vaccinescheduler.dtos.response.AppointmentDetailResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.models.*;
@@ -17,17 +17,34 @@ import java.util.Optional;
 @Service
 public class AppointmentDetailServiceImpl implements AppointmentDetailService {
     @Autowired
-    private PersonRepo personRepo;
-    @Autowired
     private SlotRepo slotRepo;
     @Autowired
     private HospitalRepo hospitalRepo;
     @Autowired
+    private InventoryRepo inventoryRepo;
+    @Autowired
     private ModelMapper modelMapper;
     @Autowired
     private AppointmentDetailRepo appointmentDetailRepo;
+
     @Override
-    public AppointmentDetailResponse bookAppointment(Integer slotId, Integer hospitalId, BasicDetailsRequest basicDetailsRequest) throws GeneralException {
+    public AppointmentDetailResponse getAppointmentDetail(Integer appointmentDetailId) throws GeneralException {
+        Optional<AppointmentDetail> appointmentDetailById = appointmentDetailRepo.findById(appointmentDetailId);
+        if(appointmentDetailById.isPresent()) {
+            AppointmentDetail appointmentDetail = appointmentDetailById.get();
+            AppointmentDetailResponse appointmentDetailResponse = modelMapper.map(appointmentDetail, AppointmentDetailResponse.class);
+            String message = "Dear " + appointmentDetail.getFirstName() + ", your appointment has been booked. "
+                    + "We look forward to providing you with excellent service. "
+                    + "Details: Gender - " + appointmentDetail.getGender() + ", Age - " + appointmentDetail.getAge() + ", Phone - " + appointmentDetail.getPhone() + ", Email - " + appointmentDetail.getEmail();
+            appointmentDetailResponse.setMessage(message);
+            return appointmentDetailResponse;
+        } else {
+            throw new GeneralException("No any appointment found with ID : "+appointmentDetailId);
+        }
+    }
+
+    @Override
+    public AppointmentDetailResponse bookAppointment(Integer slotId, Integer hospitalId, AppointmentDetailRequest appointmentDetailRequest) throws GeneralException {
         Optional<Slot> slotById = slotRepo.findById(slotId);
         if(slotById.isPresent()) {
             Slot slot = slotById.get();
@@ -47,32 +64,34 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                 if(vaccineAvailabilityCheck) {
                                     Integer minAgeReq = requiredVaccine.getMinAge();
                                     Integer maxAgeReq = requiredVaccine.getMaxAge();
-                                    Integer currentAge = basicDetailsRequest.getAge();
+                                    Integer currentAge = appointmentDetailRequest.getAge();
                                     if(currentAge >= minAgeReq && currentAge <= maxAgeReq) {
-                                        Person patient = modelMapper.map(basicDetailsRequest, Person.class);
-                                        patient.setRole("ROLE_PATIENT");
-                                        String aadhaarNumber = patient.getAadhaarNumber();
-                                        Optional<Person> patientByAadhaarNumber = personRepo.findByAadhaarNumber(aadhaarNumber);
-                                        if(!patientByAadhaarNumber.isPresent()) {
-                                            personRepo.save(patient);
-                                            AppointmentDetail appointmentDetail = new AppointmentDetail();
-                                            appointmentDetail.setAppointmentDate(slot.getSlotDate());
-                                            appointmentDetail.setVaccine(requiredVaccine);
-                                            appointmentDetail.setCreatedAt(LocalDateTime.now());
-                                            appointmentDetail.setDoctor(requiredDoctor);
-                                            appointmentDetail.setVaccinated(false);
-                                            appointmentDetail.setAppointmentTime(slot.getStartTime() + " - " + slot.getEndTime());
-                                            appointmentDetail.setPatient(patient);
-                                            appointmentDetail = appointmentDetailRepo.save(appointmentDetail);
-                                            hospital.getAppointmentDetails().add(appointmentDetail);
-                                            patient.getAppointmentDetails().add(appointmentDetail);
-                                            hospitalRepo.save(hospital);
-                                            AppointmentDetailResponse appointmentDetailResponse = modelMapper.map(appointmentDetail, AppointmentDetailResponse.class);
-                                            appointmentDetailResponse.setMessage("Please be there 15 minutes before start time to make the payment and avoid any on time delays.");
-                                            return appointmentDetailResponse;
-                                        } else {
-                                            throw new GeneralException("Patient is already present with aadhaar number : { "+aadhaarNumber+" }. Enter correct aadhaar number.");
-                                        }
+                                        AppointmentDetail appointmentDetail = modelMapper.map(appointmentDetailRequest, AppointmentDetail.class);
+                                        appointmentDetail.setAppointmentDate(slot.getSlotDate());
+                                        appointmentDetail.setVaccine(requiredVaccine);
+                                        appointmentDetail.setCreatedAt(LocalDateTime.now());
+                                        appointmentDetail.setDoctor(requiredDoctor);
+                                        appointmentDetail.setVaccinated(false);
+                                        appointmentDetail.setAppointmentTime(slot.getStartTime() + " - " + slot.getEndTime());
+                                        appointmentDetail.setHospital(hospital);
+                                        Inventory inventory = hospital.getInventory();
+                                        Integer vaccineCount = inventory.getVaccineCount();
+                                        vaccineCount--;
+                                        inventory.setVaccineCount(vaccineCount);
+                                        Integer availableCount = slot.getAvailableCount();
+                                        availableCount--;
+                                        slot.setAvailableCount(availableCount);
+                                        slotRepo.save(slot);
+                                        inventoryRepo.save(inventory);
+                                        appointmentDetail = appointmentDetailRepo.save(appointmentDetail);
+                                        hospital.getAppointmentDetails().add(appointmentDetail);
+                                        hospitalRepo.save(hospital);
+                                        AppointmentDetailResponse appointmentDetailResponse = modelMapper.map(appointmentDetail, AppointmentDetailResponse.class);
+                                        String message = "Dear " + appointmentDetailRequest.getFirstName() + ", your appointment has been booked. "
+                                                + "We look forward to providing you with excellent service. "
+                                                + "Details: Gender - " + appointmentDetailRequest.getGender() + ", Age - " + appointmentDetailRequest.getAge() + ", Phone - " + appointmentDetailRequest.getPhone() + ", Email - " + appointmentDetailRequest.getEmail();
+                                        appointmentDetailResponse.setMessage(message);
+                                        return appointmentDetailResponse;
                                     } else {
                                         throw new GeneralException("You are not allowed to take this vaccine as your age : "+currentAge+" is not in the range of : ( "+minAgeReq+" - "+maxAgeReq+" ).");
                                     }
