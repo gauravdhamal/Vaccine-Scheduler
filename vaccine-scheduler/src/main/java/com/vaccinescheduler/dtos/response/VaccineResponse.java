@@ -21,7 +21,7 @@ public class VaccineResponse {
     private String ageRange;
     private String discount;
     private Double discountedPrice;
-    private int dosesRequired;
-    private int daysBetweenDoses;
+    private Integer dosesRequired;
+    private Integer daysBetweenDoses;
     private Boolean boosterDose;
 }

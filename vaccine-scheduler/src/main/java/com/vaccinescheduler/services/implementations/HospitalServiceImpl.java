@@ -1,6 +1,6 @@
 package com.vaccinescheduler.services.implementations;
 
-import com.vaccinescheduler.dtos.request.DoctorListRrquest;
+import com.vaccinescheduler.dtos.request.DoctorListRequest;
 import com.vaccinescheduler.dtos.request.HospitalRequest;
 import com.vaccinescheduler.dtos.response.AppointmentResponse;
 import com.vaccinescheduler.dtos.response.HospitalResponse;
@@ -171,12 +171,12 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public String addDoctorsToHospital(DoctorListRrquest doctorListRrquest) throws GeneralException {
-        Integer hospitalId = doctorListRrquest.getHospitalId();
+    public String addDoctorsToHospital(DoctorListRequest doctorListRequest) throws GeneralException {
+        Integer hospitalId = doctorListRequest.getHospitalId();
         Optional<Hospital> hospitalById = hospitalRepo.findById(hospitalId);
         if(hospitalById.isPresent()) {
             Hospital hospital = hospitalById.get();
-            List<Integer> doctorIds = doctorListRrquest.getDoctorIds();
+            List<Integer> doctorIds = doctorListRequest.getDoctorIds();
             Boolean validDoctorCheck = false;
             StringBuilder validDoctorResult = new StringBuilder();
             Boolean invalidDoctorCheck = false;

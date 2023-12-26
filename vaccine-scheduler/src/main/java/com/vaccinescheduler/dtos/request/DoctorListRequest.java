@@ -15,11 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-public class VaccineListRequest {
-    @NotNull(message = "inventoryId must not be null.")
-    @Min(value = 1, message = "inventoryId value must be greater than 0.")
-    private Integer inventoryId;
+public class DoctorListRequest {
+    @NotNull(message = "hospitalId must not be null.")
+    @Min(value = 1, message = "hospitalId value must be greater than 0.")
+    private Integer hospitalId;
 
-    @NotEmpty(message = "Vaccine ID's must not be empty.")
-    private List<@NotNull @Positive(message = "Vaccine ID's must be a positive integer.") Integer> vaccineIds;
+    @NotEmpty(message = "doctorId's must not be empty.")
+    private List<@NotNull @Positive(message = "doctorId's must be a positive integer.") Integer> doctorIds;
 }
