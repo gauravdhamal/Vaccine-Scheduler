@@ -11,6 +11,7 @@ import com.vaccinescheduler.repositories.PersonRepo;
 import com.vaccinescheduler.services.PaymentDetailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -28,6 +29,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
     private AppointmentDetailRepo appointmentDetailRepo;
     @Autowired
     private HospitalRepo hospitalRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private ModelMapper modelMapper;
     @Override
@@ -62,6 +65,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
                     Optional<Person> patientByUsername = personRepo.findByUsername(username);
                     if(patientByUsername.isPresent()) throw new GeneralException("Person already present in database with username : { "+username+" } Choose another username.");
                     patient.setRole("ROLE_PATIENT");
+                    String encodedPassword = passwordEncoder.encode(patient.getPassword());
+                    patient.setPassword(encodedPassword);
                     patient = personRepo.save(patient);
                     PaymentDetail paymentDetail = new PaymentDetail();
                     paymentDetail.setCreatedDateTime(LocalDateTime.now());

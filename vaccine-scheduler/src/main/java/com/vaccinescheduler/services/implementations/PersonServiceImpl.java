@@ -8,6 +8,7 @@ import com.vaccinescheduler.repositories.PersonRepo;
 import com.vaccinescheduler.services.PersonService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ public class PersonServiceImpl implements PersonService {
     private PersonRepo personRepo;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Override
     public PersonResponse createPerson(PersonRequest personRequest) throws GeneralException {
         String username = personRequest.getUsername();
@@ -33,6 +36,8 @@ public class PersonServiceImpl implements PersonService {
         if(personRole.equalsIgnoreCase("admin")) person.setRole("ROLE_ADMIN");
         else if(personRole.equalsIgnoreCase("doctor")) person.setRole("ROLE_DOCTOR");
         else person.setRole("ROLE_PATIENT");
+        String encodedPassword = passwordEncoder.encode(person.getPassword());
+        person.setPassword(encodedPassword);
         person = personRepo.save(person);
         PersonResponse personResponse = modelMapper.map(person, PersonResponse.class);
         return personResponse;
