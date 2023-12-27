@@ -1,6 +1,6 @@
 package com.vaccinescheduler.controllers;
 
-import com.vaccinescheduler.dtos.request.AddSlots;
+import com.vaccinescheduler.dtos.request.AddSlotsRequest;
 import com.vaccinescheduler.dtos.response.AppointmentResponse;
 import com.vaccinescheduler.dtos.response.HospitalResponse;
 import com.vaccinescheduler.dtos.response.PersonResponse;
@@ -27,8 +27,8 @@ public class DoctorController {
         return new ResponseEntity<>(assignedHospitalByDoctorId, HttpStatus.OK);
     }
     @PutMapping("/addSlots")
-    public ResponseEntity<String> addSlotsByDoctorId(@Valid @RequestBody AddSlots addSlots) throws GeneralException {
-        String added = doctorService.addSlotsByDoctorId(addSlots);
+    public ResponseEntity<String> addSlotsByDoctorId(@Valid @RequestBody AddSlotsRequest addSlotsRequest) throws GeneralException {
+        String added = doctorService.addSlotsByDoctorId(addSlotsRequest);
         return new ResponseEntity<>(added, HttpStatus.OK);
     }
     @GetMapping("/getVaccinatedPatientsByDoctorId/{doctorId}")

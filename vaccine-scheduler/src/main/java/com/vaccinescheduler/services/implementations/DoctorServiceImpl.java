@@ -1,6 +1,6 @@
 package com.vaccinescheduler.services.implementations;
 
-import com.vaccinescheduler.dtos.request.AddSlots;
+import com.vaccinescheduler.dtos.request.AddSlotsRequest;
 import com.vaccinescheduler.dtos.response.AppointmentResponse;
 import com.vaccinescheduler.dtos.response.HospitalResponse;
 import com.vaccinescheduler.dtos.response.PersonResponse;
@@ -52,8 +52,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public String addSlotsByDoctorId(AddSlots addSlots) throws GeneralException {
-        Integer doctorId = addSlots.getDoctorId();
+    public String addSlotsByDoctorId(AddSlotsRequest addSlotsRequest) throws GeneralException {
+        Integer doctorId = addSlotsRequest.getDoctorId();
         Optional<Person> doctorById = personRepo.findById(doctorId);
         if(doctorById.isPresent()) {
             Person doctor = doctorById.get();
@@ -63,7 +63,7 @@ public class DoctorServiceImpl implements DoctorService {
                 Boolean someSlotsFoundCheck = false;
                 StringBuilder allSlotsFoundResult = new StringBuilder();
                 Boolean allSlotsFoundCheck = false;
-                for(Integer slotId : addSlots.getSlotIds()) {
+                for(Integer slotId : addSlotsRequest.getSlotIds()) {
                     Optional<Slot> slotById = slotRepo.findById(slotId);
                     if(slotById.isPresent()) {
                         Slot slot = slotById.get();

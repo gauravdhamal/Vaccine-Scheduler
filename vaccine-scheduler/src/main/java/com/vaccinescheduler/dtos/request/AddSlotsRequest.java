@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 @Getter
-public class AddSlots {
+public class AddSlotsRequest {
     @NotNull(message = "doctorId must not be null.")
     @Min(value = 1, message = "doctorId value must be greater than 0.")
     private Integer doctorId;
