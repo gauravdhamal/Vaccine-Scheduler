@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/payment")
@@ -15,12 +16,12 @@ public class PaymentController {
     @Autowired
     private PaymentDetailService paymentDetailService;
     @PostMapping("/pay/{appointmentDetailId}")
-    public ResponseEntity<PaymentDetailResponse> createPaymentDetail(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId, @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
+    public ResponseEntity<PaymentDetailResponse> createPaymentDetail(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId, @Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
         PaymentDetailResponse paymentDetailResponse = paymentDetailService.createPaymentDetail(appointmentDetailId, paymentDetailRequest);
         return new ResponseEntity<>(paymentDetailResponse, HttpStatus.CREATED);
     }
     @PutMapping("/update/{paymentDetailId}")
-    public ResponseEntity<PaymentDetailResponse> updatePaymentDetail(@PathVariable(value = "paymentDetailId") Integer paymentDetailId,@RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
+    public ResponseEntity<PaymentDetailResponse> updatePaymentDetail(@PathVariable(value = "paymentDetailId") Integer paymentDetailId,@Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
         PaymentDetailResponse paymentDetailResponse = paymentDetailService.updatePaymentDetail(paymentDetailId, paymentDetailRequest);
         return new ResponseEntity<>(paymentDetailResponse, HttpStatus.OK);
     }

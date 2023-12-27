@@ -16,7 +16,7 @@ public class SlotResponse {
     private Integer slotId;
     private LocalDate slotDate;
     private String slotTiming;
-    private Integer availableCount;
+    private Integer slotCount;
     private Integer doctorId;
     private String doctorFirstName;
     private String doctorUsername;

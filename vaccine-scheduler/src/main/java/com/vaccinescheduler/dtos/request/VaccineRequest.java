@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class VaccineRequest {
     private String vaccineManufacturer;
 
     @NotNull(message = "manufacturedDate must not be null.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate manufacturedDate;
 
     @NotNull(message = "Original price must not be null.")

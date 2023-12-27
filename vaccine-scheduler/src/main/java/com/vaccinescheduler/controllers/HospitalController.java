@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import javax.validation.Valid;
 @RestController
 @RequestMapping("/hospital")
 public class HospitalController {
     @Autowired
     private HospitalService hospitalService;
     @PostMapping("/create")
-    public ResponseEntity<HospitalResponse> createHospital(@RequestBody HospitalRequest hospitalRequest) throws GeneralException {
+    public ResponseEntity<HospitalResponse> createHospital(@Valid @RequestBody HospitalRequest hospitalRequest) throws GeneralException {
         HospitalResponse hospitalResponse = hospitalService.createHospital(hospitalRequest);
         return new ResponseEntity<>(hospitalResponse, HttpStatus.CREATED);
     }
@@ -30,7 +31,7 @@ public class HospitalController {
         return new ResponseEntity<>(hospitalResponse, HttpStatus.OK);
     }
     @PutMapping("/update/{hospitalId}")
-    public ResponseEntity<HospitalResponse> updateHospital(@PathVariable(value = "hospitalId") Integer hospitalId,@RequestBody HospitalRequest hospitalRequest) throws GeneralException {
+    public ResponseEntity<HospitalResponse> updateHospital(@PathVariable(value = "hospitalId") Integer hospitalId,@Valid @RequestBody HospitalRequest hospitalRequest) throws GeneralException {
         HospitalResponse hospitalResponse = hospitalService.updateHospital(hospitalId, hospitalRequest);
         return new ResponseEntity<>(hospitalResponse, HttpStatus.OK);
     }
@@ -55,7 +56,7 @@ public class HospitalController {
         return new ResponseEntity<>(allAppointments, HttpStatus.OK);
     }
     @PutMapping("/addDoctorsToHospital")
-    public ResponseEntity<String> addDoctorsToHospital(@RequestBody DoctorListRequest doctorListRequest) throws GeneralException {
+    public ResponseEntity<String> addDoctorsToHospital(@Valid @RequestBody DoctorListRequest doctorListRequest) throws GeneralException {
         String added = hospitalService.addDoctorsToHospital(doctorListRequest);
         return new ResponseEntity<>(added, HttpStatus.OK);
     }

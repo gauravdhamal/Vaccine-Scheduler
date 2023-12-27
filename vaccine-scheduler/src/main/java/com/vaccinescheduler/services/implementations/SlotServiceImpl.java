@@ -78,8 +78,8 @@ public class SlotServiceImpl implements SlotService {
             if(updatedSlot.getEndTime() != null) {
                 oldSlot.setEndTime(updatedSlot.getEndTime());
             }
-            if(updatedSlot.getAvailableCount() != null) {
-                oldSlot.setAvailableCount(updatedSlot.getAvailableCount());
+            if(updatedSlot.getSlotCount() != null) {
+                oldSlot.setSlotCount(updatedSlot.getSlotCount());
             }
             if(updatedSlot.getVaccine() != null) {
                 oldSlot.setVaccine(updatedSlot.getVaccine());

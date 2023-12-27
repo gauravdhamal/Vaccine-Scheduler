@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 
@@ -24,7 +23,7 @@ public class Slot {
     private LocalDate slotDate;
     private LocalTime startTime;
     private LocalTime endTime;
-    private Integer availableCount;
+    private Integer slotCount;
 
     /**
      * Bidirectional

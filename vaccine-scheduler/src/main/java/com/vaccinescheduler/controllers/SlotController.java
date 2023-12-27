@@ -11,14 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import javax.validation.Valid;
 @RestController
 @RequestMapping("/slot")
 public class SlotController {
     @Autowired
     private SlotService slotService;
     @PostMapping("/create")
-    public ResponseEntity<SlotResponse> createSlot(@RequestBody SlotRequest slotRequest) throws GeneralException {
+    public ResponseEntity<SlotResponse> createSlot(@Valid @RequestBody SlotRequest slotRequest) throws GeneralException {
         SlotResponse slot = slotService.createSlot(slotRequest);
         return new ResponseEntity<>(slot, HttpStatus.CREATED);
     }
@@ -28,7 +28,7 @@ public class SlotController {
         return new ResponseEntity<>(slot, HttpStatus.OK);
     }
     @PutMapping("/update/{slotId}")
-    public ResponseEntity<SlotResponse> updateSlot(@PathVariable(value = "slotId") Integer slotId,@RequestBody SlotRequest slotRequest) throws GeneralException {
+    public ResponseEntity<SlotResponse> updateSlot(@PathVariable(value = "slotId") Integer slotId,@Valid @RequestBody SlotRequest slotRequest) throws GeneralException {
         SlotResponse slotResponse = slotService.updateSlot(slotId, slotRequest);
         return new ResponseEntity<>(slotResponse, HttpStatus.OK);
     }

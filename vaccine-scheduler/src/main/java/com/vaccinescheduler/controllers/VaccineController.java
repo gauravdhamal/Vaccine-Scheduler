@@ -10,14 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import javax.validation.Valid;
 @RestController
 @RequestMapping("/vaccine")
 public class VaccineController {
     @Autowired
     private VaccineService vaccineService;
     @PostMapping("/create")
-    public ResponseEntity<VaccineResponse> createVaccine(@RequestBody VaccineRequest vaccineRequest) throws GeneralException {
+    public ResponseEntity<VaccineResponse> createVaccine(@Valid @RequestBody VaccineRequest vaccineRequest) throws GeneralException {
         VaccineResponse vaccineResponse = vaccineService.createVaccine(vaccineRequest);
         return new ResponseEntity<>(vaccineResponse, HttpStatus.CREATED);
     }
@@ -27,7 +27,7 @@ public class VaccineController {
         return new ResponseEntity<>(vaccineResponse, HttpStatus.OK);
     }
     @PutMapping("/update/{vaccineId}")
-    public ResponseEntity<VaccineResponse> updateVaccine(@PathVariable(value = "vaccineId") Integer vaccineId,@RequestBody VaccineRequest vaccineRequest) throws GeneralException {
+    public ResponseEntity<VaccineResponse> updateVaccine(@PathVariable(value = "vaccineId") Integer vaccineId,@Valid @RequestBody VaccineRequest vaccineRequest) throws GeneralException {
         VaccineResponse vaccineResponse = vaccineService.updateVaccine(vaccineId, vaccineRequest);
         return new ResponseEntity<>(vaccineResponse, HttpStatus.OK);
     }

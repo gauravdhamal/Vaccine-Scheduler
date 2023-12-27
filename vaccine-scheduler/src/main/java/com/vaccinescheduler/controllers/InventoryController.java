@@ -13,14 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import javax.validation.Valid;
 @RestController
 @RequestMapping("/inventory")
 public class InventoryController {
     @Autowired
     private InventoryService inventoryService;
     @PostMapping("/create")
-    public ResponseEntity<InventoryResponse> createInventory(@RequestBody InventoryRequest inventoryRequest) throws GeneralException {
+    public ResponseEntity<InventoryResponse> createInventory(@Valid @RequestBody InventoryRequest inventoryRequest) throws GeneralException {
         InventoryResponse inventoryResponse = inventoryService.createInventory(inventoryRequest);
         return new ResponseEntity<>(inventoryResponse, HttpStatus.CREATED);
     }
@@ -30,7 +30,7 @@ public class InventoryController {
         return new ResponseEntity<>(inventoryResponse, HttpStatus.OK);
     }
     @PutMapping("/update/{inventoryId}")
-    public ResponseEntity<InventoryResponse> updateInventory(@PathVariable(value = "inventoryId") Integer inventoryId,@RequestBody InventoryRequest inventoryRequest) throws GeneralException {
+    public ResponseEntity<InventoryResponse> updateInventory(@PathVariable(value = "inventoryId") Integer inventoryId,@Valid @RequestBody InventoryRequest inventoryRequest) throws GeneralException {
         InventoryResponse inventoryResponse = inventoryService.updateInventory(inventoryId, inventoryRequest);
         return new ResponseEntity<>(inventoryResponse, HttpStatus.OK);
     }
@@ -55,7 +55,7 @@ public class InventoryController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @PutMapping("/addVaccinesToInventory")
-    public ResponseEntity<String> addVaccinesToInventory(@RequestBody VaccineListRequest vaccineListRequest) throws GeneralException {
+    public ResponseEntity<String> addVaccinesToInventory(@Valid @RequestBody VaccineListRequest vaccineListRequest) throws GeneralException {
         String result = inventoryService.addVaccinesToInventory(vaccineListRequest);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

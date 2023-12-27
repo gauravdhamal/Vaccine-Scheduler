@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.Mapping;
 
+import javax.persistence.Column;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -19,4 +21,5 @@ public class AppointmentDetailResponse {
     private String message;
     private Integer paymentDetailId;
     private Integer paymentDetailAmount;
+
 }

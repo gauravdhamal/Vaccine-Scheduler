@@ -68,4 +68,11 @@ public class AppointmentDetail {
     @ManyToOne
     @JoinColumn(name = "hospitalId")
     private Hospital hospital;
+
+    /**
+     * Uni-directional
+     * "Many" appointment can have "One" slot.
+     */
+    @ManyToOne
+    private Slot slot;
 }

@@ -27,7 +27,7 @@ public class PersonRequest {
     @NotBlank(message = "lastName must not blank.")
     private String lastName;
 
-    @Past(message = "Date must be in past.")
+    @Past(message = "DateOfBirth must be in past.")
     @NotNull(message = "dateOfBirth must not null.")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateOfBirth;

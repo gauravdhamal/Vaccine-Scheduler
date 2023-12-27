@@ -10,19 +10,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import javax.validation.Valid;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
     @Autowired
     private PersonService personService;
     @PostMapping("/create")
-    public ResponseEntity<PersonResponse> createPerson(@RequestBody PersonRequest personRequest) throws GeneralException {
+    public ResponseEntity<PersonResponse> createPerson(@Valid @RequestBody PersonRequest personRequest) throws GeneralException {
         PersonResponse personResponse = personService.createPerson(personRequest);
         return new ResponseEntity<>(personResponse, HttpStatus.CREATED);
     }
     @PutMapping("/update/{personId}")
-    public ResponseEntity<PersonResponse> updatePerson(@PathVariable(value = "personId") Integer personId,@RequestBody PersonRequest personRequest) throws GeneralException {
+    public ResponseEntity<PersonResponse> updatePerson(@PathVariable(value = "personId") Integer personId,@Valid @RequestBody PersonRequest personRequest) throws GeneralException {
         PersonResponse personResponse = personService.updatePerson(personId, personRequest);
         return new ResponseEntity<>(personResponse, HttpStatus.OK);
     }

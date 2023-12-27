@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import javax.validation.Valid;
 @RestController
 @RequestMapping("/doctor")
 public class DoctorController {
@@ -26,7 +27,7 @@ public class DoctorController {
         return new ResponseEntity<>(assignedHospitalByDoctorId, HttpStatus.OK);
     }
     @PutMapping("/addSlots")
-    public ResponseEntity<String> addSlotsByDoctorId(@RequestBody AddSlots addSlots) throws GeneralException {
+    public ResponseEntity<String> addSlotsByDoctorId(@Valid @RequestBody AddSlots addSlots) throws GeneralException {
         String added = doctorService.addSlotsByDoctorId(addSlots);
         return new ResponseEntity<>(added, HttpStatus.OK);
     }
