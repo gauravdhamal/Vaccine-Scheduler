@@ -47,10 +47,12 @@ public class VaccineRequest {
     @NotBlank(message = "discount must not be blank.")
     private String discount;
 
+    @NotNull(message = "dosesRequired must not be null.")
     @Min(value = 1, message = "dosesRequired must be greater than equal to 1.")
     @Max(value = 3, message = "dosesRequired must be less than equal to 3.")
     private Integer dosesRequired;
 
+    @NotNull(message = "daysBetweenDoses must not be null.")
     @Min(value = 30, message = "daysBetweenDoses must be greater than equal to 30.")
     @Max(value = 90, message = "daysBetweenDoses must be less than equal to 90.")
     private Integer daysBetweenDoses;

@@ -1,44 +1,139 @@
 package com.vaccinescheduler.configurations;
 
+import com.vaccinescheduler.jwt.filter.JwtAccessDeniedHandler;
+import com.vaccinescheduler.jwt.filter.JwtEntryPointFilter;
 import com.vaccinescheduler.jwt.filter.JwtRequestFilter;
-import com.vaccinescheduler.services.MyUserDetailsService;
+import com.vaccinescheduler.services.implementations.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
+    @Autowired
+    private JwtEntryPointFilter jwtEntryPointFilter;
+    @Autowired
+    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
     @Autowired
     private MyUserDetailsService myUserDetailsService;
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(myUserDetailsService);
+    public static final String[] PUBLIC_URIS = {
+            "/v3/api-docs",
+            "/v2/api-docs",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/authentication/authenticate",
+            "/authentication/home",
+            "/slot/getSlotsByVaccineName/{vaccineName}",
+            "/appointment/get/{appointmentDetailId}",
+            "/appointment/book/{slotId}/{hospitalId}",
+            "/payment/pay/{appointmentDetailId}"
+    };
+    public static final String[] PATIENT_URIS = {
+            "/appointment/reschedule/{newSlotId}/{appointmentId}",
+            "/patient/appointments/{patientId}"
+    };
+    public static final String[] ADMIN_URIS = {
+            "/doctor/all",
+            "/doctor/addSlots",
+            "/hospital/create",
+            "/hospital/get/{hospitalId}",
+            "/hospital/update/{hospitalId}",
+            "/hospital/delete/{hospitalId}",
+            "/hospital/addInventoryToHospital/{hospitalId}/{inventoryId}",
+            "/hospital/allPayments/{hospitalId}",
+            "/hospital/getAllAppointments/{hospitalId}",
+            "/hospital/addDoctorsToHospital",
+            "/hospital/all",
+            "/inventory/create",
+            "/inventory/get/{inventoryId}",
+            "/inventory/update/{inventoryId}",
+            "/inventory/delete/{inventoryId}",
+            "/inventory/all",
+            "/inventory/allVaccinesByInventoryId/{inventoryId}",
+            "/inventory/assignManagerToInventory/{inventoryId}/{managerId}",
+            "/inventory/addVaccinesToInventory",
+            "/patient/all",
+            "/payment/update/{paymentDetailId}",
+            "/payment/get/{paymentDetailId}",
+            "/payment/delete/{paymentDetailId}",
+            "/person/create",
+            "/person/update/{personId}",
+            "/person/get/{personId}",
+            "/person/byUsername/{username}",
+            "/person/byAadhaarNumber/{aadhaarNumber}",
+            "/person/delete/{personId}",
+            "/person/all",
+            "/slot/create",
+            "/slot/get/{slotId}",
+            "/slot/update/{slotId}",
+            "/slot/delete/{slotId}",
+            "/slot/all",
+            "/vaccine/create",
+            "/vaccine/get/{vaccineId}",
+            "/vaccine/update/{vaccineId}",
+            "/vaccine/delete/{vaccineId}",
+            "/vaccine/all",
+            "/vaccine/adult",
+            "/vaccine/child",
+            "/vaccine/getByName/{vaccineName}",
+    };
+    public static final String[] DOCTOR_URIS = {
+            "/doctor/getHospitalByDoctorId/{doctorId}",
+            "/doctor/getVaccinatedPatientsByDoctorId/{doctorId}",
+            "/doctor/getPatientsFromAppointmentsByDoctorId/{doctorId}",
+            "/doctor/getAppointmentDetailsByDoctorId/{doctorId}",
+            "/doctor/get/{doctorId}/allSlots",
+    };
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(myUserDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(this.passwordEncoder());
+        return daoAuthenticationProvider;
     }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf()
+                .disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtEntryPointFilter)
+                .and()
                 .authorizeRequests()
-                .antMatchers("/authenticate/home").hasRole("PATIENT")
-                .antMatchers("/authenticate/login").permitAll()
+                .antMatchers(PUBLIC_URIS).permitAll()
+                .antMatchers(PATIENT_URIS).hasAnyRole("PATIENT", "ADMIN")
+                .antMatchers(DOCTOR_URIS).hasAnyRole("DOCTOR", "ADMIN")
+                .antMatchers(ADMIN_URIS).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-    }
 
+        http
+                .authenticationProvider(this.daoAuthenticationProvider());
+
+        http
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtEntryPointFilter)
+                .accessDeniedHandler(jwtAccessDeniedHandler);
+
+        DefaultSecurityFilterChain defaultSecurityFilterChain = http.build();
+
+        return defaultSecurityFilterChain;
+    }
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

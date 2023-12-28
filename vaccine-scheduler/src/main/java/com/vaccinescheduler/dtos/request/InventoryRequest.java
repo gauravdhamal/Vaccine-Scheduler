@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InventoryRequest {
+    @NotNull
     @Min(value = 0, message = "value must be greater than equal to 0.")
     private Integer vaccineCount;
 

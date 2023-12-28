@@ -4,7 +4,7 @@ import com.vaccinescheduler.dtos.request.AuthenticationRequest;
 import com.vaccinescheduler.dtos.response.AuthenticationResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.jwt.util.JwtUtil;
-import com.vaccinescheduler.services.MyUserDetailsService;
+import com.vaccinescheduler.services.implementations.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/authenticate")
+@RequestMapping("/authentication")
 public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -28,7 +28,7 @@ public class AuthenticationController {
     public String hello() {
         return "Hello World...!!!";
     }
-    @PostMapping("/login")
+    @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws GeneralException {
         try {
             authenticationManager
@@ -40,6 +40,7 @@ public class AuthenticationController {
         }
         final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         String token = jwtUtil.generateToken(userDetails);
+        token = "Bearer " + token;
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         authenticationResponse.setUsername(userDetails.getUsername());
         authenticationResponse.setRole(userDetails.getAuthorities().toString());

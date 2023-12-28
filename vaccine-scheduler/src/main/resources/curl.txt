@@ -65,6 +65,10 @@ curl -X PUT "http://localhost:8888/hospital/addInventoryToHospital/1/17" -H "acc
 
 curl -X PUT "http://localhost:8888/hospital/addDoctorsToHospital" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"doctorIds\": [ 7,8 ], \"hospitalId\": 1}"
 
+# Add manager to inventory
+
+curl -X PUT "http://localhost:8888/inventory/assignManagerToInventory/17/3" -H "accept: */*"
+
 # Add vaccines to inventory
 
 curl -X PUT "http://localhost:8888/inventory/addVaccinesToInventory" -H "accept: */*" -H "Content-Type: application/json" -d "{ \"inventoryId\": 17, \"vaccineIds\": [ 9,10,11,12,13,14,15,16 ]}"

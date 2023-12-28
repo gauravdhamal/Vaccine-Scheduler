@@ -1,7 +1,7 @@
 package com.vaccinescheduler.jwt.filter;
 
 import com.vaccinescheduler.jwt.util.JwtUtil;
-import com.vaccinescheduler.services.MyUserDetailsService;
+import com.vaccinescheduler.services.implementations.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

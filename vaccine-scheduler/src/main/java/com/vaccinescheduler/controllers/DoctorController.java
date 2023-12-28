@@ -56,9 +56,9 @@ public class DoctorController {
         List<SlotResponse> allSlots = doctorService.getAllSlots(doctorId);
         return new ResponseEntity<>(allSlots, HttpStatus.OK);
     }
-    @GetMapping("/originalDoctor/{doctorId}")
-    public ResponseEntity<Person> getOriginalDoctor(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
-        Person person = doctorService.getOriginalDoctor(doctorId);
-        return new ResponseEntity<>(person, HttpStatus.OK);
-    }
+//    @GetMapping("/originalDoctor/{doctorId}")
+//    public ResponseEntity<Person> getOriginalDoctor(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
+//        Person person = doctorService.getOriginalDoctor(doctorId);
+//        return new ResponseEntity<>(person, HttpStatus.OK);
+//    }
 }

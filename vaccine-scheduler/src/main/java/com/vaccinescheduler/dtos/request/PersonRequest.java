@@ -48,8 +48,7 @@ public class PersonRequest {
     private String specialization;
 
     @NotNull(message = "age must not be null.")
-    @NotEmpty(message = "age must not be empty.")
-    @NotBlank(message = "age must not be blank.")
+    @Min(value = 0, message = "Age must be greater than 0.")
     private Integer age;
 
     @NotNull(message = "aadhaarNumber must not be null.")

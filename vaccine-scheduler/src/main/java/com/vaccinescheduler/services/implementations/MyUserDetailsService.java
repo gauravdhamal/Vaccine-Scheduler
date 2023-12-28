@@ -1,4 +1,4 @@
-package com.vaccinescheduler.services;
+package com.vaccinescheduler.services.implementations;
 
 import com.vaccinescheduler.models.MyUserDetails;
 import com.vaccinescheduler.models.Person;
