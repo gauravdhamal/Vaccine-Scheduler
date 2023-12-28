@@ -41,15 +41,10 @@ public class VaccineController {
         List<VaccineResponse> vaccinesResponses = vaccineService.getAllVaccines();
         return new ResponseEntity<>(vaccinesResponses, HttpStatus.OK);
     }
-    @GetMapping("/adult")
-    public ResponseEntity<List<VaccineResponse>> getVaccinesForAdult() throws GeneralException {
-        List<VaccineResponse> vaccinesForAdult = vaccineService.getVaccinesForAdult();
-        return new ResponseEntity<>(vaccinesForAdult, HttpStatus.OK);
-    }
-    @GetMapping("/child")
-    public ResponseEntity<List<VaccineResponse>> getVaccinesForChild() throws GeneralException {
-        List<VaccineResponse> vaccinesForChild = vaccineService.getVaccinesForChild();
-        return new ResponseEntity<>(vaccinesForChild, HttpStatus.OK);
+    @GetMapping("/vaccine/{type}")
+    public ResponseEntity<List<VaccineResponse>> getVaccinesByType(@PathVariable(value = "type") String type) throws GeneralException {
+        List<VaccineResponse> vaccineResponses = vaccineService.getVaccinesByType(type);
+        return new ResponseEntity<>(vaccineResponses, HttpStatus.OK);
     }
     @GetMapping("/getByName/{vaccineName}")
     public ResponseEntity<List<VaccineResponse>> findVaccineByName(@PathVariable(value = "vaccineName") String vaccineName) throws GeneralException {

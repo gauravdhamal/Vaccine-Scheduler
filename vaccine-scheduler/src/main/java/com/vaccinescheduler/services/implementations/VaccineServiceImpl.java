@@ -138,27 +138,17 @@ public class VaccineServiceImpl implements VaccineService {
     }
 
     @Override
-    public List<VaccineResponse> getVaccinesForAdult() throws GeneralException {
-        Optional<List<Vaccine>> adultVaccines = vaccineRepo.getAdultVaccines();
-        if(adultVaccines.isPresent() && !adultVaccines.get().isEmpty()) {
-            List<Vaccine> vaccines = adultVaccines.get();
-            List<VaccineResponse> vaccineResponses = new ArrayList<>();
-            for(Vaccine vaccine : vaccines) {
-                VaccineResponse vaccineResponse = modelMapper.map(vaccine, VaccineResponse.class);
-                vaccineResponse.setAgeRange(vaccine.getMinAge()+" - "+ vaccine.getMaxAge());
-                vaccineResponses.add(vaccineResponse);
-            }
-            return vaccineResponses;
+    public List<VaccineResponse> getVaccinesByType(String type) throws GeneralException {
+        Optional<List<Vaccine>> typeVaccines;
+        if(type.toLowerCase().equals("adult")) {
+            typeVaccines = vaccineRepo.getAdultVaccines();
+        } else if(type.toLowerCase().equals("child")) {
+            typeVaccines = vaccineRepo.getChildVaccines();
         } else {
-            throw new GeneralException("No any vaccines found for adult.");
+            throw new GeneralException("Invalid type : '"+type+"'. Type must be either 'adult' or 'child'");
         }
-    }
-
-    @Override
-    public List<VaccineResponse> getVaccinesForChild() throws GeneralException {
-        Optional<List<Vaccine>> childVaccines = vaccineRepo.getChildVaccines();
-        if(childVaccines.isPresent() && !childVaccines.get().isEmpty()) {
-            List<Vaccine> vaccines = childVaccines.get();
+        if(typeVaccines.isPresent() && !typeVaccines.get().isEmpty()) {
+            List<Vaccine> vaccines = typeVaccines.get();
             List<VaccineResponse> vaccineResponses = new ArrayList<>();
             for(Vaccine vaccine : vaccines) {
                 VaccineResponse vaccineResponse = modelMapper.map(vaccine, VaccineResponse.class);
@@ -167,7 +157,7 @@ public class VaccineServiceImpl implements VaccineService {
             }
             return vaccineResponses;
         } else {
-            throw new GeneralException("No any vaccines found for child.");
+            throw new GeneralException("No any vaccines found for type : "+type);
         }
     }
 

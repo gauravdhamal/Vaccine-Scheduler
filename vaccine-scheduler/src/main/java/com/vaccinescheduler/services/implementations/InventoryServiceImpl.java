@@ -174,41 +174,45 @@ public class InventoryServiceImpl implements InventoryService {
         Optional<Inventory> inventoryById = inventoryRepo.findById(inventoryId);
         if(inventoryById.isPresent()) {
             Inventory inventory = inventoryById.get();
-            List<Vaccine> oldVaccines = inventory.getVaccines();
-            List<Integer> idsToRemove = new ArrayList<>();
-            for(Integer newId : vaccineIds) {
-                if(oldVaccines.stream().anyMatch(oldId -> oldId.getVaccineId() == newId)) {
-                    idsToRemove.add(newId);
+            if(inventory.getManager() != null) {
+                List<Vaccine> oldVaccines = inventory.getVaccines();
+                List<Integer> idsToRemove = new ArrayList<>();
+                for(Integer newId : vaccineIds) {
+                    if(oldVaccines.stream().anyMatch(oldId -> oldId.getVaccineId() == newId)) {
+                        idsToRemove.add(newId);
+                    }
                 }
-            }
-            vaccineIds.removeAll(idsToRemove);
-            List<Vaccine> vaccines = new ArrayList<>();
-            Boolean vaccineNotFoundCheck = false;
-            StringBuilder vaccineNotFoundResult = new StringBuilder();
-            Boolean vaccineFoundCheck = false;
-            StringBuilder vaccineFoundResult = new StringBuilder();
-            for(Integer vaccineId : vaccineIds) {
-                Optional<Vaccine> vaccineById = vaccineRepo.findById(vaccineId);
-                if(vaccineById.isPresent()) {
-                    vaccineFoundCheck = true;
-                    vaccineFoundResult.append("'"+vaccineId+"'"+" ");
-                    Vaccine vaccine = vaccineById.get();
-                    vaccines.add(vaccine);
+                vaccineIds.removeAll(idsToRemove);
+                List<Vaccine> vaccines = new ArrayList<>();
+                Boolean vaccineNotFoundCheck = false;
+                StringBuilder vaccineNotFoundResult = new StringBuilder();
+                Boolean vaccineFoundCheck = false;
+                StringBuilder vaccineFoundResult = new StringBuilder();
+                for(Integer vaccineId : vaccineIds) {
+                    Optional<Vaccine> vaccineById = vaccineRepo.findById(vaccineId);
+                    if(vaccineById.isPresent()) {
+                        vaccineFoundCheck = true;
+                        vaccineFoundResult.append("'"+vaccineId+"'"+" ");
+                        Vaccine vaccine = vaccineById.get();
+                        vaccines.add(vaccine);
+                    } else {
+                        vaccineNotFoundCheck = true;
+                        vaccineNotFoundResult.append("'"+vaccineId+"'"+" ");
+                    }
+                }
+                if(vaccineFoundCheck && vaccineNotFoundCheck) {
+                    inventory.getVaccines().addAll(vaccines);
+                    inventoryRepo.save(inventory);
+                    return vaccineFoundResult+": Vaccines added to inventory. Some vaccines not found : "+vaccineNotFoundResult;
+                } else if(vaccineFoundCheck) {
+                    inventory.getVaccines().addAll(vaccines);
+                    inventoryRepo.save(inventory);
+                    return "Vaccines added to inventory : "+vaccineFoundResult;
                 } else {
-                    vaccineNotFoundCheck = true;
-                    vaccineNotFoundResult.append("'"+vaccineId+"'"+" ");
+                    return "No any vaccine found with IDs { "+vaccineNotFoundResult+"}. Please enter correct Ids.";
                 }
-            }
-            if(vaccineFoundCheck && vaccineNotFoundCheck) {
-                inventory.getVaccines().addAll(vaccines);
-                inventoryRepo.save(inventory);
-                return vaccineFoundResult+": Vaccines added to inventory. Some vaccines not found : "+vaccineNotFoundResult;
-            } else if(vaccineFoundCheck) {
-                inventory.getVaccines().addAll(vaccines);
-                inventoryRepo.save(inventory);
-                return "Vaccines added to inventory : "+vaccineFoundResult;
             } else {
-                return "No any vaccine found with IDs { "+vaccineNotFoundResult+"}. Please enter correct Ids.";
+                throw new GeneralException("Manager not assigned to inventory. Assign it first.");
             }
         } else {
             throw new GeneralException("Inventory not found with ID : "+inventoryId);

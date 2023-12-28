@@ -13,7 +13,6 @@ public interface VaccineService {
     VaccineResponse updateVaccine(Integer vaccineId, VaccineRequest vaccineRequest) throws GeneralException;
     Boolean deleteVaccine(Integer vaccineId) throws GeneralException;
     List<VaccineResponse> getAllVaccines() throws GeneralException;
-    List<VaccineResponse> getVaccinesForAdult() throws GeneralException;
-    List<VaccineResponse> getVaccinesForChild() throws GeneralException;
+    List<VaccineResponse> getVaccinesByType(String type) throws GeneralException;
     List<VaccineResponse> findVaccineByName(String vaccineName) throws GeneralException;
 }

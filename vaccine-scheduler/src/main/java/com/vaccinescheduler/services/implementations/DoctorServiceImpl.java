@@ -102,7 +102,7 @@ public class DoctorServiceImpl implements DoctorService {
         if(doctorById.isPresent()) {
             Person doctor = doctorById.get();
             if(doctor.getRole().toLowerCase().endsWith("doctor")) {
-                if(!doctor.getDoctorAppointmentDetails().isEmpty()) {
+                if(!doctor.getDoctorVaccinationDetails().isEmpty() && doctor.getDoctorVaccinationDetails().size() != 0) {
                     List<VaccinationDetail> vaccinationDetails = doctor.getDoctorVaccinationDetails();
                     System.out.println("vaccinationDetails getVaccinatedPatientsByDoctorId : "+vaccinationDetails);
                     List<PersonResponse> personResponses = new ArrayList<>();
@@ -129,7 +129,7 @@ public class DoctorServiceImpl implements DoctorService {
         if(doctorById.isPresent()) {
             Person doctor = doctorById.get();
             if(doctor.getRole().toLowerCase().endsWith("doctor")) {
-                if(!doctor.getDoctorAppointmentDetails().isEmpty()) {
+                if(!doctor.getDoctorAppointmentDetails().isEmpty() && doctor.getDoctorAppointmentDetails().size() != 0) {
                     List<AppointmentDetail> appointmentDetails = doctor.getDoctorAppointmentDetails();
                     System.out.println("appointmentDetails getPatientsFromAppointmentsByDoctorId : "+appointmentDetails);
                     List<PersonResponse> personResponses = new ArrayList<>();
@@ -156,14 +156,17 @@ public class DoctorServiceImpl implements DoctorService {
         if(doctorById.isPresent()) {
             Person doctor = doctorById.get();
             if(doctor.getRole().toLowerCase().endsWith("doctor")) {
-                List<AppointmentDetail> appointmentDetails = doctor.getDoctorAppointmentDetails();
-                System.out.println("appointmentDetails getAppointmentDetailsByDoctorId : "+appointmentDetails);
-                List<AppointmentResponse> appointmentResponses = new ArrayList<>();
-                for(AppointmentDetail appointmentDetail : appointmentDetails) {
-                    AppointmentResponse appointmentResponse = modelMapper.map(appointmentDetail, AppointmentResponse.class);
-                    appointmentResponses.add(appointmentResponse);
+                if(!doctor.getDoctorAppointmentDetails().isEmpty() && doctor.getDoctorAppointmentDetails().size() != 0) {
+                    List<AppointmentDetail> appointmentDetails = doctor.getDoctorAppointmentDetails();
+                    List<AppointmentResponse> appointmentResponses = new ArrayList<>();
+                    for (AppointmentDetail appointmentDetail : appointmentDetails) {
+                        AppointmentResponse appointmentResponse = modelMapper.map(appointmentDetail, AppointmentResponse.class);
+                        appointmentResponses.add(appointmentResponse);
+                    }
+                    return appointmentResponses;
+                } else {
+                    throw new GeneralException("No any appointment found for doctor ID : "+doctorId);
                 }
-                return appointmentResponses;
             } else {
                 throw new GeneralException("Username : { "+doctor.getUsername()+" } is a { "+doctor.getRole()+" }. Person must be doctor. Enter correct ID.");
             }

@@ -39,11 +39,19 @@ public class SecurityConfiguration {
             "/slot/getSlotsByVaccineName/{vaccineName}",
             "/appointment/get/{appointmentDetailId}",
             "/appointment/book/{slotId}/{hospitalId}",
-            "/payment/pay/{appointmentDetailId}"
+            "/payment/pay/{appointmentDetailId}",
+            "/person/create"
     };
     public static final String[] PATIENT_URIS = {
             "/appointment/reschedule/{newSlotId}/{appointmentId}",
             "/patient/appointments/{patientId}"
+    };
+    public static final String[] DOCTOR_URIS = {
+            "/doctor/getHospitalByDoctorId/{doctorId}",
+            "/doctor/getVaccinatedPatientsByDoctorId/{doctorId}",
+            "/doctor/getPatientsFromAppointmentsByDoctorId/{doctorId}",
+            "/doctor/getAppointmentDetailsByDoctorId/{doctorId}",
+            "/doctor/get/{doctorId}/allSlots",
     };
     public static final String[] ADMIN_URIS = {
             "/doctor/all",
@@ -69,7 +77,6 @@ public class SecurityConfiguration {
             "/payment/update/{paymentDetailId}",
             "/payment/get/{paymentDetailId}",
             "/payment/delete/{paymentDetailId}",
-            "/person/create",
             "/person/update/{personId}",
             "/person/get/{personId}",
             "/person/byUsername/{username}",
@@ -89,13 +96,8 @@ public class SecurityConfiguration {
             "/vaccine/adult",
             "/vaccine/child",
             "/vaccine/getByName/{vaccineName}",
-    };
-    public static final String[] DOCTOR_URIS = {
-            "/doctor/getHospitalByDoctorId/{doctorId}",
-            "/doctor/getVaccinatedPatientsByDoctorId/{doctorId}",
-            "/doctor/getPatientsFromAppointmentsByDoctorId/{doctorId}",
-            "/doctor/getAppointmentDetailsByDoctorId/{doctorId}",
-            "/doctor/get/{doctorId}/allSlots",
+            "/admin/updateInventoryManager/{adminId}/{inventoryId}",
+            "/admin/all",
     };
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
