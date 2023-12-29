@@ -21,9 +21,15 @@ public class Slot {
     private Integer slotId;
 
     private LocalDate slotDate;
+    /**
+     * Start time should be 9, 13, 17
+     */
     private LocalTime startTime;
+    /**
+     * End time should be 12, 16, 19
+     */
     private LocalTime endTime;
-    private Integer slotCount;
+    private Integer availableSlots;
 
     /**
      * Bidirectional

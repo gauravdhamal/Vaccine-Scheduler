@@ -19,7 +19,6 @@ public class AuthenticationRequest {
     @NotNull(message = "username must not be null.")
     @NotEmpty(message = "username must not be empty.")
     @NotBlank(message = "username must not be blank.")
-    @Column(unique = true)
     private String username;
 
     @NotNull(message = "password must not be null.")

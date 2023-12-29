@@ -44,7 +44,8 @@ public class SecurityConfiguration {
     };
     public static final String[] PATIENT_URIS = {
             "/appointment/reschedule/{newSlotId}/{appointmentId}",
-            "/patient/appointments/{patientId}"
+            "/patient/appointments/{patientId}",
+            "/patient/vaccinations/{patientId}",
     };
     public static final String[] DOCTOR_URIS = {
             "/doctor/getHospitalByDoctorId/{doctorId}",
@@ -98,6 +99,9 @@ public class SecurityConfiguration {
             "/vaccine/getByName/{vaccineName}",
             "/admin/updateInventoryManager/{adminId}/{inventoryId}",
             "/admin/all",
+            "/vaccination/updateRecord",
+            "/vaccination/all",
+            "/vaccination/details/{date}/{slot}",
     };
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {

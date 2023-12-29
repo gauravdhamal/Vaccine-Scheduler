@@ -12,7 +12,6 @@ import com.vaccinescheduler.repositories.InventoryRepo;
 import com.vaccinescheduler.repositories.PersonRepo;
 import com.vaccinescheduler.repositories.VaccineRepo;
 import com.vaccinescheduler.services.InventoryService;
-import io.swagger.models.auth.In;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class InventoryServiceImpl implements InventoryService {
@@ -37,11 +35,11 @@ public class InventoryServiceImpl implements InventoryService {
     public InventoryResponse createInventory(InventoryRequest inventoryRequest) throws GeneralException {
         Inventory inventory = modelMapper.map(inventoryRequest, Inventory.class);
         inventory.setLastUpdated(LocalDateTime.now());
-        if(inventory.getVaccineCount() > 0) {
+        if(inventory.getAvailableVaccineCount() > 0) {
             inventory.setStatus("in-stock");
         } else {
             inventory.setStatus("out-of-stock");
-            inventory.setVaccineCount(0);
+            inventory.setAvailableVaccineCount(0);
         }
         inventory = inventoryRepo.save(inventory);
         InventoryResponse inventoryResponse = modelMapper.map(inventory, InventoryResponse.class);
@@ -64,13 +62,13 @@ public class InventoryServiceImpl implements InventoryService {
         Optional<Inventory> inventoryById = inventoryRepo.findById(inventoryId);
         if(inventoryById.isPresent()) {
             Inventory oldInventory = inventoryById.get();
-            if(inventoryRequest.getVaccineCount() != null) {
-                if(inventoryRequest.getVaccineCount() > 0) {
+            if(inventoryRequest.getAvailableVaccineCount() != null) {
+                if(inventoryRequest.getAvailableVaccineCount() > 0) {
                     oldInventory.setStatus("in-stock");
-                    oldInventory.setVaccineCount(inventoryRequest.getVaccineCount());
+                    oldInventory.setAvailableVaccineCount(inventoryRequest.getAvailableVaccineCount());
                 } else {
                     oldInventory.setStatus("out-of-stock");
-                    oldInventory.setVaccineCount(0);
+                    oldInventory.setAvailableVaccineCount(0);
                 }
             }
             if(inventoryRequest.getStorageTemperature() != null) {

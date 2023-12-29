@@ -61,14 +61,14 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
             boolean todayButStartTimeIsAfterCurrTime = slotDate.isEqual(currentDate) && startTime.isAfter(currentTime);
             boolean todayStartedButYetNotEnded = slotDate.isEqual(currentDate) && startTime.isBefore(currentTime) && endTime.isAfter(currentTime);
             if(futureDateCheck || todayButStartTimeIsAfterCurrTime || todayStartedButYetNotEnded) {
-                if(slot.getSlotCount() > 0) {
+                if(slot.getAvailableSlots() > 0) {
                     Person requiredDoctor = slot.getDoctor();
                     Vaccine requiredVaccine = slot.getVaccine();
                     Optional<Hospital> hospitalById = hospitalRepo.findById(hospitalId);
                     if(hospitalById.isPresent()) {
                         Hospital hospital = hospitalById.get();
                         if(hospital.getInventory() != null) {
-                            if(hospital.getInventory().getVaccineCount() > 0 && !hospital.getInventory().getVaccines().isEmpty()) {
+                            if(hospital.getInventory().getAvailableVaccineCount() > 0 && !hospital.getInventory().getVaccines().isEmpty()) {
                                 if(!hospital.getDoctors().isEmpty()) {
                                     List<Person> doctors = hospital.getDoctors();
                                     boolean doctorAvailabilityCheck = doctors.stream().anyMatch(doctor -> doctor.getPersonId() == requiredDoctor.getPersonId());
@@ -89,13 +89,14 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                 appointmentDetail.setHospital(hospital);
                                                 appointmentDetail.setDoseNumber(appointmentDetailRequest.getDoseNumber());
                                                 appointmentDetail.setSlot(slot);
+                                                appointmentDetail.setVaccinated(false);
                                                 Inventory inventory = hospital.getInventory();
-                                                Integer vaccineCount = inventory.getVaccineCount();
-                                                vaccineCount--;
-                                                inventory.setVaccineCount(vaccineCount);
-                                                Integer slotCount = slot.getSlotCount();
-                                                slotCount--;
-                                                slot.setSlotCount(slotCount);
+                                                Integer availableVaccineCount = inventory.getAvailableVaccineCount();
+                                                availableVaccineCount--;
+                                                inventory.setAvailableVaccineCount(availableVaccineCount);
+                                                Integer availableSlots = slot.getAvailableSlots();
+                                                availableSlots--;
+                                                slot.setAvailableSlots(availableSlots);
                                                 slotRepo.save(slot);
                                                 inventoryRepo.save(inventory);
                                                 appointmentDetail = appointmentDetailRepo.save(appointmentDetail);
@@ -132,7 +133,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                         throw new GeneralException("Hospital not found with ID : { "+hospitalId+" }. Enter correct ID.");
                     }
                 } else {
-                    throw new GeneralException("All slots are booked no any slot available. Available slots : "+slot.getSlotCount()+". Try for another slot.");
+                    throw new GeneralException("All slots are booked no any slot available. Available slots : "+slot.getAvailableSlots()+". Try for another slot.");
                 }
             } else {
                 throw new GeneralException("Sorry slot is currently expired. slotDate : { "+slotDate+" }, startTime : { "+startTime+" }, endTime : { "+endTime+" }. Please try for another slot.");
@@ -148,20 +149,20 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
         if(appointmentDetailById.isPresent()) {
             AppointmentDetail appointmentDetail = appointmentDetailById.get();
             Slot oldSlot = appointmentDetail.getSlot();
-            Integer oldSlotCount = oldSlot.getSlotCount();
+            Integer oldSlotCount = oldSlot.getAvailableSlots();
             if(!oldSlot.getSlotId().equals(newSlotId)) {
                 Hospital hospital = appointmentDetail.getHospital();
                 Optional<Slot> newSlotById = slotRepo.findById(newSlotId);
                 if (newSlotById.isPresent()) {
                     Slot newSlot = newSlotById.get();
                     Person newSlotDoctor = newSlot.getDoctor();
-                    Integer newSlotCount = newSlot.getSlotCount();
+                    Integer newSlotCount = newSlot.getAvailableSlots();
                     if(newSlotCount > 0) {
                         if(oldSlot.getVaccine().getVaccineName().equals(newSlot.getVaccine().getVaccineName())) {
                             newSlotCount--;
-                            newSlot.setSlotCount(newSlotCount);
+                            newSlot.setAvailableSlots(newSlotCount);
                             oldSlotCount++;
-                            oldSlot.setSlotCount(oldSlotCount);
+                            oldSlot.setAvailableSlots(oldSlotCount);
                             appointmentDetail.setSlot(newSlot);
                             appointmentDetail.setDoctor(newSlotDoctor);
                             appointmentDetail.setAppointmentTime(newSlot.getStartTime() + " - " + newSlot.getEndTime());
@@ -179,7 +180,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                             throw new GeneralException("Selected slot does not have required vaccine : "+oldSlot.getVaccine().getVaccineName());
                         }
                     } else {
-                        throw new GeneralException("All slots are booked no any slot available. Available slots : "+newSlot.getSlotCount()+". Try for another slot.");
+                        throw new GeneralException("All slots are booked no any slot available. Available slots : "+newSlot.getAvailableSlots()+". Try for another slot.");
                     }
                 } else {
                     throw new GeneralException("New Slot not found with ID : " + newSlotId);

@@ -21,5 +21,4 @@ public class AppointmentDetailResponse {
     private String message;
     private Integer paymentDetailId;
     private Integer paymentDetailAmount;
-
 }

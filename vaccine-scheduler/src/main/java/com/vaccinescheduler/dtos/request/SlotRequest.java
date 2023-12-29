@@ -32,9 +32,9 @@ public class SlotRequest {
     @ApiModelProperty(example = "18:00:00")
     private LocalTime endTime;
 
-    @NotNull(message = "slotCount must be not null.")
-    @Min(value = 0, message = "slotCount must be greater than equal to 0.")
-    private Integer slotCount;
+    @NotNull(message = "availableSlots must be not null.")
+    @Min(value = 0, message = "availableSlots must be greater than equal to 0.")
+    private Integer availableSlots;
 
     @NotNull(message = "vaccineId must not be null.")
     @Min(value = 1, message = "vaccineId value must be greater than 0.")

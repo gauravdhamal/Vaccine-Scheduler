@@ -20,7 +20,7 @@ public class Inventory {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer inventoryId;
 
-    private Integer vaccineCount;
+    private Integer availableVaccineCount;
     private String batchNumber;
     private String storageTemperature;
     private LocalDateTime lastUpdated;

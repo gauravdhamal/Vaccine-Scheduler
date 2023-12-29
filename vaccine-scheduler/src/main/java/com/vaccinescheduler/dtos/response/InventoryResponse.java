@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class InventoryResponse {
     private Integer inventoryId;
-    private Integer vaccineCount;
+    private Integer availableVaccineCount;
     private String batchNumber;
     private String storageTemperature;
     private LocalDateTime lastUpdated;

@@ -17,13 +17,13 @@ import java.time.LocalTime;
 public class VaccinationDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer VaccinationDetailId;
+    private Integer vaccinationDetailId;
 
     private LocalDate vaccinatedDate;
     private LocalTime vaccinatedTime;
     private Boolean vaccinationStatus;
     private String doseNumber;
-    private LocalDate nextAppointmentDate;
+    private LocalDate nextVaccinationDate;
 
     /**
      * Bidirectional

@@ -26,7 +26,7 @@ public class AuthenticationController {
     private JwtUtil jwtUtil;
     @GetMapping("/home")
     public String hello() {
-        return "Hello World...!!!";
+        return "Hello World...!!! For public access.";
     }
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) throws GeneralException {
