@@ -29,6 +29,8 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
+    private JavaEmailService javaEmailService;
+    @Autowired
     private AppointmentDetailRepo appointmentDetailRepo;
 
     @Override
@@ -81,11 +83,12 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                             Integer currentAge = appointmentDetailRequest.getAge();
                                             if(currentAge >= minAgeReq && currentAge <= maxAgeReq) {
                                                 AppointmentDetail appointmentDetail = modelMapper.map(appointmentDetailRequest, AppointmentDetail.class);
-                                                appointmentDetail.setAppointmentDate(slot.getSlotDate());
+                                                appointmentDetail.setAppointmentDate(slotDate);
                                                 appointmentDetail.setVaccine(requiredVaccine);
                                                 appointmentDetail.setCreatedAt(LocalDateTime.now());
                                                 appointmentDetail.setDoctor(requiredDoctor);
-                                                appointmentDetail.setAppointmentTime(slot.getStartTime() + " - " + slot.getEndTime());
+                                                String appointmentTime = slot.getStartTime() + " - " + slot.getEndTime();
+                                                appointmentDetail.setAppointmentTime(appointmentTime);
                                                 appointmentDetail.setHospital(hospital);
                                                 appointmentDetail.setDoseNumber(appointmentDetailRequest.getDoseNumber());
                                                 appointmentDetail.setSlot(slot);
@@ -105,10 +108,36 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                 requiredDoctor.getDoctorAppointmentDetails().add(appointmentDetail);
                                                 personRepo.save(requiredDoctor);
                                                 AppointmentDetailResponse appointmentDetailResponse = modelMapper.map(appointmentDetail, AppointmentDetailResponse.class);
-                                                String message = "Dear " + appointmentDetailRequest.getFirstName() + ", your appointment has been booked. "
+                                                String firstName = appointmentDetailRequest.getFirstName();
+                                                String gender = appointmentDetailRequest.getGender();
+                                                String phone = appointmentDetailRequest.getPhone();
+                                                String email = appointmentDetailRequest.getEmail();
+                                                String message = "Dear " + firstName + ", your appointment has been booked. "
                                                         + "We look forward to providing you with excellent service. "
-                                                        + "Details: Gender - " + appointmentDetailRequest.getGender() + ", Age - " + appointmentDetailRequest.getAge() + ", Phone - " + appointmentDetailRequest.getPhone() + ", Email - " + appointmentDetailRequest.getEmail();
+                                                        + "Details: Gender - " + gender + ", Age - " + currentAge + ", Phone - " + phone + ", Email - " + email;
                                                 if(todayStartedButYetNotEnded) message = message + ". You are having very less time as your slotTime will end soon. Kindly make payment ASAP and take the vaccination.";
+                                                StringBuilder emailMessage = new StringBuilder();
+                                                emailMessage.append("Dear "+firstName)
+                                                .append("We're excited to confirm your upcoming vaccination appointment at '"+hospital.getHospitalName()+"'. Here are the details:")
+                                                .append("Appointment Date: "+slotDate)
+                                                .append("Appointment Time: "+appointmentTime)
+                                                .append("Doctor: Dr. "+requiredDoctor.getFirstName()+" "+requiredDoctor.getLastName())
+                                                .append("Vaccine: "+requiredVaccine.getVaccineName())
+                                                .append("\n\nPatient Details:")
+                                                .append("Name : "+firstName)
+                                                .append("Age : "+currentAge)
+                                                .append("Gender : "+gender)
+                                                .append("Phone : "+phone)
+                                                .append("Email : "+email)
+                                                .append("\n\nHospital Details:")
+                                                .append("Name : "+hospital.getHospitalName())
+                                                .append("Address : "+hospital.getAddress().getCity())
+                                                .append("Contact : "+hospital.getAddress().getPhone())
+                                                .append("\nPlease arrive a little early and remember to bring any required documents. If you have any questions or need to reschedule, feel free to contact us.")
+                                                .append("\nWe appreciate your trust in '"+hospital.getHospitalName()+"' and look forward to providing you with excellent care.")
+                                                .append("Best regards,\n")
+                                                .append(hospital.getHospitalName());
+                                                javaEmailService.sendEmail(email, "Appointment confirmation from ~ [ "+hospital.getHospitalName()+" ]", emailMessage.toString());
                                                 appointmentDetailResponse.setMessage(message);
                                                 return appointmentDetailResponse;
                                             } else {
@@ -158,23 +187,55 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                     Person newSlotDoctor = newSlot.getDoctor();
                     Integer newSlotCount = newSlot.getAvailableSlots();
                     if(newSlotCount > 0) {
-                        if(oldSlot.getVaccine().getVaccineName().equals(newSlot.getVaccine().getVaccineName())) {
+                        String newSlotvaccineName = newSlot.getVaccine().getVaccineName();
+                        if(oldSlot.getVaccine().getVaccineName().equals(newSlotvaccineName)) {
                             newSlotCount--;
                             newSlot.setAvailableSlots(newSlotCount);
                             oldSlotCount++;
                             oldSlot.setAvailableSlots(oldSlotCount);
                             appointmentDetail.setSlot(newSlot);
                             appointmentDetail.setDoctor(newSlotDoctor);
-                            appointmentDetail.setAppointmentTime(newSlot.getStartTime() + " - " + newSlot.getEndTime());
-                            appointmentDetail.setAppointmentDate(newSlot.getSlotDate());
+                            String newSlotappointmentTime = newSlot.getStartTime() + " - " + newSlot.getEndTime();
+                            appointmentDetail.setAppointmentTime(newSlotappointmentTime);
+                            LocalDate newSlotSlotDate = newSlot.getSlotDate();
+                            appointmentDetail.setAppointmentDate(newSlotSlotDate);
                             appointmentDetail.setCreatedAt(LocalDateTime.now());
                             appointmentDetail = appointmentDetailRepo.save(appointmentDetail);
                             slotRepo.save(newSlot);
                             slotRepo.save(oldSlot);
                             AppointmentDetailResponse appointmentDetailResponse = modelMapper.map(appointmentDetail, AppointmentDetailResponse.class);
-                            String message = "Dear " + appointmentDetail.getFirstName() + ", your appointment has been rescheduled. Kindle make payment if not done already."
-                                    + "Details: Gender - " + appointmentDetail.getGender() + ", Age - " + appointmentDetail.getAge() + ", Phone - " + appointmentDetail.getPhone() + ", Email - " + appointmentDetail.getEmail();
+                            String firstName = appointmentDetail.getFirstName();
+                            String gender = appointmentDetail.getGender();
+                            Integer age = appointmentDetail.getAge();
+                            String phone = appointmentDetail.getPhone();
+                            String email = appointmentDetail.getEmail();
+                            String message = "Dear " + firstName + ", your appointment has been rescheduled. Kindle make payment if not done already."
+                                    + "Details: Gender - " + gender + ", Age - " + age + ", Phone - " + phone + ", Email - " + email;
                             appointmentDetailResponse.setMessage(message);
+                            StringBuilder emailMessage = new StringBuilder();
+                            emailMessage.append("Subject: Rescheduled Appointment Confirmation - " + hospital.getHospitalName() + "\n\n")
+                            .append("Dear " + firstName + ",\n\n")
+                            .append("We hope this message finds you well. We want to inform you that your vaccination appointment at '"
+                                    + hospital.getHospitalName() + "' has been successfully rescheduled. Here are the updated details:\n\n")
+                            .append("- New Appointment Date: " + newSlotSlotDate + "\n")
+                            .append("- New Appointment Time: " + newSlotappointmentTime + "\n")
+                            .append("- Doctor: Dr. " + newSlotDoctor.getFirstName() + " " + newSlotDoctor.getLastName() + "\n")
+                            .append("- Vaccine: " + newSlotvaccineName + "\n\n")
+                            .append("Updated Patient Details:\n")
+                            .append("- Name: " + firstName + "\n")
+                            .append("- Age: " + age + "\n")
+                            .append("- Gender: " + gender + "\n")
+                            .append("- Phone: " + phone + "\n")
+                            .append("- Email: " + email + "\n\n")
+                            .append("Hospital Details:\n")
+                            .append("- Name: " + hospital.getHospitalName() + "\n")
+                            .append("- Address: " + hospital.getAddress().getCity() + "\n")
+                            .append("- Contact: " + hospital.getAddress().getPhone() + "\n\n")
+                            .append("Please arrive a little early, and if you have any concerns or questions about the rescheduled appointment, feel free to contact us.\n\n")
+                            .append("We appreciate your flexibility and understanding. Thank you for choosing '" + hospital.getHospitalName() + "'.\n\n")
+                            .append("Best regards,\n")
+                            .append(hospital.getHospitalName());
+                            javaEmailService.sendEmail(appointmentDetail.getEmail(), "Rescheduled appointment confirmation from ~ [ "+hospital.getHospitalName()+" ]", emailMessage.toString());
                             return appointmentDetailResponse;
                         } else {
                             throw new GeneralException("Selected slot does not have required vaccine : "+oldSlot.getVaccine().getVaccineName());

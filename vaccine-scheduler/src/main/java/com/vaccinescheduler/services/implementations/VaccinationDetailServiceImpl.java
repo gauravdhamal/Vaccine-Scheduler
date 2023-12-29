@@ -26,6 +26,8 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
     private AppointmentDetailRepo appointmentDetailRepo;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private JavaEmailService javaEmailService;
     @Override
     public List<VaccinationResponse> getVaccinationDetailsByDateAndSlot(LocalDate date, String slot) throws GeneralException {
         LocalTime slotTime;
@@ -99,6 +101,24 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
                 appointmentDetailRepo.save(appointmentDetail);
                 VaccinationResponse vaccinationResponse = modelMapper.map(vaccinationDetail, VaccinationResponse.class);
                 vaccinationResponses.add(vaccinationResponse);
+                StringBuilder emailMessage = new StringBuilder();
+                emailMessage.append("Subject: Vaccination Confirmation\n\n")
+                .append("Dear Patient,\n\n")
+                .append("We are pleased to confirm that your vaccination appointment has been successfully completed. Here are the details:\n\n")
+                .append("Vaccination Date: " + vaccinationDetail.getVaccinatedDate() + "\n")
+                .append("Vaccination Time: " + vaccinationDetail.getVaccinatedTime() + "\n")
+                .append("Vaccine: " + vaccine.getVaccineName() + "\n")
+                .append("Dose Number: " + vaccinationDetail.getDoseNumber() + "\n")
+                .append("Next Vaccination Date: " + nextVaccinationDate + "\n\n")
+                .append("Patient Information:\n")
+                .append("Aadhaar Number: " + vaccinationDetail.getPatient().getAadhaarNumber() + "\n")
+                .append("Phone: " + vaccinationDetail.getPatient().getAddress().getPhone() + "\n\n")
+                .append("Hospital Details:\n")
+                .append("Name: " + vaccinationDetail.getHospital().getHospitalName() + "\n\n")
+                .append("Thank you for choosing us for your vaccination. If you have any post-vaccination queries or concerns, feel free to reach out. We appreciate your trust in our services.\n\n")
+                .append("Best regards,\n")
+                .append(vaccinationDetail.getHospital().getHospitalName());
+                javaEmailService.sendEmail(vaccinationDetail.getPatient().getAddress().getEmail(), "Vaccination confirmation mail at ~ [ '"+vaccinationDetail.getHospital().getHospitalName()+"' ]", emailMessage.toString());
             }
             return vaccinationResponses;
         } else {

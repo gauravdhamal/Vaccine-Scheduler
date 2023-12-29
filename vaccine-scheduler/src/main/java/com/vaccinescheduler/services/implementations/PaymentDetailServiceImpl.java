@@ -33,6 +33,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private JavaEmailService javaEmailService;
     @Override
     public PaymentDetailResponse createPaymentDetail(Integer appointmentDetailId, PaymentDetailRequest paymentDetailRequest) throws GeneralException {
         Optional<AppointmentDetail> appointmentDetailById = appointmentDetailRepo.findById(appointmentDetailId);
@@ -71,7 +73,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
                     PaymentDetail paymentDetail = new PaymentDetail();
                     paymentDetail.setCreatedDateTime(LocalDateTime.now());
                     paymentDetail.setAmount(paidAmount);
-                    paymentDetail.setPaymentMethod(paymentDetailRequest.getPaymentMethod());
+                    String paymentMethod = paymentDetailRequest.getPaymentMethod();
+                    paymentDetail.setPaymentMethod(paymentMethod);
                     paymentDetail.setTransactionStatus("success");
                     paymentDetail.setAppointmentDetail(appointmentDetail);
                     paymentDetail.setPatient(patient);
@@ -85,6 +88,23 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
                     hospital.getPaymentDetails().add(paymentDetail);
                     hospitalRepo.save(hospital);
                     PaymentDetailResponse paymentDetailResponse = modelMapper.map(paymentDetail, PaymentDetailResponse.class);
+                    StringBuilder message = new StringBuilder("Dear ");
+                    message.append(patient.getFirstName()).append(",\n")
+                            .append("Thank you for your payment!\n")
+                            .append("Payment details:\n")
+                            .append("Amount Paid: ").append(paidAmount).append("\n")
+                            .append("Payment Method: ").append(paymentMethod).append("\n\n")
+                            .append("Details about you:\n")
+                            .append("Name: ").append(patient.getFirstName()).append(" ").append(patient.getLastName()).append("\n")
+                            .append("Gender: ").append(patient.getGender()).append("\n")
+                            .append("Age: ").append(patient.getAge()).append("\n")
+                            .append("City: ").append(patient.getAddress().getCity()).append("\n")
+                            .append("Phone: ").append(patient.getAddress().getPhone()).append("\n")
+                            .append("Email: ").append(patient.getAddress().getEmail()).append("\n\n")
+                            .append("Thank you for your payment! You're all set for your vaccination appointment. Proceed with confidence!\n")
+                            .append("Best regards,\n")
+                            .append(hospital.getHospitalName());
+                    javaEmailService.sendEmail(patient.getAddress().getEmail(), "Payment confirmation mail", message.toString());
                     return paymentDetailResponse;
                 } else {
                     throw new GeneralException("You need to pay the amount : { "+requiredAmount+" }. You entered : { "+paidAmount+" }. Please enter proper amount.");

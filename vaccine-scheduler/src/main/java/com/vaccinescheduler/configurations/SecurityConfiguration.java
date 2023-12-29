@@ -40,7 +40,8 @@ public class SecurityConfiguration {
             "/appointment/get/{appointmentDetailId}",
             "/appointment/book/{slotId}/{hospitalId}",
             "/payment/pay/{appointmentDetailId}",
-            "/person/create"
+            "/person/create",
+            "/email/send",
     };
     public static final String[] PATIENT_URIS = {
             "/appointment/reschedule/{newSlotId}/{appointmentId}",
