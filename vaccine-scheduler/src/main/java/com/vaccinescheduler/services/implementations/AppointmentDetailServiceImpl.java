@@ -117,26 +117,26 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                         + "Details: Gender - " + gender + ", Age - " + currentAge + ", Phone - " + phone + ", Email - " + email;
                                                 if(todayStartedButYetNotEnded) message = message + ". You are having very less time as your slotTime will end soon. Kindly make payment ASAP and take the vaccination.";
                                                 StringBuilder emailMessage = new StringBuilder();
-                                                emailMessage.append("Dear "+firstName)
-                                                .append("We're excited to confirm your upcoming vaccination appointment at '"+hospital.getHospitalName()+"'. Here are the details:")
-                                                .append("Appointment Date: "+slotDate)
-                                                .append("Appointment Time: "+appointmentTime)
-                                                .append("Doctor: Dr. "+requiredDoctor.getFirstName()+" "+requiredDoctor.getLastName())
-                                                .append("Vaccine: "+requiredVaccine.getVaccineName())
-                                                .append("\n\nPatient Details:")
-                                                .append("Name : "+firstName)
-                                                .append("Age : "+currentAge)
-                                                .append("Gender : "+gender)
-                                                .append("Phone : "+phone)
-                                                .append("Email : "+email)
-                                                .append("\n\nHospital Details:")
-                                                .append("Name : "+hospital.getHospitalName())
-                                                .append("Address : "+hospital.getAddress().getCity())
-                                                .append("Contact : "+hospital.getAddress().getPhone())
-                                                .append("\nPlease arrive a little early and remember to bring any required documents. If you have any questions or need to reschedule, feel free to contact us.")
-                                                .append("\nWe appreciate your trust in '"+hospital.getHospitalName()+"' and look forward to providing you with excellent care.")
-                                                .append("Best regards,\n")
-                                                .append(hospital.getHospitalName());
+                                                emailMessage.append("Dear ").append(firstName).append("\n")
+                                                        .append("\n\nWe're excited to confirm your upcoming vaccination appointment at '").append(hospital.getHospitalName()).append("'.\n\nHere are the details:\n")
+                                                        .append("Appointment Date: ").append(slotDate).append("\n")
+                                                        .append("Appointment Time: ").append(appointmentTime).append("\n")
+                                                        .append("Doctor: Dr. ").append(requiredDoctor.getFirstName()).append(" ").append(requiredDoctor.getLastName()).append("\n")
+                                                        .append("Vaccine: ").append(requiredVaccine.getVaccineName()).append("\n\n")
+                                                        .append("Patient Details:\n")
+                                                        .append("Name : ").append(firstName).append("\n")
+                                                        .append("Age : ").append(currentAge).append("\n")
+                                                        .append("Gender : ").append(gender).append("\n")
+                                                        .append("Phone : ").append(phone).append("\n")
+                                                        .append("Email : ").append(email).append("\n\n")
+                                                        .append("Hospital Details:\n")
+                                                        .append("Name : ").append(hospital.getHospitalName()).append("\n")
+                                                        .append("Address : ").append(hospital.getAddress().getCity()).append("\n")
+                                                        .append("Contact : ").append(hospital.getAddress().getPhone()).append("\n\n")
+                                                        .append("Please arrive a little early and remember to bring any required documents. If you have any questions or need to reschedule, feel free to contact us.\n\n")
+                                                        .append("We appreciate your trust in '").append(hospital.getHospitalName()).append("' and look forward to providing you with excellent care.\n\n")
+                                                        .append("Best regards,\n")
+                                                        .append(hospital.getHospitalName()+".");
                                                 javaEmailService.sendEmail(email, "Appointment confirmation from ~ [ "+hospital.getHospitalName()+" ]", emailMessage.toString());
                                                 appointmentDetailResponse.setMessage(message);
                                                 return appointmentDetailResponse;
@@ -213,15 +213,14 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                     + "Details: Gender - " + gender + ", Age - " + age + ", Phone - " + phone + ", Email - " + email;
                             appointmentDetailResponse.setMessage(message);
                             StringBuilder emailMessage = new StringBuilder();
-                            emailMessage.append("Subject: Rescheduled Appointment Confirmation - " + hospital.getHospitalName() + "\n\n")
-                            .append("Dear " + firstName + ",\n\n")
+                            emailMessage.append("Dear " + firstName + ",\n\n")
                             .append("We hope this message finds you well. We want to inform you that your vaccination appointment at '"
-                                    + hospital.getHospitalName() + "' has been successfully rescheduled. Here are the updated details:\n\n")
+                                    + hospital.getHospitalName() + "' has been successfully rescheduled. \nHere are the updated details:\n\n")
                             .append("- New Appointment Date: " + newSlotSlotDate + "\n")
                             .append("- New Appointment Time: " + newSlotappointmentTime + "\n")
                             .append("- Doctor: Dr. " + newSlotDoctor.getFirstName() + " " + newSlotDoctor.getLastName() + "\n")
                             .append("- Vaccine: " + newSlotvaccineName + "\n\n")
-                            .append("Updated Patient Details:\n")
+                            .append("Patient Details:\n")
                             .append("- Name: " + firstName + "\n")
                             .append("- Age: " + age + "\n")
                             .append("- Gender: " + gender + "\n")
@@ -234,7 +233,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                             .append("Please arrive a little early, and if you have any concerns or questions about the rescheduled appointment, feel free to contact us.\n\n")
                             .append("We appreciate your flexibility and understanding. Thank you for choosing '" + hospital.getHospitalName() + "'.\n\n")
                             .append("Best regards,\n")
-                            .append(hospital.getHospitalName());
+                            .append(hospital.getHospitalName()+".");
                             javaEmailService.sendEmail(appointmentDetail.getEmail(), "Rescheduled appointment confirmation from ~ [ "+hospital.getHospitalName()+" ]", emailMessage.toString());
                             return appointmentDetailResponse;
                         } else {

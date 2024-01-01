@@ -61,16 +61,19 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
         LocalTime afternoonSlotTime = LocalTime.of(16, 0,30);
         LocalTime eveningSlotTime = LocalTime.of(19, 0,30);
         String slotTime;
-        if(currentTime.isAfter(morningSlotTime)) {
-            slotTime = "09:00 - 12:00";
+        if(currentTime.isAfter(eveningSlotTime)) {
+            slotTime = "17:00 - 19:00";
+            System.out.println("Evening : 17:00 - 19:00");
         } else if(currentTime.isAfter(afternoonSlotTime)) {
             slotTime = "13:00 - 16:00";
+            System.out.println("Afternoon : 13:00 - 16:00");
         } else {
-            slotTime = "17:00 - 19:00";
+            slotTime = "09:00 - 12:00";
+            System.out.println("Morning : 09:00 - 12:00");
         }
         LocalDate currentDate = LocalDate.now();
         Boolean vaccinated = false;
-        Optional<List<AppointmentDetail>> appointmentDetailsByAppointmentDate = appointmentDetailRepo.findByAppointmentDateEqualsAndAppointmentTimeEqualsAndVaccinated(currentDate, slotTime, vaccinated);
+        Optional<List<AppointmentDetail>> appointmentDetailsByAppointmentDate = appointmentDetailRepo.findByAppointmentDateEqualsAndAppointmentTimeEqualsAndVaccinatedEquals(currentDate, slotTime, vaccinated);
         if(appointmentDetailsByAppointmentDate.isPresent() && !appointmentDetailsByAppointmentDate.get().isEmpty()) {
             List<AppointmentDetail> appointmentDetails = appointmentDetailsByAppointmentDate.get();
             List<VaccinationResponse> vaccinationResponses = new ArrayList<>();
@@ -102,9 +105,8 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
                 VaccinationResponse vaccinationResponse = modelMapper.map(vaccinationDetail, VaccinationResponse.class);
                 vaccinationResponses.add(vaccinationResponse);
                 StringBuilder emailMessage = new StringBuilder();
-                emailMessage.append("Subject: Vaccination Confirmation\n\n")
-                .append("Dear Patient,\n\n")
-                .append("We are pleased to confirm that your vaccination appointment has been successfully completed. Here are the details:\n\n")
+                emailMessage.append("Dear Patient,\n\n")
+                .append("We are pleased to confirm that your vaccination appointment has been successfully completed. \nHere are the details:\n\n")
                 .append("Vaccination Date: " + vaccinationDetail.getVaccinatedDate() + "\n")
                 .append("Vaccination Time: " + vaccinationDetail.getVaccinatedTime() + "\n")
                 .append("Vaccine: " + vaccine.getVaccineName() + "\n")
@@ -117,8 +119,8 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
                 .append("Name: " + vaccinationDetail.getHospital().getHospitalName() + "\n\n")
                 .append("Thank you for choosing us for your vaccination. If you have any post-vaccination queries or concerns, feel free to reach out. We appreciate your trust in our services.\n\n")
                 .append("Best regards,\n")
-                .append(vaccinationDetail.getHospital().getHospitalName());
-                javaEmailService.sendEmail(vaccinationDetail.getPatient().getAddress().getEmail(), "Vaccination confirmation mail at ~ [ '"+vaccinationDetail.getHospital().getHospitalName()+"' ]", emailMessage.toString());
+                .append(vaccinationDetail.getHospital().getHospitalName()+".");
+                javaEmailService.sendEmail(vaccinationDetail.getPatient().getAddress().getEmail(), "Vaccination confirmation mail from ~ [ "+vaccinationDetail.getHospital().getHospitalName()+" ]", emailMessage.toString());
             }
             return vaccinationResponses;
         } else {

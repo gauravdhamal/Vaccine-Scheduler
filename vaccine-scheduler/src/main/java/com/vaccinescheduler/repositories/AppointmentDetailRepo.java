@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AppointmentDetailRepo extends JpaRepository<AppointmentDetail, Integer> {
-    Optional<List<AppointmentDetail>> findByAppointmentDateEqualsAndAppointmentTimeEqualsAndVaccinated(LocalDate currentDate, String appointmentTime, Boolean vaccinated);
+    Optional<List<AppointmentDetail>> findByAppointmentDateEqualsAndAppointmentTimeEqualsAndVaccinatedEquals(LocalDate currentDate, String appointmentTime, Boolean vaccinated);
 }

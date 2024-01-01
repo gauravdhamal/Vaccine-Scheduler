@@ -55,6 +55,7 @@ public class GlobalExceptionHandler {
         myErrorDetails.setTimeStamp(LocalDateTime.now());
         myErrorDetails.setMessage(exception.getMessage());
         myErrorDetails.setDescription(webRequest.getDescription(false));
+        exception.printStackTrace();
         return new ResponseEntity<>(myErrorDetails, HttpStatus.BAD_REQUEST);
     }
 }
