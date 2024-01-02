@@ -1,0 +1,20 @@
+Dear ${body.getPatientName()},
+
+Thank you for your payment!
+
+Payment details:
+Amount Paid: ${body.getPaidAmount()}
+Payment Method: ${body.getPaymentMethod()}
+
+Details about you:
+Name: ${body.getPatientName()}
+Gender: ${body.getPatientGender()}
+Age: ${body.getPatientAge()}
+City: ${body.getPatientCity()}
+Phone: ${body.getPatientPhone()}
+Email: ${body.getPatientEmail()}
+
+Thank you for your payment! You're all set for your vaccination appointment. Proceed with confidence!
+
+Best regards,
+${body.getHospitalName()}.

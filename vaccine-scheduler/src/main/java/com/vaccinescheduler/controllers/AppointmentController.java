@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/appointment")
@@ -22,12 +23,12 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentDetailResponse, HttpStatus.OK);
     }
     @PutMapping("/book/{slotId}/{hospitalId}")
-    public ResponseEntity<AppointmentDetailResponse> bookAppointment(@PathVariable(value = "slotId") Integer slotId,@PathVariable(value = "hospitalId") Integer hospitalId,@Valid @RequestBody AppointmentDetailRequest appointmentDetailRequest) throws GeneralException {
+    public ResponseEntity<AppointmentDetailResponse> bookAppointment(@PathVariable(value = "slotId") Integer slotId,@PathVariable(value = "hospitalId") Integer hospitalId,@Valid @RequestBody AppointmentDetailRequest appointmentDetailRequest) throws GeneralException, IOException {
         AppointmentDetailResponse appointmentDetailResponse = appointmentDetailService.bookAppointment(slotId, hospitalId, appointmentDetailRequest);
         return new ResponseEntity<>(appointmentDetailResponse, HttpStatus.OK);
     }
     @PutMapping("/reschedule/{newSlotId}/{appointmentId}")
-    public ResponseEntity<AppointmentDetailResponse> rescheduleAppointment(@PathVariable(value = "newSlotId") Integer newSlotId,@PathVariable(value = "appointmentId") Integer appointmentId) throws GeneralException {
+    public ResponseEntity<AppointmentDetailResponse> rescheduleAppointment(@PathVariable(value = "newSlotId") Integer newSlotId,@PathVariable(value = "appointmentId") Integer appointmentId) throws GeneralException, IOException {
         AppointmentDetailResponse appointmentDetailResponse = appointmentDetailService.rescheduleAppointment(newSlotId, appointmentId);
         return new ResponseEntity<>(appointmentDetailResponse, HttpStatus.OK);
     }

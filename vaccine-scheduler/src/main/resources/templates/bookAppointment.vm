@@ -1,0 +1,28 @@
+Dear ${body.getPatientName()},
+
+We're excited to confirm your upcoming vaccination appointment at '${body.getHospitalName()}'.
+
+Here are the details:
+Appointment Date: ${body.getAppointmentDate()}
+Appointment Time: ${body.getAppointmentTime()}
+Doctor: Dr. ${body.getDoctorName()}
+Vaccine: ${body.getVaccineName()}
+
+Patient Details:
+Name: ${body.getPatientName()}
+Age: ${body.getPatientAge()}
+Gender: ${body.getPatientGender()}
+Phone: ${body.getPatientPhone()}
+Email: ${body.getPatientEmail()}
+
+Hospital Details:
+Name: ${body.getHospitalName()}
+Address: ${body.getHospitalCity()}
+Contact: ${body.getHospitalContact()}
+
+Please arrive a little early and remember to bring any required documents. If you have any questions or need to reschedule, feel free to contact us.
+
+We appreciate your trust in '${body.getHospitalName()}' and look forward to providing you with excellent care.
+
+Best regards,
+${body.getHospitalName()}.

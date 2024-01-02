@@ -1,0 +1,28 @@
+Dear ${body.getPatientName()},
+
+We hope this message finds you well. We want to inform you that your vaccination appointment at '${body.getHospitalName()}' has been successfully rescheduled.
+
+Here are the updated details:
+New Appointment Date: ${body.getAppointmentDate()}
+New Appointment Time: ${body.getAppointmentTime()}
+Doctor: Dr. ${body.getDoctorFirstName()} ${body.getDoctorLastName()}
+Vaccine: ${body.getVaccineName()}
+
+Patient Details:
+Name: ${body.getPatientName()}
+Age: ${body.getPatientAge()}
+Gender: ${body.getPatientGender()}
+Phone: ${body.getPatientPhone()}
+Email: ${body.getPatientEmail()}
+
+Hospital Details:
+Name: ${body.getHospitalName()}
+Address: ${body.getHospitalCity()}
+Contact: ${body.getHospitalContact()}
+
+Please arrive a little early, and if you have any concerns or questions about the rescheduled appointment, feel free to contact us.
+
+We appreciate your flexibility and understanding. Thank you for choosing '${body.getHospitalName()}'.
+
+Best regards,
+${body.getHospitalName()}.

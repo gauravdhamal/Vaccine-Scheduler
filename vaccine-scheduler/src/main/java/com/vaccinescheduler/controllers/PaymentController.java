@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/payment")
@@ -16,7 +17,7 @@ public class PaymentController {
     @Autowired
     private PaymentDetailService paymentDetailService;
     @PostMapping("/pay/{appointmentDetailId}")
-    public ResponseEntity<PaymentDetailResponse> createPaymentDetail(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId, @Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
+    public ResponseEntity<PaymentDetailResponse> createPaymentDetail(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId, @Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException, IOException {
         PaymentDetailResponse paymentDetailResponse = paymentDetailService.createPaymentDetail(appointmentDetailId, paymentDetailRequest);
         return new ResponseEntity<>(paymentDetailResponse, HttpStatus.CREATED);
     }
