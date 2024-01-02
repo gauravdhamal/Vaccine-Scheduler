@@ -73,7 +73,8 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
         }
         LocalDate currentDate = LocalDate.now();
         Boolean vaccinated = false;
-        Optional<List<AppointmentDetail>> appointmentDetailsByAppointmentDate = appointmentDetailRepo.findByAppointmentDateEqualsAndAppointmentTimeEqualsAndVaccinatedEquals(currentDate, slotTime, vaccinated);
+//        Optional<List<AppointmentDetail>> appointmentDetailsByAppointmentDate = appointmentDetailRepo.findByAppointmentDateEqualsOrAppointmentDateLessThanAndAppointmentTimeEqualsAndVaccinatedEquals(currentDate, currentDate, slotTime, vaccinated);
+        Optional<List<AppointmentDetail>> appointmentDetailsByAppointmentDate = appointmentDetailRepo.findPastAppointments(currentDate, slotTime, vaccinated);
         if(appointmentDetailsByAppointmentDate.isPresent() && !appointmentDetailsByAppointmentDate.get().isEmpty()) {
             List<AppointmentDetail> appointmentDetails = appointmentDetailsByAppointmentDate.get();
             List<VaccinationResponse> vaccinationResponses = new ArrayList<>();

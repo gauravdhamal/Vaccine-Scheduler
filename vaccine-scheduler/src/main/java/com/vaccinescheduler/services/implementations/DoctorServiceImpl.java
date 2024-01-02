@@ -205,6 +205,7 @@ public class DoctorServiceImpl implements DoctorService {
                     for(Slot slot : slots) {
                         SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
                         slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
+                        slotResponse.setRequiredAgeRange(slot.getVaccine().getMinAge()+" - "+slot.getVaccine().getMaxAge());
                         slotResponses.add(slotResponse);
                     }
                     return slotResponses;

@@ -118,7 +118,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                 if(todayStartedButYetNotEnded) message = message + ". You are having very less time as your slotTime will end soon. Kindly make payment ASAP and take the vaccination.";
                                                 StringBuilder emailMessage = new StringBuilder();
                                                 emailMessage.append("Dear ").append(firstName).append("\n")
-                                                        .append("\n\nWe're excited to confirm your upcoming vaccination appointment at '").append(hospital.getHospitalName()).append("'.\n\nHere are the details:\n")
+                                                        .append("\nWe're excited to confirm your upcoming vaccination appointment at '").append(hospital.getHospitalName()).append("'.\n\nHere are the details:\n")
                                                         .append("Appointment Date: ").append(slotDate).append("\n")
                                                         .append("Appointment Time: ").append(appointmentTime).append("\n")
                                                         .append("Doctor: Dr. ").append(requiredDoctor.getFirstName()).append(" ").append(requiredDoctor.getLastName()).append("\n")

@@ -37,6 +37,7 @@ public class SlotServiceImpl implements SlotService {
             slot = slotRepo.save(slot);
             SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
             slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
+            slotResponse.setRequiredAgeRange(vaccine.getMinAge()+" - "+vaccine.getMaxAge());
             return slotResponse;
         } else {
             throw new GeneralException("Vaccine not found with Id : { "+vaccineId+" }. Enter correct ID.");
@@ -50,6 +51,7 @@ public class SlotServiceImpl implements SlotService {
             Slot slot = slotById.get();
             SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
             slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
+            slotResponse.setRequiredAgeRange(slot.getVaccine().getMinAge()+" - "+slot.getVaccine().getMaxAge());
             return slotResponse;
         } else {
             throw new GeneralException("Slot not fount with Id : "+slotId);
@@ -87,6 +89,7 @@ public class SlotServiceImpl implements SlotService {
             oldSlot = slotRepo.save(oldSlot);
             SlotResponse slotResponse = modelMapper.map(oldSlot, SlotResponse.class);
             slotResponse.setSlotTiming(oldSlot.getStartTime()+" - "+oldSlot.getEndTime());
+            slotResponse.setRequiredAgeRange(oldSlot.getVaccine().getMinAge()+" - "+oldSlot.getVaccine().getMaxAge());
             return slotResponse;
         } else {
             throw new GeneralException("Slot not fount with Id : "+slotId);
@@ -113,6 +116,7 @@ public class SlotServiceImpl implements SlotService {
             for(Slot slot : slots) {
                 SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
                 slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
+                slotResponse.setRequiredAgeRange(slot.getVaccine().getMinAge()+" - "+slot.getVaccine().getMaxAge());
                 slotResponses.add(slotResponse);
             }
             return slotResponses;
@@ -131,6 +135,7 @@ public class SlotServiceImpl implements SlotService {
             for(Slot slot : slotsByVaccineVaccineName) {
                 SlotResponse slotResponse = modelMapper.map(slot, SlotResponse.class);
                 slotResponse.setSlotTiming(slot.getStartTime()+" - "+slot.getEndTime());
+                slotResponse.setRequiredAgeRange(slot.getVaccine().getMinAge()+" - "+slot.getVaccine().getMaxAge());
                 slotResponses.add(slotResponse);
             }
             return slotResponses;
