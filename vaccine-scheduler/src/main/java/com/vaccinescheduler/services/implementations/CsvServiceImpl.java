@@ -1,7 +1,9 @@
 package com.vaccinescheduler.services.implementations;
 
+import com.vaccinescheduler.dtos.other.VaccinationData;
 import com.vaccinescheduler.dtos.request.AppointmentDetailRequest;
 import com.vaccinescheduler.dtos.request.PaymentDetailRequest;
+import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.models.*;
 import com.vaccinescheduler.services.CsvService;
 import org.slf4j.Logger;
@@ -11,6 +13,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import com.opencsv.CSVWriter;
 import org.springframework.stereotype.Service;
 
@@ -95,8 +99,55 @@ public class CsvServiceImpl implements CsvService {
     }
 
     @Override
-    public String vaccinatedDataToCSV() {
-        return null;
+    public String vaccinatedDataToCSV(VaccinationData vaccinationData) throws GeneralException {
+        String formatDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        String filePath = "src/main/resources/csv/vaccinationData_"+formatDate+".csv";
+        File file = new File(filePath);
+        if(!file.exists()) {
+            String csvFileHeaders = "patientId,patientName,patientAadhaarNumber,patientEmail,patientPhone,vaccinationDetailId,vaccinatedDate,vaccinatedTime,vaccineName,vaccineDoseNumber,nextVaccinationDate,hospitalName";
+            String [] headers = csvFileHeaders.split(",");
+            try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file, true))) {
+                csvWriter.writeNext(headers);
+                Integer patientId = vaccinationData.getPatientId();
+                Integer vaccinationDetailId = vaccinationData.getVaccinationDetailId();
+                String patientName = vaccinationData.getPatientName();
+                String patientAadhaarNumber = vaccinationData.getPatientAadhaarNumber();
+                String patientEmail = vaccinationData.getPatientEmail();
+                String patientPhone = vaccinationData.getPatientPhone();
+                LocalDate vaccinatedDate = vaccinationData.getVaccinatedDate();
+                String vaccinatedTime = vaccinationData.getVaccinatedTime();
+                String vaccineName = vaccinationData.getVaccineName();
+                String vaccineDoseNumber = vaccinationData.getVaccineDoseNumber();
+                LocalDate nextVaccinationDate = vaccinationData.getNextVaccinationDate();
+                String hospitalName = vaccinationData.getHospitalName();
+                String[] values = new String[] {String.valueOf(patientId),patientName,patientAadhaarNumber,patientEmail,patientPhone,String.valueOf(vaccinationDetailId),String.valueOf(vaccinatedDate),vaccinatedTime,vaccineName,vaccineDoseNumber,String.valueOf(nextVaccinationDate),hospitalName};
+                csvWriter.writeNext(values);
+                LOGGER.info("File created and Data written to file vaccinationData.csv");
+            } catch (IOException e) {
+                throw new GeneralException(e.getMessage());
+            }
+        } else {
+            try(CSVWriter csvWriter = new CSVWriter(new FileWriter(file, true))) {
+                Integer patientId = vaccinationData.getPatientId();
+                Integer vaccinationDetailId = vaccinationData.getVaccinationDetailId();
+                String patientName = vaccinationData.getPatientName();
+                String patientAadhaarNumber = vaccinationData.getPatientAadhaarNumber();
+                String patientEmail = vaccinationData.getPatientEmail();
+                String patientPhone = vaccinationData.getPatientPhone();
+                LocalDate vaccinatedDate = vaccinationData.getVaccinatedDate();
+                String vaccinatedTime = vaccinationData.getVaccinatedTime();
+                String vaccineName = vaccinationData.getVaccineName();
+                String vaccineDoseNumber = vaccinationData.getVaccineDoseNumber();
+                LocalDate nextVaccinationDate = vaccinationData.getNextVaccinationDate();
+                String hospitalName = vaccinationData.getHospitalName();
+                String[] values = new String[] {String.valueOf(patientId),patientName,patientAadhaarNumber,patientEmail,patientPhone,String.valueOf(vaccinationDetailId),String.valueOf(vaccinatedDate),vaccinatedTime,vaccineName,vaccineDoseNumber,String.valueOf(nextVaccinationDate),hospitalName};
+                csvWriter.writeNext(values);
+                LOGGER.info("File present and Data written to file vaccinationData.csv");
+            } catch (IOException e) {
+                throw new GeneralException(e.getMessage());
+            }
+        }
+        return "Date written to csv file.";
     }
 
     @Override

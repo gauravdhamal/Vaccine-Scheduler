@@ -6,6 +6,7 @@ import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.models.*;
 import com.vaccinescheduler.repositories.AppointmentDetailRepo;
 import com.vaccinescheduler.repositories.VaccinationDetailRepo;
+import com.vaccinescheduler.services.CsvService;
 import com.vaccinescheduler.services.VaccinationDetailService;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
@@ -33,6 +34,8 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
     private JavaEmailService javaEmailService;
     @Autowired
     private ProducerTemplate producerTemplate;
+    @Autowired
+    private CsvService csvService;
     @Override
     public List<VaccinationResponse> getVaccinationDetailsByDateAndSlot(LocalDate date, String slot) throws GeneralException {
         LocalTime slotTime;
@@ -75,7 +78,6 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
         }
         LocalDate currentDate = LocalDate.now();
         Boolean vaccinated = false;
-//        Optional<List<AppointmentDetail>> appointmentDetailsByAppointmentDate = appointmentDetailRepo.findByAppointmentDateEqualsOrAppointmentDateLessThanAndAppointmentTimeEqualsAndVaccinatedEquals(currentDate, currentDate, slotTime, vaccinated);
         Optional<List<AppointmentDetail>> appointmentDetailsByAppointmentDate = appointmentDetailRepo.findPastAppointments(currentDate, slotTime, vaccinated);
         if(appointmentDetailsByAppointmentDate.isPresent() && !appointmentDetailsByAppointmentDate.get().isEmpty()) {
             List<AppointmentDetail> appointmentDetails = appointmentDetailsByAppointmentDate.get();
@@ -113,6 +115,8 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
                 vaccinationResponses.add(vaccinationResponse);
 
                 VaccinationData vaccinationData = new VaccinationData();
+                vaccinationData.setVaccinationDetailId(vaccinationDetail.getVaccinationDetailId());
+                vaccinationData.setPatientId(patient.getPersonId());
                 vaccinationData.setPatientName(patient.getFirstName());
                 vaccinationData.setPatientAadhaarNumber(patient.getAadhaarNumber());
                 vaccinationData.setPatientPhone(patient.getAddress().getPhone());
@@ -127,6 +131,7 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
                 exchange.getIn().setBody(vaccinationData);
                 producerTemplate.send("direct:updateVaccinationRecord", exchange);
 
+                csvService.vaccinatedDataToCSV(vaccinationData);
             }
             return vaccinationResponses;
         } else {
