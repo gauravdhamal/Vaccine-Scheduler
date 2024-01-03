@@ -8,6 +8,7 @@ import com.vaccinescheduler.models.*;
 import com.vaccinescheduler.repositories.*;
 import com.vaccinescheduler.services.AppointmentDetailService;
 import com.vaccinescheduler.services.CsvService;
+import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -127,28 +128,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                         + "We look forward to providing you with excellent service. "
                                                         + "Details: Gender - " + gender + ", Age - " + currentAge + ", Phone - " + phone + ", Email - " + email;
                                                 if(todayStartedButYetNotEnded) message = message + ". You are having very less time as your slotTime will end soon. Kindly make payment ASAP and take the vaccination.";
-//                                                StringBuilder emailMessage = new StringBuilder();
-//                                                emailMessage.append("Dear ").append(firstName).append("\n")
-//                                                        .append("\nWe're excited to confirm your upcoming vaccination appointment at '").append(hospital.getHospitalName()).append("'.\n\nHere are the details:\n")
-//                                                        .append("Appointment Date: ").append(slotDate).append("\n")
-//                                                        .append("Appointment Time: ").append(appointmentTime).append("\n")
-//                                                        .append("Doctor: Dr. ").append(requiredDoctor.getFirstName()).append(" ").append(requiredDoctor.getLastName()).append("\n")
-//                                                        .append("Vaccine: ").append(requiredVaccine.getVaccineName()).append("\n\n")
-//                                                        .append("Patient Details:\n")
-//                                                        .append("Name : ").append(firstName).append("\n")
-//                                                        .append("Age : ").append(currentAge).append("\n")
-//                                                        .append("Gender : ").append(gender).append("\n")
-//                                                        .append("Phone : ").append(phone).append("\n")
-//                                                        .append("Email : ").append(email).append("\n\n")
-//                                                        .append("Hospital Details:\n")
-//                                                        .append("Name : ").append(hospital.getHospitalName()).append("\n")
-//                                                        .append("Address : ").append(hospital.getAddress().getCity()).append("\n")
-//                                                        .append("Contact : ").append(hospital.getAddress().getPhone()).append("\n\n")
-//                                                        .append("Please arrive a little early and remember to bring any required documents. If you have any questions or need to reschedule, feel free to contact us.\n\n")
-//                                                        .append("We appreciate your trust in '").append(hospital.getHospitalName()).append("' and look forward to providing you with excellent care.\n\n")
-//                                                        .append("Best regards,\n")
-//                                                        .append(hospital.getHospitalName()+".");
-//                                                javaEmailService.sendEmail(email, "Appointment confirmation from ~ [ "+hospital.getHospitalName()+" ]", emailMessage.toString());
+
                                                 AppointmentData appointmentData = new AppointmentData();
                                                 appointmentData.setAppointmentDate(slotDate.toString());
                                                 appointmentData.setAppointmentTime(appointmentTime);
@@ -166,8 +146,8 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                 Exchange exchange = new DefaultExchange(new DefaultCamelContext());
                                                 exchange.getIn().setBody(appointmentData);
                                                 producerTemplate.send("direct:sendConfirmationEmail", exchange);
-//                                                csvService.bookingDataToCSV(appointmentDetailRequest, slot, hospital, requiredDoctor, requiredVaccine);
                                                 appointmentDetailResponse.setMessage(message);
+
                                                 return appointmentDetailResponse;
                                             } else {
                                                 throw new GeneralException("You are not allowed to take this vaccine as your age : "+currentAge+" is not in the range of : ( "+minAgeReq+" - "+maxAgeReq+" ).");
@@ -241,30 +221,25 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                             String message = "Dear " + firstName + ", your appointment has been rescheduled. Kindle make payment if not done already."
                                     + "Details: Gender - " + gender + ", Age - " + age + ", Phone - " + phone + ", Email - " + email;
                             appointmentDetailResponse.setMessage(message);
-//                            StringBuilder emailMessage = new StringBuilder();
-//                            emailMessage.append("Dear " + firstName + ",\n\n")
-//                            .append("We hope this message finds you well. We want to inform you that your vaccination appointment at '"
-//                                    + hospital.getHospitalName() + "' has been successfully rescheduled. \nHere are the updated details:\n\n")
-//                            .append("- New Appointment Date: " + newSlotSlotDate + "\n")
-//                            .append("- New Appointment Time: " + newSlotAppointmentTime + "\n")
-//                            .append("- Doctor: Dr. " + newSlotDoctor.getFirstName() + " " + newSlotDoctor.getLastName() + "\n")
-//                            .append("- Vaccine: " + newSlotVaccineName + "\n\n")
-//                            .append("Patient Details:\n")
-//                            .append("- Name: " + firstName + "\n")
-//                            .append("- Age: " + age + "\n")
-//                            .append("- Gender: " + gender + "\n")
-//                            .append("- Phone: " + phone + "\n")
-//                            .append("- Email: " + email + "\n\n")
-//                            .append("Hospital Details:\n")
-//                            .append("- Name: " + hospital.getHospitalName() + "\n")
-//                            .append("- Address: " + hospital.getAddress().getCity() + "\n")
-//                            .append("- Contact: " + hospital.getAddress().getPhone() + "\n\n")
-//                            .append("Please arrive a little early, and if you have any concerns or questions about the rescheduled appointment, feel free to contact us.\n\n")
-//                            .append("We appreciate your flexibility and understanding. Thank you for choosing '" + hospital.getHospitalName() + "'.\n\n")
-//                            .append("Best regards,\n")
-//                            .append(hospital.getHospitalName()+".");
-//                            javaEmailService.sendEmail(appointmentDetail.getEmail(), "Rescheduled appointment confirmation from ~ [ "+hospital.getHospitalName()+" ]", emailMessage.toString());
-                            csvService.reschedulingDataToCSV(appointmentDetail, newSlot, hospital, newSlotDoctor, newSlotVaccineName);
+
+                            AppointmentData appointmentData = new AppointmentData();
+                            appointmentData.setAppointmentDate(newSlotSlotDate.toString());
+                            appointmentData.setAppointmentTime(newSlotAppointmentTime);
+                            appointmentData.setNotified(true);
+                            appointmentData.setDoctorName(newSlotDoctor.getFirstName() + " " + newSlotDoctor.getLastName());
+                            appointmentData.setHospitalCity(hospital.getHospitalName());
+                            appointmentData.setHospitalContact(hospital.getAddress().getPhone());
+                            appointmentData.setHospitalName(hospital.getHospitalName());
+                            appointmentData.setPatientAge(age);
+                            appointmentData.setPatientEmail(email);
+                            appointmentData.setPatientName(firstName);
+                            appointmentData.setPatientGender(gender);
+                            appointmentData.setPatientPhone(phone);
+                            appointmentData.setVaccineName(newSlotVaccineName);
+                            Exchange exchange = new DefaultExchange(new DefaultCamelContext());
+                            exchange.getIn().setBody(appointmentData);
+                            producerTemplate.send("direct:sendRescheduleEmail", exchange);
+
                             return appointmentDetailResponse;
                         } else {
                             throw new GeneralException("Selected slot does not have required vaccine : "+oldSlot.getVaccine().getVaccineName());

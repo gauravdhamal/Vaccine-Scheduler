@@ -1,13 +1,16 @@
 package com.vaccinescheduler.services.implementations;
 
+import com.vaccinescheduler.dtos.other.VaccinationData;
 import com.vaccinescheduler.dtos.response.VaccinationResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
-import com.vaccinescheduler.models.AppointmentDetail;
-import com.vaccinescheduler.models.VaccinationDetail;
-import com.vaccinescheduler.models.Vaccine;
+import com.vaccinescheduler.models.*;
 import com.vaccinescheduler.repositories.AppointmentDetailRepo;
 import com.vaccinescheduler.repositories.VaccinationDetailRepo;
 import com.vaccinescheduler.services.VaccinationDetailService;
+import org.apache.camel.Exchange;
+import org.apache.camel.ProducerTemplate;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.support.DefaultExchange;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,8 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
     private ModelMapper modelMapper;
     @Autowired
     private JavaEmailService javaEmailService;
+    @Autowired
+    private ProducerTemplate producerTemplate;
     @Override
     public List<VaccinationResponse> getVaccinationDetailsByDateAndSlot(LocalDate date, String slot) throws GeneralException {
         LocalTime slotTime;
@@ -63,13 +68,10 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
         String slotTime;
         if(currentTime.isAfter(eveningSlotTime)) {
             slotTime = "17:00 - 19:00";
-            System.out.println("Evening : 17:00 - 19:00");
         } else if(currentTime.isAfter(afternoonSlotTime)) {
             slotTime = "13:00 - 16:00";
-            System.out.println("Afternoon : 13:00 - 16:00");
         } else {
             slotTime = "09:00 - 12:00";
-            System.out.println("Morning : 09:00 - 12:00");
         }
         LocalDate currentDate = LocalDate.now();
         Boolean vaccinated = false;
@@ -84,10 +86,14 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
                 Vaccine vaccine = appointmentDetail.getVaccine();
                 String appointmentTime = appointmentDetail.getAppointmentTime();
                 vaccinationDetail.setVaccine(vaccine);
-                vaccinationDetail.setDoctor(appointmentDetail.getDoctor());
-                vaccinationDetail.setHospital(appointmentDetail.getHospital());
-                vaccinationDetail.setPatient(appointmentDetail.getPatient());
-                vaccinationDetail.setDoseNumber(appointmentDetail.getDoseNumber());
+                Person doctor = appointmentDetail.getDoctor();
+                vaccinationDetail.setDoctor(doctor);
+                Hospital hospital = appointmentDetail.getHospital();
+                vaccinationDetail.setHospital(hospital);
+                Person patient = appointmentDetail.getPatient();
+                vaccinationDetail.setPatient(patient);
+                String doseNumber = appointmentDetail.getDoseNumber();
+                vaccinationDetail.setDoseNumber(doseNumber);
                 vaccinationDetail.setVaccinationStatus(appointmentDetail.getVaccinated());
                 LocalDate appointmentDate = appointmentDetail.getAppointmentDate();
                 vaccinationDetail.setVaccinatedDate(appointmentDate);
@@ -105,23 +111,22 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
                 appointmentDetailRepo.save(appointmentDetail);
                 VaccinationResponse vaccinationResponse = modelMapper.map(vaccinationDetail, VaccinationResponse.class);
                 vaccinationResponses.add(vaccinationResponse);
-                StringBuilder emailMessage = new StringBuilder();
-                emailMessage.append("Dear Patient,\n\n")
-                .append("We are pleased to confirm that your vaccination appointment has been successfully completed. \nHere are the details:\n\n")
-                .append("Vaccination Date: " + vaccinationDetail.getVaccinatedDate() + "\n")
-                .append("Vaccination Time: " + vaccinationDetail.getVaccinatedTime() + "\n")
-                .append("Vaccine: " + vaccine.getVaccineName() + "\n")
-                .append("Dose Number: " + vaccinationDetail.getDoseNumber() + "\n")
-                .append("Next Vaccination Date: " + nextVaccinationDate + "\n\n")
-                .append("Patient Information:\n")
-                .append("Aadhaar Number: " + vaccinationDetail.getPatient().getAadhaarNumber() + "\n")
-                .append("Phone: " + vaccinationDetail.getPatient().getAddress().getPhone() + "\n\n")
-                .append("Hospital Details:\n")
-                .append("Name: " + vaccinationDetail.getHospital().getHospitalName() + "\n\n")
-                .append("Thank you for choosing us for your vaccination. If you have any post-vaccination queries or concerns, feel free to reach out. We appreciate your trust in our services.\n\n")
-                .append("Best regards,\n")
-                .append(vaccinationDetail.getHospital().getHospitalName()+".");
-                javaEmailService.sendEmail(vaccinationDetail.getPatient().getAddress().getEmail(), "Vaccination confirmation mail from ~ [ "+vaccinationDetail.getHospital().getHospitalName()+" ]", emailMessage.toString());
+
+                VaccinationData vaccinationData = new VaccinationData();
+                vaccinationData.setPatientName(patient.getFirstName());
+                vaccinationData.setPatientAadhaarNumber(patient.getAadhaarNumber());
+                vaccinationData.setPatientPhone(patient.getAddress().getPhone());
+                vaccinationData.setPatientEmail(patient.getAddress().getEmail());
+                vaccinationData.setHospitalName(hospital.getHospitalName());
+                vaccinationData.setVaccinatedDate(appointmentDate);
+                vaccinationData.setVaccinatedTime(appointmentTime);
+                vaccinationData.setVaccineName(vaccine.getVaccineName());
+                vaccinationData.setVaccineDoseNumber(doseNumber);
+                vaccinationData.setNextVaccinationDate(nextVaccinationDate);
+                Exchange exchange = new DefaultExchange(new DefaultCamelContext());
+                exchange.getIn().setBody(vaccinationData);
+                producerTemplate.send("direct:updateVaccinationRecord", exchange);
+
             }
             return vaccinationResponses;
         } else {

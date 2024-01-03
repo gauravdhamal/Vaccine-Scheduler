@@ -5,7 +5,7 @@ We hope this message finds you well. We want to inform you that your vaccination
 Here are the updated details:
 New Appointment Date: ${body.getAppointmentDate()}
 New Appointment Time: ${body.getAppointmentTime()}
-Doctor: Dr. ${body.getDoctorFirstName()} ${body.getDoctorLastName()}
+Doctor: Dr. ${body.getDoctorName()}
 Vaccine: ${body.getVaccineName()}
 
 Patient Details:

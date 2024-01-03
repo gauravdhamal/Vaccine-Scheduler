@@ -13,18 +13,8 @@ public class BookAppointmentRoute extends RouteBuilder {
     private final static Logger LOGGER = LoggerFactory.getLogger(BookAppointmentRoute.class);
     @Override
     public void configure() throws Exception {
-        BindyCsvDataFormat bindyCsvDataFormat = new BindyCsvDataFormat(AppointmentData.class);
-
-//        from("quartz://notifyPatientTimer?cron=0+46+18+1/1+*+?+*") // Run every hour
-//                .pollEnrich("file:src/main/resources/csv?fileName=appointmentDetails.csv&noop=true")
-//                .unmarshal(bindyCsvDataFormat)
-//                .split(body())
-//                    .to("direct:sendConfirmationEmail")
-//                .end()
-//                .log("SendConfirmationEmail process done.");
-
         from("direct:sendConfirmationEmail")
-                .log("sendConfirmationEmail route started.")
+                .process(exchange -> LOGGER.info("sendConfirmationEmail route started."))
                 .process(exchange -> {
                     AppointmentData appointmentData = exchange.getIn().getBody(AppointmentData.class);
                     if(!appointmentData.getNotified()) {

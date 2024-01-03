@@ -42,9 +42,9 @@ public class SecurityConfiguration {
             "/payment/pay/{appointmentDetailId}",
             "/person/create",
             "/email/send",
+            "/appointment/reschedule/{newSlotId}/{appointmentId}",
     };
     public static final String[] PATIENT_URIS = {
-            "/appointment/reschedule/{newSlotId}/{appointmentId}",
             "/patient/appointments/{patientId}",
             "/patient/vaccinations/{patientId}",
     };

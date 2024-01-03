@@ -1,0 +1,23 @@
+Dear ${body.getPatientName()},
+
+We are pleased to confirm that your vaccination appointment has been successfully completed.
+
+Here are the details:
+Vaccination Date: ${body.getVaccinatedDate()}
+Vaccination Time: ${body.getVaccinatedTime()}
+Vaccine: ${body.getVaccineName()}
+Dose Number: ${body.getVaccineDoseNumber()}
+Next Vaccination Date: ${body.getNextVaccinationDate()}
+
+Patient Information:
+Name : ${body.getPatientName()}
+Aadhaar Number: ${body.getPatientAadhaarNumber()}
+Phone: ${body.getPatientPhone()}
+
+Hospital Details:
+Name: ${body.getHospitalName()}
+
+Thank you for choosing us for your vaccination. If you have any post-vaccination queries or concerns, feel free to reach out. We appreciate your trust in our services.
+
+Best regards,
+${body.getHospitalName()}.

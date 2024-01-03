@@ -3,26 +3,17 @@ package com.vaccinescheduler.routes;
 import com.vaccinescheduler.dtos.other.PaymentData;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.dataformat.bindy.csv.BindyCsvDataFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class PaymentConfirmationRoute extends RouteBuilder {
     private final static Logger LOGGER = LoggerFactory.getLogger(PaymentConfirmationRoute.class);
     @Override
     public void configure() throws Exception {
-        BindyCsvDataFormat bindyCsvDataFormat = new BindyCsvDataFormat(PaymentData.class);
-
-        from("file:src/main/resources/csv?fileName=paymentDetails.csv&noop=true")
-                .unmarshal(bindyCsvDataFormat)
-                .split(body())
-                    .to("direct:processPaymentNotification")
-                .end()
-                .log("processPaymentNotification process done.");
-
         from("direct:processPaymentNotification")
+                .process(exchange -> LOGGER.info("processPaymentNotification route started."))
                 .process(exchange -> {
                     PaymentData paymentData = exchange.getIn().getBody(PaymentData.class);
                     String patientEmail = paymentData.getPatientEmail();

@@ -3,25 +3,17 @@ package com.vaccinescheduler.routes;
 import com.vaccinescheduler.dtos.other.AppointmentData;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.dataformat.bindy.csv.BindyCsvDataFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-//@Component
+@Component
 public class RescheduleAppointmentRoute extends RouteBuilder {
     private final static Logger LOGGER = LoggerFactory.getLogger(RescheduleAppointmentRoute.class);
     @Override
     public void configure() throws Exception {
-        BindyCsvDataFormat bindyCsvDataFormat = new BindyCsvDataFormat(AppointmentData.class);
-
-        from("file:src/main/resources/csv?fileName=rescheduleDetails.csv&noop=true")
-                .unmarshal(bindyCsvDataFormat)
-                .split(body())
-                    .to("direct:sendRescheduleEmail")
-                .end()
-                .log("SendRescheduleEmail process end.");
-
         from("direct:sendRescheduleEmail")
+                .process(exchange -> LOGGER.info("sendRescheduleEmail route started."))
                 .process(exchange -> {
                     AppointmentData appointmentData = exchange.getIn().getBody(AppointmentData.class);
                     String patientEmail = appointmentData.getPatientEmail();

@@ -1,5 +1,6 @@
 package com.vaccinescheduler.services.implementations;
 
+import com.vaccinescheduler.dtos.other.PaymentData;
 import com.vaccinescheduler.dtos.request.PaymentDetailRequest;
 import com.vaccinescheduler.dtos.response.PaymentDetailResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
@@ -10,6 +11,10 @@ import com.vaccinescheduler.repositories.PaymentDetailRepo;
 import com.vaccinescheduler.repositories.PersonRepo;
 import com.vaccinescheduler.services.CsvService;
 import com.vaccinescheduler.services.PaymentDetailService;
+import org.apache.camel.Exchange;
+import org.apache.camel.ProducerTemplate;
+import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.support.DefaultExchange;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +44,8 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
     private JavaEmailService javaEmailService;
     @Autowired
     private CsvService csvService;
+    @Autowired
+    private ProducerTemplate producerTemplate;
     @Override
     public PaymentDetailResponse createPaymentDetail(Integer appointmentDetailId, PaymentDetailRequest paymentDetailRequest) throws GeneralException, IOException {
         Optional<AppointmentDetail> appointmentDetailById = appointmentDetailRepo.findById(appointmentDetailId);
@@ -92,24 +99,22 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
                     hospital.getPaymentDetails().add(paymentDetail);
                     hospitalRepo.save(hospital);
                     PaymentDetailResponse paymentDetailResponse = modelMapper.map(paymentDetail, PaymentDetailResponse.class);
-//                    StringBuilder message = new StringBuilder("Dear ");
-//                    message.append(patient.getFirstName()).append(",\n\n")
-//                            .append("Thank you for your payment!\n\n")
-//                            .append("Payment details:\n")
-//                            .append("Amount Paid: ").append(paidAmount).append("\n")
-//                            .append("Payment Method: ").append(paymentMethod).append("\n\n")
-//                            .append("Details about you:\n")
-//                            .append("Name: ").append(patient.getFirstName()).append(" ").append(patient.getLastName()).append("\n")
-//                            .append("Gender: ").append(patient.getGender()).append("\n")
-//                            .append("Age: ").append(patient.getAge()).append("\n")
-//                            .append("City: ").append(patient.getAddress().getCity()).append("\n")
-//                            .append("Phone: ").append(patient.getAddress().getPhone()).append("\n")
-//                            .append("Email: ").append(patient.getAddress().getEmail()).append("\n\n")
-//                            .append("Thank you for your payment! You're all set for your vaccination appointment. Proceed with confidence!\n\n")
-//                            .append("Best regards,\n")
-//                            .append(hospital.getHospitalName()+".");
-//                    javaEmailService.sendEmail(patient.getAddress().getEmail(), "Payment confirmation mail from ~ [ "+hospital.getHospitalName()+" ]", message.toString());
-                    csvService.paymentDataToCSV(paymentDetailRequest, patient, hospital);
+
+                    PaymentData paymentData = new PaymentData();
+                    paymentData.setPaymentMethod(paymentMethod);
+                    paymentData.setNotified(true);
+                    paymentData.setHospitalName(hospital.getHospitalName());
+                    paymentData.setPaidAmount(paidAmount);
+                    paymentData.setPatientCity(patient.getAddress().getCity());
+                    paymentData.setPatientEmail(patient.getAddress().getEmail());
+                    paymentData.setPatientAge(patient.getAge());
+                    paymentData.setPatientName(patient.getFirstName());
+                    paymentData.setPatientPhone(patient.getAddress().getPhone());
+                    paymentData.setPatientGender(patient.getGender());
+                    Exchange exchange = new DefaultExchange(new DefaultCamelContext());
+                    exchange.getIn().setBody(paymentData);
+                    producerTemplate.send("direct:processPaymentNotification", exchange);
+
                     return paymentDetailResponse;
                 } else {
                     throw new GeneralException("You need to pay the amount : { "+requiredAmount+" }. You entered : { "+paidAmount+" }. Please enter proper amount.");
