@@ -113,7 +113,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
                     paymentData.setPatientGender(patient.getGender());
                     Exchange exchange = new DefaultExchange(new DefaultCamelContext());
                     exchange.getIn().setBody(paymentData);
-                    producerTemplate.send("direct:processPaymentNotification", exchange);
+                    producerTemplate.send("seda:processPaymentNotification", exchange);
 
                     return paymentDetailResponse;
                 } else {

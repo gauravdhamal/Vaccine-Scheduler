@@ -145,7 +145,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                 appointmentData.setVaccineName(requiredVaccine.getVaccineName());
                                                 Exchange exchange = new DefaultExchange(new DefaultCamelContext());
                                                 exchange.getIn().setBody(appointmentData);
-                                                producerTemplate.send("direct:sendConfirmationEmail", exchange);
+                                                producerTemplate.send("seda:sendConfirmationEmail", exchange);
                                                 appointmentDetailResponse.setMessage(message);
 
                                                 return appointmentDetailResponse;
@@ -238,7 +238,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                             appointmentData.setVaccineName(newSlotVaccineName);
                             Exchange exchange = new DefaultExchange(new DefaultCamelContext());
                             exchange.getIn().setBody(appointmentData);
-                            producerTemplate.send("direct:sendRescheduleEmail", exchange);
+                            producerTemplate.send("seda:sendRescheduleEmail", exchange);
 
                             return appointmentDetailResponse;
                         } else {

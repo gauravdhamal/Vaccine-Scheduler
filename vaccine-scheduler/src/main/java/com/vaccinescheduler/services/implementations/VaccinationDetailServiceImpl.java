@@ -129,7 +129,7 @@ public class VaccinationDetailServiceImpl implements VaccinationDetailService {
                 vaccinationData.setNextVaccinationDate(nextVaccinationDate);
                 Exchange exchange = new DefaultExchange(new DefaultCamelContext());
                 exchange.getIn().setBody(vaccinationData);
-                producerTemplate.send("direct:updateVaccinationRecord", exchange);
+                producerTemplate.send("seda:updateVaccinationRecord", exchange);
 
                 csvService.vaccinatedDataToCSV(vaccinationData);
             }
