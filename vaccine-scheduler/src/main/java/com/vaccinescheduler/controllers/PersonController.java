@@ -37,7 +37,7 @@ public class PersonController {
         return new ResponseEntity<>(personByUsername, HttpStatus.OK);
     }
     @GetMapping("/byAadhaarNumber/{aadhaarNumber}")
-    public ResponseEntity<PersonResponse> getPersonAadhaarNumber(@PathVariable(value = "aadhaarNumber") String aadhaarNumber) throws GeneralException {
+    public ResponseEntity<PersonResponse> getPersonByAadhaarNumber(@PathVariable(value = "aadhaarNumber") String aadhaarNumber) throws GeneralException {
         PersonResponse personAadhaarNumber = personService.getPersonAadhaarNumber(aadhaarNumber);
         return new ResponseEntity<>(personAadhaarNumber, HttpStatus.OK);
     }

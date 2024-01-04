@@ -42,7 +42,7 @@ public class DoctorController {
         return new ResponseEntity<>(patientsFromAppointmentsByDoctorId, HttpStatus.OK);
     }
     @GetMapping("/getAppointmentDetailsByDoctorId/{doctorId}")
-    public ResponseEntity<List<AppointmentResponse>> getAppointmentDetailsByDoctorId(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByDoctorId(@PathVariable(value = "doctorId") Integer doctorId) throws GeneralException {
         List<AppointmentResponse> appointmentDetailsByDoctorId = doctorService.getAppointmentDetailsByDoctorId(doctorId);
         return new ResponseEntity<>(appointmentDetailsByDoctorId, HttpStatus.OK);
     }

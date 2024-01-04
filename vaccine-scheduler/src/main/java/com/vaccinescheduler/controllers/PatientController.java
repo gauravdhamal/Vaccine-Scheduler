@@ -21,7 +21,7 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
     @GetMapping("/appointments/{patientId}")
-    public ResponseEntity<List<AppointmentResponse>> getAppointments(@PathVariable(value = "patientId") Integer patientId) throws GeneralException {
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByPatientId(@PathVariable(value = "patientId") Integer patientId) throws GeneralException {
         List<AppointmentResponse> appointments = patientService.getAppointments(patientId);
         return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
@@ -31,7 +31,7 @@ public class PatientController {
         return new ResponseEntity<>(allPatients, HttpStatus.OK);
     }
     @GetMapping("/vaccinations/{patientId}")
-    public ResponseEntity<List<VaccinationResponse>> getVaccinationDetails(@PathVariable(value = "patientId") Integer patientId) throws GeneralException {
+    public ResponseEntity<List<VaccinationResponse>> getVaccinationsByPatientId(@PathVariable(value = "patientId") Integer patientId) throws GeneralException {
         List<VaccinationResponse> vaccinationDetails = patientService.getVaccinationDetails(patientId);
         return new ResponseEntity<>(vaccinationDetails, HttpStatus.OK);
     }

@@ -17,22 +17,22 @@ public class PaymentController {
     @Autowired
     private PaymentDetailService paymentDetailService;
     @PostMapping("/pay/{appointmentDetailId}")
-    public ResponseEntity<PaymentDetailResponse> createPaymentDetail(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId, @Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException, IOException {
+    public ResponseEntity<PaymentDetailResponse> makePayment(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId, @Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException, IOException {
         PaymentDetailResponse paymentDetailResponse = paymentDetailService.createPaymentDetail(appointmentDetailId, paymentDetailRequest);
         return new ResponseEntity<>(paymentDetailResponse, HttpStatus.CREATED);
     }
     @PutMapping("/update/{paymentDetailId}")
-    public ResponseEntity<PaymentDetailResponse> updatePaymentDetail(@PathVariable(value = "paymentDetailId") Integer paymentDetailId,@Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
+    public ResponseEntity<PaymentDetailResponse> updatePayment(@PathVariable(value = "paymentDetailId") Integer paymentDetailId,@Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {
         PaymentDetailResponse paymentDetailResponse = paymentDetailService.updatePaymentDetail(paymentDetailId, paymentDetailRequest);
         return new ResponseEntity<>(paymentDetailResponse, HttpStatus.OK);
     }
     @GetMapping("/get/{paymentDetailId}")
-    public ResponseEntity<PaymentDetailResponse> getPaymentDetail(@PathVariable(value = "paymentDetailId") Integer paymentDetailId) throws GeneralException {
+    public ResponseEntity<PaymentDetailResponse> getPayment(@PathVariable(value = "paymentDetailId") Integer paymentDetailId) throws GeneralException {
         PaymentDetailResponse paymentDetailResponse = paymentDetailService.getPaymentDetail(paymentDetailId);
         return new ResponseEntity<>(paymentDetailResponse, HttpStatus.OK);
     }
     @DeleteMapping("/delete/{paymentDetailId}")
-    public ResponseEntity<Boolean> deletePaymentDetail(@PathVariable(value = "paymentDetailId") Integer paymentDetailId) throws GeneralException {
+    public ResponseEntity<Boolean> deletePayment(@PathVariable(value = "paymentDetailId") Integer paymentDetailId) throws GeneralException {
         Boolean deleted = paymentDetailService.deletePaymentDetail(paymentDetailId);
         return new ResponseEntity<>(deleted, HttpStatus.NO_CONTENT);
     }

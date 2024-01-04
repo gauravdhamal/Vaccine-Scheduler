@@ -18,7 +18,7 @@ public class AppointmentController {
     @Autowired
     private AppointmentDetailService appointmentDetailService;
     @GetMapping("/get/{appointmentDetailId}")
-    public ResponseEntity<AppointmentDetailResponse> getAppointmentDetail(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId) throws GeneralException {
+    public ResponseEntity<AppointmentDetailResponse> getAppointment(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId) throws GeneralException {
         AppointmentDetailResponse appointmentDetailResponse = appointmentDetailService.getAppointmentDetail(appointmentDetailId);
         return new ResponseEntity<>(appointmentDetailResponse, HttpStatus.OK);
     }

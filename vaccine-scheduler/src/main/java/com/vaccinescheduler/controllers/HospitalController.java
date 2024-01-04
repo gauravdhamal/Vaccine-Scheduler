@@ -46,12 +46,12 @@ public class HospitalController {
         return new ResponseEntity<>(added, HttpStatus.OK);
     }
     @GetMapping("/allPayments/{hospitalId}")
-    public ResponseEntity<List<PaymentDetailResponse>> getAllPayments(@PathVariable(value = "hospitalId") Integer hospitalId) throws GeneralException {
+    public ResponseEntity<List<PaymentDetailResponse>> getAllPaymentsByHospitalId(@PathVariable(value = "hospitalId") Integer hospitalId) throws GeneralException {
         List<PaymentDetailResponse> allPayments = hospitalService.getAllPayments(hospitalId);
         return new ResponseEntity<>(allPayments, HttpStatus.OK);
     }
     @GetMapping("/getAllAppointments/{hospitalId}")
-    public ResponseEntity<List<AppointmentResponse>> getAllAppointments(@PathVariable(value = "hospitalId") Integer hospitalId) throws GeneralException {
+    public ResponseEntity<List<AppointmentResponse>> getAllAppointmentsByHospitalId(@PathVariable(value = "hospitalId") Integer hospitalId) throws GeneralException {
         List<AppointmentResponse> allAppointments = hospitalService.getAllAppointments(hospitalId);
         return new ResponseEntity<>(allAppointments, HttpStatus.OK);
     }
