@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <title>Vaccine Scheduler</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .welcome-message {
+        text-align: center;
+        padding: 20px;
+        background-color: #f2f2f2;
+      }
+
+      .options-container {
+        text-align: center;
+        margin-top: 80px;
+        padding: 20px;
+      }
+
+      .options-container a {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        text-align: center;
+        display: inline-block;
+        padding: 20px;
+      }
+
+      .options-container .big-option {
+        background-color: #007bff;
+        width: 500px; /* Adjust as needed */
+        border-radius: 100px;
+      }
+
+      .options-container .small-options {
+        display: flex;
+        justify-content: center;
+      }
+
+      .options-container .small-option {
+        background-color: #007bff;
+        width: 220px; /* Adjust as needed */
+        margin: 20px 10px;
+        border-radius: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <div class="welcome-message">
+      <h2>Welcome to the Vaccine Scheduler App</h2>
+    </div>
+
+    <div class="options-container">
+      <a href="/html/book.html" class="big-option">Book</a>
+      <div class="small-options">
+        <a href="/html/reschedule.html" class="small-option">Reschedule</a>
+        <a href="/html/payment.html" class="small-option">Payment</a>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script src="/scripts/index.js" type="module"></script>
