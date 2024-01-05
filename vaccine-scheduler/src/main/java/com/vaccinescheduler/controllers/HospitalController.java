@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/hospital")
 public class HospitalController {
     @Autowired

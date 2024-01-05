@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import javax.validation.Valid;
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/person")
 public class PersonController {
     @Autowired

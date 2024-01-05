@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/payment")
 public class PaymentController {
     @Autowired
