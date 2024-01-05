@@ -24,4 +24,5 @@ public class SlotResponse {
     private Double vaccineOriginalPrice;
     private String vaccineDiscount;
     private String requiredAgeRange;
+    private Integer doctorHospitalHospitalId;
 }
