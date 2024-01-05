@@ -4,13 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/book.css" />
     <title>book-appointment</title>
   </head>
   <body>
     <div id="navbar"></div>
 
     <h1>Welcome to booking page.</h1>
+
+    <form id="availabilityForm" class="container">
+      <label for="vaccineName">Enter Vaccine Name:</label>
+      <input
+        type="text"
+        id="vaccineName"
+        placeholder="Enter vaccine name"
+        required
+      />
+      <button type="submit">Check Availability</button>
+    </form>
+
+    <div id="slotsContainer" class="container"></div>
   </body>
 </html>
 
-<script type="module" src="/scripts/book.js"></script>
+<script src="/scripts/book.js" type="module"></script>
