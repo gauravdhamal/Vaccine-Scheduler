@@ -4,13 +4,91 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/payment.css" />
     <title>make-payment</title>
   </head>
   <body>
     <div id="navbar"></div>
 
-    <h1>Welcome to payment page.</h1>
+    <div class="welcome-message">
+      <h2>Payment Page</h2>
+    </div>
+
+    <form id="paymentForm" class="container">
+      <label for="appointmentId">Appointment ID:</label>
+      <input
+        type="text"
+        id="appointmentId"
+        placeholder="Enter Appointment ID"
+        required
+      />
+      <br />
+
+      <label for="aadhaarNumber">Aadhaar Number:</label>
+      <input
+        type="text"
+        id="aadhaarNumber"
+        placeholder="Enter Aadhaar Number"
+        required
+      />
+      <br />
+
+      <label for="city">City:</label>
+      <input type="text" id="city" placeholder="Enter City" required />
+      <br />
+
+      <label for="email">Email:</label>
+      <input type="text" id="email" placeholder="Enter Email" required />
+      <br />
+
+      <label for="phone">Phone:</label>
+      <input type="text" id="phone" placeholder="Enter Phone" required />
+      <br />
+
+      <label for="amount">Amount:</label>
+      <input type="text" id="amount" placeholder="Enter Amount" required />
+      <br />
+
+      <label for="dateOfBirth">Date of Birth:</label>
+      <input
+        type="text"
+        id="dateOfBirth"
+        placeholder="Enter Date of Birth"
+        required
+      />
+      <br />
+
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" placeholder="Enter Last Name" required />
+      <br />
+
+      <label for="password">Password:</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter Password"
+        required
+      />
+      <br />
+
+      <label for="paymentMethod">Payment Method:</label>
+      <select id="paymentMethod" required>
+        <option value="cash">Cash</option>
+        <option value="card">Card</option>
+      </select>
+      <br />
+
+      <label for="username">Username:</label>
+      <input type="text" id="username" placeholder="Enter Username" required />
+      <br />
+
+      <input id="submitInput" type="submit" value="Make Payment" />
+    </form>
+
+    <div id="paymentResult" class="container">
+      <!-- Display result dynamically here -->
+    </div>
+
+    <script type="module" src="/scripts/payment.js"></script>
   </body>
 </html>
-
-<script type="module" src="/scripts/payment.js"></script>

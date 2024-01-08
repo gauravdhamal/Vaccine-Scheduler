@@ -4,16 +4,48 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles/navbar.css" />
-    <link rel="stylesheet" href="/styles/index.css" />
-    <title>reschedule-appointment</title>
+    <link rel="stylesheet" href="/styles/rechedule.css" />
+    <title>Reschedule Appointment</title>
   </head>
   <body>
     <div id="navbar"></div>
 
     <div class="welcome-message">
-      <h2>Rescheduling page</h2>
+      <h2>Reschedule Appointment</h2>
     </div>
+
+    <form id="rescheduleForm" class="container">
+      <div>
+        <label for="appointmentId">Appointment ID:</label>
+        <input
+          type="text"
+          id="appointmentId"
+          placeholder="Enter Appointment ID"
+          required
+        />
+      </div>
+      <br />
+
+      <div>
+        <label for="newSlotId">New Slot ID:</label>
+        <input
+          type="text"
+          id="newSlotId"
+          placeholder="Enter New Slot ID"
+          required
+        />
+      </div>
+      <br />
+
+      <div>
+        <button type="submit">Reschedule</button>
+      </div>
+    </form>
+
+    <div id="rescheduleResult" class="container">
+      <!-- Display result dynamically here -->
+    </div>
+
+    <script src="/scripts/reschedule.js" type="module"></script>
   </body>
 </html>
-
-<script type="module" src="/scripts/reschedule.js"></script>

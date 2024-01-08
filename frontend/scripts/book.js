@@ -27,7 +27,7 @@ function displaySlots(slots) {
   slotsBody.innerHTML = ""; // Clear previous content
   if (slots.length === undefined || slots.length === 0) {
     slotsBody.innerHTML =
-      "<tr><td colspan='6'>No slots available for the given vaccine.</td></tr>";
+      "<tr><td colspan='7'>No slots available for the given vaccine.</td></tr>";
     return;
   }
 
@@ -57,7 +57,7 @@ function displaySlots(slots) {
 
     const bookAppointmentButtonCell = row.insertCell();
     const bookAppointmentButton = document.createElement("button");
-    bookAppointmentButton.textContent = "View";
+    bookAppointmentButton.textContent = "View form";
     bookAppointmentButton.addEventListener("click", () =>
       showBookAppointmentForm(slot)
     );
