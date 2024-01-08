@@ -52,8 +52,8 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
             AppointmentDetail appointmentDetail = appointmentDetailById.get();
             AppointmentDetailResponse appointmentDetailResponse = modelMapper.map(appointmentDetail, AppointmentDetailResponse.class);
             String message = "Dear " + appointmentDetail.getFirstName() + ", your appointment has been booked. "
-                    + "We look forward to providing you with excellent service. "
-                    + "Details: Gender - " + appointmentDetail.getGender() + ", Age - " + appointmentDetail.getAge() + ", Phone - " + appointmentDetail.getPhone() + ", Email - " + appointmentDetail.getEmail();
+                    + "\nWe look forward to providing you with excellent service. "
+                    + "\nDetails: \nGender - " + appointmentDetail.getGender() + ", \nAge - " + appointmentDetail.getAge() + ", \nPhone - " + appointmentDetail.getPhone() + ", \nEmail - " + appointmentDetail.getEmail();
             appointmentDetailResponse.setMessage(message);
             return appointmentDetailResponse;
         } else {

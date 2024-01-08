@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
         myErrorDetails.setTimeStamp(LocalDateTime.now());
         myErrorDetails.setMessage(generalException.getMessage());
         myErrorDetails.setDescription(webRequest.getDescription(false));
+        generalException.printStackTrace();
         return new ResponseEntity<MyErrorDetails>(myErrorDetails, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
