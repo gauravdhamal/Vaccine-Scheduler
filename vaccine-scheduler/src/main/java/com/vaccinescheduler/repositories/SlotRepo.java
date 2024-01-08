@@ -14,7 +14,7 @@ public interface SlotRepo extends JpaRepository<Slot, Integer> {
             "FROM slot s LEFT JOIN vaccine v " +
             "ON s.vaccine_vaccine_id = v.vaccine_id " +
             "WHERE v.vaccine_name = :vaccineName " +
-            "AND " +
+            "AND s.available_slots != 0 AND" +
             "((s.slot_date = :currentDateEqual AND s.start_time > :currentTime " +
             "OR s.slot_date = :currentDateEqual AND s.start_time <= :currentTime AND s.end_time > :currentTime) " +
             "OR s.slot_date > :currentDate)",

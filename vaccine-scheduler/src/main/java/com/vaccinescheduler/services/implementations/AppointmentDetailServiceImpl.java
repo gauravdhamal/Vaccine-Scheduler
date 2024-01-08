@@ -126,7 +126,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                 String email = appointmentDetailRequest.getEmail();
                                                 String message = "Dear " + firstName + ", your appointment has been booked. "
                                                         + "We look forward to providing you with excellent service. "
-                                                        + "Details: Gender - " + gender + ", Age - " + currentAge + ", Phone - " + phone + ", Email - " + email;
+                                                        + "Details: Gender - " + gender + ", Age - " + currentAge + ", Phone - " + phone + ", Email - " + email + "\n\nPlease note appointmentId for future reference : "+appointmentDetail.getAppointmentDetailId();
                                                 if(todayStartedButYetNotEnded) message = message + ". You are having very less time as your slotTime will end soon. Kindly make payment ASAP and take the vaccination.";
 
                                                 AppointmentData appointmentData = new AppointmentData();
