@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/history.css" />
+    <title>history</title>
+  </head>
+  <body>
+    <div id="navbar"></div>
+
+    <div class="welcome-message">
+      <h2>Enter patientId</h2>
+    </div>
+
+    <!-- {
+    "appointmentDetailId": 31,
+    "appointmentDate": "2024-01-01",
+    "appointmentTime": "17:00 - 19:00",
+    "createdAt": "2024-01-09T14:44:53.433493",
+    "doseNumber": "first",
+    "doctorId": 4,
+    "doctorFirstName": "Hemant",
+    "doctorSpecialization": "vaccinator",
+    "vaccineId": 6,
+    "vaccineName": "BCG",
+    "patientId": 32,
+    "patientFirstName": "Gaurav",
+    "patientUsername": "gdhamal",
+    "patientAadhaarNumber": "780603273810",
+    "paymentDetailPaymentId": 33,
+    "paymentDetailTransactionStatus": "success",
+    "paymentDetailAmount": 900
+  } -->
+
+    <!-- {
+    "vaccinationDetailId": 34,
+    "vaccinatedDate": "2024-01-01",
+    "vaccinatedTime": "19:00:00",
+    "vaccinationStatus": true,
+    "doseNumber": "first",
+    "nextVaccinationDate": "2024-03-31",
+    "vaccineName": "BCG",
+    "patientAadhaarNumber": "780603273810",
+    "patientAddressPhone": "8623892486",
+    "hospitalName": "Noble Hospital"
+  } -->
+
+    <form id="availabilityForm" class="container input-container">
+      <label for="patientId">Enter PatientId : </label>
+      <input
+        type="number"
+        min="1"
+        name="patientId"
+        placeholder="Enter your ID"
+        required
+      />
+      <input type="submit" id="getAppointmentsBtn" value="Get Appointments" />
+      <input
+        type="submit"
+        id="getVaccinationDetailsBtn"
+        value="Get Vaccination Details"
+      />
+    </form>
+
+    <table class="container">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Dose</th>
+          <th>Vaccine</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </body>
+</html>
+
+<script type="module" src="/scripts/history.js"></script>

@@ -45,8 +45,7 @@ async function rescheduleAppointment(appointmentId, newSlotId) {
       }
     }
   } catch (error) {
-    console.error("Error:", error);
-    displayRescheduleError("An unexpected error occurred.");
+    displayRescheduleError(`An unexpected error occurred. ${error.message}`);
   }
 }
 

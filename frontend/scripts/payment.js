@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         // Display success message
         displayPaymentDetails(result);
+        window.alert(`Payment success. ID : ${result.paymentId}`);
       } else {
         if (result.message === "Validation failed.") {
           window.alert(`Description : ${result.description}`);

@@ -42,7 +42,17 @@ let authenticate = (credentials) => {
       window.alert(`Login success...! \nWelcome: ${response.username}`);
       const loggedInUserUsername = response.username;
       const jwtToken = response.jwt;
-      setCookie("jwtToken", jwtToken, 1, loggedInUserUsername); // The third parameter (1) is the number of days until the cookie expires
+      const expirationDateStr = response.expirationDate;
+      const expirationDate = new Date(expirationDateStr);
+      const expirationDateUTCStr = expirationDate.toUTCString();
+      const isExpired = response.isExpired;
+      setCookie(
+        "jwtToken",
+        jwtToken,
+        expirationDateUTCStr,
+        isExpired,
+        loggedInUserUsername
+      );
       window.location.href = "/html/index.html";
     })
     .catch((error) => {
@@ -63,11 +73,19 @@ let authenticate = (credentials) => {
     });
 };
 
-function setCookie(name, value, days, loggedInUserUsername) {
-  const expirationDate = new Date();
-  expirationDate.setTime(expirationDate.getTime() + days * 24 * 60 * 60 * 1000);
-  const expires = `expires=${expirationDate.toUTCString()}`;
+function setCookie(
+  name,
+  value,
+  expirationDateUTCStr,
+  isExpired,
+  loggedInUserUsername
+) {
+  const expires = `expires=${expirationDateUTCStr}`;
   const loggedInUser = `loggedInUsername=${loggedInUserUsername}`;
-  document.cookie = `${name}=${value}; ${expires}; path=/`;
-  document.cookie = `${loggedInUser}; ${expires};`;
+  const setExpired = `isExpired=${isExpired}`;
+  const expiryDate = `expirationDate=${expirationDateUTCStr}`;
+  document.cookie = `${name}=${value}; path=/`;
+  document.cookie = `${loggedInUser};`;
+  document.cookie = `${setExpired};`;
+  document.cookie = `${expiryDate};`;
 }

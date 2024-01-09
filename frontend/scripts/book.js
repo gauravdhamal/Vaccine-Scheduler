@@ -19,6 +19,7 @@ async function fetchSlots(vaccineName) {
     displaySlots(slots);
   } catch (error) {
     console.error("Error fetching slots:", error);
+    window.alert(`Error : ${error.message}`);
   }
 }
 
@@ -27,7 +28,7 @@ function displaySlots(slots) {
   slotsBody.innerHTML = ""; // Clear previous content
   if (slots.length === undefined || slots.length === 0) {
     slotsBody.innerHTML =
-      "<tr><td colspan='7'>No slots available for the given vaccine.</td></tr>";
+      "<tr><td colspan='8'>No slots available for the given vaccine.</td></tr>";
     return;
   }
 
@@ -40,6 +41,7 @@ function displaySlots(slots) {
       "slotDate",
       "slotTiming",
       "doctorHospitalHospitalName",
+      "vaccineName",
       "availableSlots",
     ];
     staticColumns.forEach((column) => {
@@ -57,7 +59,7 @@ function displaySlots(slots) {
 
     const bookAppointmentButtonCell = row.insertCell();
     const bookAppointmentButton = document.createElement("button");
-    bookAppointmentButton.textContent = "View form";
+    bookAppointmentButton.textContent = "Book";
     bookAppointmentButton.addEventListener("click", () =>
       showBookAppointmentForm(slot)
     );
@@ -184,7 +186,7 @@ function showBookAppointmentForm(slot) {
   });
 
   const bookBtn = document.createElement("button");
-  bookBtn.textContent = "Book";
+  bookBtn.textContent = "Confirm";
   bookBtn.style.backgroundColor = "green";
   bookBtn.addEventListener("click", () => {
     // Call the bookAppointment function with form data
@@ -196,7 +198,7 @@ function showBookAppointmentForm(slot) {
   bookAppointmentFormContainer.appendChild(bookBtn);
 
   const closeBtn = document.createElement("button");
-  closeBtn.textContent = "Close";
+  closeBtn.textContent = "Cancel";
   closeBtn.style.backgroundColor = "red";
   closeBtn.addEventListener("click", () => {
     overlay.remove();
@@ -242,6 +244,5 @@ async function bookAppointment(slotId, hospitalId, formData) {
     }
   } catch (error) {
     console.error("Error:", error);
-    window.alert("An unexpected error occurred.");
   }
 }
