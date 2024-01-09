@@ -6,6 +6,7 @@ import com.vaccinescheduler.exceptions.GeneralException;
 import com.vaccinescheduler.jwt.util.JwtUtil;
 import com.vaccinescheduler.services.implementations.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -41,11 +43,12 @@ public class AuthenticationController {
         }
         final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         String token = jwtUtil.generateToken(userDetails);
-        token = "Bearer " + token;
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         authenticationResponse.setUsername(userDetails.getUsername());
         authenticationResponse.setRole(userDetails.getAuthorities().toString());
-        authenticationResponse.setJwt(token);
+        authenticationResponse.setJwt("Bearer "+token);
+        authenticationResponse.setExpirationDate(jwtUtil.extractExpiration(token));
+        authenticationResponse.setIsExpired(jwtUtil.isTokenExpired(token));
         return ResponseEntity.ok(authenticationResponse);
     }
 }

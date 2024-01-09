@@ -22,7 +22,6 @@ public class JwtEntryPointFilter implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         System.out.println("Inside JwtEntryPointFilter implements AuthenticationEntryPoint...");
-
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 

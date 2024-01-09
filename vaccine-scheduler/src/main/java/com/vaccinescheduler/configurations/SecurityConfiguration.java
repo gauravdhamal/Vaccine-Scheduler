@@ -137,6 +137,8 @@ public class SecurityConfiguration {
                 .authenticationEntryPoint(jwtEntryPointFilter)
                 .accessDeniedHandler(jwtAccessDeniedHandler);
 
+        http.cors();
+
         DefaultSecurityFilterChain defaultSecurityFilterChain = http.build();
 
         return defaultSecurityFilterChain;

@@ -14,7 +14,7 @@ City: ${body.getPatientCity()}
 Phone: ${body.getPatientPhone()}
 Email: ${body.getPatientEmail()}
 
-Thank you for your payment! You're all set for your vaccination appointment. Proceed with confidence!
+You may proceed for your vaccination appointment.
 
 Best regards,
 ${body.getHospitalName()}.

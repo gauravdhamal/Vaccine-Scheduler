@@ -1,6 +1,6 @@
 Dear ${body.getPatientName()},
 
-We hope this message finds you well. We want to inform you that your vaccination appointment at '${body.getHospitalName()}' has been successfully rescheduled.
+We want to inform you that your vaccination appointment at '${body.getHospitalName()}' has been successfully rescheduled.
 
 Here are the updated details:
 New Appointment Date: ${body.getAppointmentDate()}
@@ -20,9 +20,12 @@ Name: ${body.getHospitalName()}
 Address: ${body.getHospitalCity()}
 Contact: ${body.getHospitalContact()}
 
-Please arrive a little early, and if you have any concerns or questions about the rescheduled appointment, feel free to contact us.
+Please be on time and remember to bring any one of the following document.
+1. Aadhaar card
+2. PAN card
+3. Driving license
 
-We appreciate your flexibility and understanding. Thank you for choosing '${body.getHospitalName()}'.
+If you have any questions or need to reschedule, feel free to contact us.
 
 Best regards,
 ${body.getHospitalName()}.

@@ -1,8 +1,7 @@
 Dear ${body.getPatientName()},
 
-We're excited to confirm your upcoming vaccination appointment at '${body.getHospitalName()}'.
+Here are the details of your upcoming vaccination appointment at '${body.getHospitalName()}'.
 
-Here are the details:
 Appointment Date: ${body.getAppointmentDate()}
 Appointment Time: ${body.getAppointmentTime()}
 Doctor: Dr. ${body.getDoctorName()}
@@ -20,9 +19,12 @@ Name: ${body.getHospitalName()}
 Address: ${body.getHospitalCity()}
 Contact: ${body.getHospitalContact()}
 
-Please arrive a little early and remember to bring any required documents. If you have any questions or need to reschedule, feel free to contact us.
+Please be on time and remember to bring any one of the following document.
+1. Aadhaar card
+2. PAN card
+3. Driving license
 
-We appreciate your trust in '${body.getHospitalName()}' and look forward to providing you with excellent care.
+If you have any questions or need to reschedule, feel free to contact us.
 
 Best regards,
 ${body.getHospitalName()}.
