@@ -63,10 +63,13 @@ if (jwtToken) {
   console.log("isExpired : ", isExpired);
   console.log("Username : ", loggedInUsername);
 
-  if (isExpired === true) {
+  if (isExpired === true || isExpired === null) {
     window.alert(`Session expired.!!! Please login again.`);
     window.location.href = "/html/login.html";
   } else {
+    const welcomeMessage = document.querySelector(".welcome-message h2");
+    welcomeMessage.innerHTML = `Welcome '${loggedInUsername}'`;
+
     let form = document.getElementById("availabilityForm");
 
     form.addEventListener("submit", (event) => {
@@ -79,71 +82,138 @@ if (jwtToken) {
 
       if (pressedButton.id === "getAppointmentsBtn") {
         console.log("Get Appointments button pressed");
-        getAppointments(patientId);
+        getAppointments();
       } else if (pressedButton.id === "getVaccinationDetailsBtn") {
         console.log("Get Vaccination Details button pressed");
-        getVaccinationDetails(patientId);
+        getVaccinationDetails();
       }
     });
 
     const headers = new Headers();
     headers.append("Authorization", `${jwtToken}`);
 
-    function getAppointments(patientId) {
-      const url = `http://localhost:8888/patient/appointments/${patientId}`;
+    function getAppointments() {
+      const url = `http://localhost:8888/patient/appointments/${loggedInUsername}`;
+      const tableHeader = document.querySelector(".container thead");
       const tableBody = document.querySelector(".container tbody");
 
       fetch(url, {
         method: "GET",
         headers: headers,
       })
-        .then((response) => response.json())
-        .then((data) => {
-          tableBody.innerHTML = "";
-          data.forEach((appointment) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
+        .then(async (response) => {
+          const data = await response.json();
+
+          if (response.ok) {
+            tableHeader.innerHTML = "";
+            const headers = [
+              "Appointment ID",
+              "Aadhaar Number",
+              "Vaccine Name",
+              "Dose",
+              "Appointment Date",
+              "Appointment Time",
+              "Payment Amount",
+              "Payment Status",
+            ];
+            const headRow = document.createElement("tr");
+            headers.forEach((header) => {
+              const th = document.createElement("th");
+              th.innerHTML = header;
+              headRow.appendChild(th);
+            });
+            tableHeader.appendChild(headRow);
+
+            tableBody.innerHTML = "";
+            data.forEach((appointment) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
           <td>${appointment.appointmentDetailId}</td>
+          <td>${appointment.patientAadhaarNumber}</td>
+          <td>${appointment.vaccineName}</td>
+          <td>${appointment.doseNumber}</td>
           <td>${appointment.appointmentDate}</td>
           <td>${appointment.appointmentTime}</td>
-          <td>${appointment.doseNumber}</td>
-          <td>${appointment.vaccineName}</td>
+          <td>${appointment.paymentDetailAmount}</td>
           <td>${appointment.paymentDetailTransactionStatus}</td>
-          <td><button onclick="viewDetails(${appointment.appointmentDetailId}, 'appointments')">View More</button></td>
         `;
-            tableBody.appendChild(row);
-          });
+              tableBody.appendChild(row);
+            });
+          } else {
+            window.alert(`${data.message}`);
+          }
         })
         .catch((error) => console.error("Error:", error));
     }
 
-    function getVaccinationDetails(patientId) {
-      const url = `http://localhost:8888/patient/vaccinations/${patientId}`;
+    function getVaccinationDetails() {
+      const url = `http://localhost:8888/patient/vaccinations/${loggedInUsername}`;
       const tableBody = document.querySelector(".container tbody");
+      const tableHeader = document.querySelector(".container thead");
 
       fetch(url, {
         method: "GET",
         headers: headers,
       })
-        .then((response) => response.json())
-        .then((data) => {
-          tableBody.innerHTML = "";
-          data.forEach((vaccination) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
+        .then(async (response) => {
+          const data = await response.json();
+
+          if (response.ok) {
+            tableHeader.innerHTML = "";
+            const headers = [
+              "Vaccination ID",
+              "Aadhaar Number",
+              "Vaccine Name",
+              "Dose",
+              "Vaccinated Date",
+              "Vaccinated Time",
+              "Vaccination Status",
+              "Next VaccinationDate",
+            ];
+            const headRow = document.createElement("tr");
+            headers.forEach((header) => {
+              const th = document.createElement("th");
+              th.innerHTML = header;
+              headRow.appendChild(th);
+            });
+            tableHeader.appendChild(headRow);
+
+            tableBody.innerHTML = "";
+            data.forEach((vaccination) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
           <td>${vaccination.vaccinationDetailId}</td>
+          <td>${vaccination.patientAadhaarNumber}</td>
+          <td>${vaccination.vaccineName}</td>
+          <td>${vaccination.doseNumber}</td>
           <td>${vaccination.vaccinatedDate}</td>
           <td>${vaccination.vaccinatedTime}</td>
-          <td>${vaccination.doseNumber}</td>
-          <td>${vaccination.vaccineName}</td>
           <td>${vaccination.vaccinationStatus}</td>
-          <td><button onclick="viewDetails(${vaccination.vaccinationDetailId}, 'vaccinations')">View More</button></td>
+          <td>${vaccination.nextVaccinationDate}</td>
         `;
-            tableBody.appendChild(row);
-          });
+              tableBody.appendChild(row);
+            });
+          } else {
+            window.alert(data.message);
+          }
         })
         .catch((error) => console.error("Error:", error));
     }
+
+    const logoutBtn = document.getElementById("logout-button");
+    logoutBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      console.log("Logout button pressed");
+      document.cookie = "jwtToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      document.cookie =
+        "loggedInUsername=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      document.cookie =
+        "expirationDate=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      document.cookie = "isExpired=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+      console.log("Cookie : ", document.cookie.split(";"));
+      window.alert(`Thanks '${loggedInUsername}'. You have been logged out.`);
+      window.location.href = "/html/index.html";
+    });
   }
 } else {
   console.log("JWT Token not found.");

@@ -47,7 +47,6 @@ let authenticate = (credentials) => {
       const expirationDateUTCStr = expirationDate.toUTCString();
       const isExpired = response.isExpired;
       setCookie(
-        "jwtToken",
         jwtToken,
         expirationDateUTCStr,
         isExpired,
@@ -74,17 +73,16 @@ let authenticate = (credentials) => {
 };
 
 function setCookie(
-  name,
   value,
   expirationDateUTCStr,
   isExpired,
   loggedInUserUsername
 ) {
-  const expires = `expires=${expirationDateUTCStr}`;
   const loggedInUser = `loggedInUsername=${loggedInUserUsername}`;
   const setExpired = `isExpired=${isExpired}`;
   const expiryDate = `expirationDate=${expirationDateUTCStr}`;
-  document.cookie = `${name}=${value}; path=/`;
+  const jwt = `jwtToken=${value}`;
+  document.cookie = `${jwt};`;
   document.cookie = `${loggedInUser};`;
   document.cookie = `${setExpired};`;
   document.cookie = `${expiryDate};`;
