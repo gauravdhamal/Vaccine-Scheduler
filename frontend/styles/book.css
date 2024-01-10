@@ -13,11 +13,30 @@ table {
 
 th,
 td {
+  font-size: 16px;
   border: 1px solid #ddd;
   padding: 8px;
-  text-align: left;
+  text-align: center;
   width: auto;
   white-space: nowrap;
+}
+
+/* td:last-child {
+  cursor: pointer;
+  background-color: orange;
+}
+
+td:nth-child(7) {
+  cursor: pointer;
+  background-color: orange;
+} */
+
+td button {
+  width: 70%;
+  height: 100%;
+  border: 1px solid black;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 th {
@@ -36,28 +55,59 @@ th {
   justify-content: center;
 }
 
-.details-container {
-  /* border: 1px solid red; */
+/* .details-container {
   background-color: #fff;
   border-radius: 8px;
-  padding: 10px;
+  padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  max-width: 350px;
+  max-width: 300px;
   width: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+} */
+
+.details-container {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-width: 300px;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .details-container div {
   display: flex;
   align-items: flex-start;
-  padding: 0 40px;
-  margin-bottom: 5px; /* Reduced margin */
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 5px 0px;
+}
+
+.details-container div :nth-child(2) {
+  border: 1px solid black;
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 2px 8px;
 }
 
 .details-container strong {
-  margin-right: 10px; /* Reduced margin */
+  margin-right: 10px;
   font-size: 14px;
 }
 
@@ -68,11 +118,23 @@ th {
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  /* margin: auto; */
-  margin-top: 8px;
-  margin-right: 8px;
+  width: 40%;
+  margin: 10px auto 0px;
 }
 
 .hidden {
   display: none;
+}
+
+.input-container label {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.input-container select {
+  box-sizing: border-box;
+  padding: 5px 8px;
+  font-size: 15px;
+  border-radius: 10px;
+  border: 1px solid black;
 }

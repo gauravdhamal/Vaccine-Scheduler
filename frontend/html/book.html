@@ -15,13 +15,26 @@
     </div>
 
     <form id="availabilityForm" class="container input-container">
-      <label for="vaccineName">Enter Vaccine Name:</label>
+      <!-- <label for="vaccineName">Enter Vaccine Name:</label>
       <input
         type="text"
         id="vaccineName"
         placeholder="Enter vaccine name"
         required
-      />
+      /> -->
+      <label for="vaccineName">Select Vaccine : </label>
+      <select id="vaccineName" required>
+        <option value="">Select Option</option>
+        <option value="BCG">BCG</option>
+        <option value="Covishield">Covishield</option>
+        <option value="Dtap Vaccine">Dtap Vaccine</option>
+        <option value="MMR Vaccine">MMR Vaccine</option>
+        <option value="Hepatitis B Vaccine">Hepatitis B Vaccine</option>
+        <option value="Flu Vaccine for Adults">Flu Vaccine for Adults</option>
+        <option value="Tetanus Booster Shot">Tetanus Booster Shot</option>
+        <option value="Shingles Vaccine">Shingles Vaccine</option>
+      </select>
+
       <button type="submit">Check Availability</button>
     </form>
 
@@ -29,7 +42,7 @@
       <thead>
         <tr>
           <!-- Static column headers -->
-          <th>Slot ID</th>
+          <th>Slot Number</th>
           <th>Slot Date</th>
           <th>Slot Timing</th>
           <th>Hospital Name</th>
@@ -42,8 +55,59 @@
       <tbody id="slotsBody"></tbody>
     </table>
 
-    <div id="bookAppointmentForm" class="hidden">
-      <form id="bookAppointmentFormFields" class="details-container"></form>
+    <div id="hidden" class="hidden overlay">
+      <form id="bookAppointmentForm" class="details-container">
+        <div id="slotIdField"></div>
+        <div>
+          <label for="bookingFor"><strong>Booking For:</strong></label>
+          <select id="bookingFor" required>
+            <option value="">Select Option</option>
+            <option value="self">Self</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="doseNumber"><strong>Dose Number:</strong></label>
+          <select id="doseNumber" required>
+            <option value="">Select Option</option>
+            <option value="first">First</option>
+            <option value="second">Second</option>
+            <option value="third">Third</option>
+            <option value="booster">Booster</option>
+          </select>
+        </div>
+        <div>
+          <label for="gender"><strong>Gender:</strong></label>
+          <select id="gender" required>
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="transgender">Transgender</option>
+          </select>
+        </div>
+        <div>
+          <label for="age"><strong>Age:</strong></label>
+          <input type="text" id="age" placeholder="Enter your age" required />
+        </div>
+        <div>
+          <label for="email"><strong>Email:</strong></label>
+          <input type="text" id="email" required />
+        </div>
+        <div>
+          <label for="firstName"><strong>First Name:</strong></label>
+          <input type="text" id="firstName" required />
+        </div>
+        <div>
+          <label for="phone"><strong>Phone:</strong></label>
+          <input type="text" id="phone" required />
+        </div>
+        <button type="button" id="confirmBtn" style="background-color: green">
+          Confirm
+        </button>
+        <button type="button" id="cancelBtn" style="background-color: red">
+          Cancel
+        </button>
+      </form>
     </div>
 
     <script src="/scripts/book.js" type="module"></script>

@@ -25,7 +25,7 @@ async function fetchSlots(vaccineName) {
 
 function displaySlots(slots) {
   const slotsBody = document.getElementById("slotsBody");
-  slotsBody.innerHTML = ""; // Clear previous content
+  slotsBody.innerHTML = "";
   if (slots.length === undefined || slots.length === 0) {
     slotsBody.innerHTML =
       "<tr><td colspan='8'>No slots available for the given vaccine.</td></tr>";
@@ -35,7 +35,6 @@ function displaySlots(slots) {
   slots.forEach((slot) => {
     const row = document.createElement("tr");
 
-    // Static columns
     const staticColumns = [
       "slotId",
       "slotDate",
@@ -50,7 +49,6 @@ function displaySlots(slots) {
       row.appendChild(cell);
     });
 
-    // Add a button in the last column to show details
     const showDetailsButtonCell = row.insertCell();
     const showDetailsButton = document.createElement("button");
     showDetailsButton.textContent = "Show";
@@ -76,8 +74,24 @@ function showDetails(slot) {
   const detailsContainer = document.createElement("div");
   detailsContainer.classList.add("details-container");
 
-  // Display all data dynamically
-  Object.entries(slot).forEach(([key, value]) => {
+  const keyValuePairs = [
+    ["Slot Number", slot.slotId],
+    ["Slot Date", slot.slotDate],
+    ["Slot Timing", slot.slotTiming],
+    ["Available Slots", slot.availableSlots],
+    // ["Doctor Id", slot.doctorId],
+    ["Doctor Name", `Dr. ${slot.doctorFirstName}`],
+    // ["Doctor Username", slot.doctorUsername],
+    // ["Vaccine Id", slot.vaccineId],
+    ["Vaccine Name", slot.vaccineName],
+    ["Vaccine Original Price", slot.vaccineOriginalPrice],
+    ["Vaccine Discount", slot.vaccineDiscount],
+    ["Required Age Range", slot.requiredAgeRange],
+    // ["Hospital Id", slot.doctorHospitalHospitalId],
+    ["Hospital Name", slot.doctorHospitalHospitalName],
+  ];
+
+  keyValuePairs.forEach(([key, value]) => {
     const detailItem = document.createElement("div");
     detailItem.innerHTML = `<strong>${key}:</strong> ${value}`;
     detailsContainer.appendChild(detailItem);
@@ -96,118 +110,85 @@ function showDetails(slot) {
 }
 
 function showBookAppointmentForm(slot) {
-  const overlay = document.createElement("div");
-  overlay.classList.add("overlay");
+  console.log("slot : ", slot);
+  const hospitalId = slot.doctorHospitalHospitalId;
 
-  const bookAppointmentFormContainer = document.createElement("div");
-  bookAppointmentFormContainer.classList.add("details-container");
-
-  // Display form fields dynamically
-  const formFields = [
-    {
-      label: "Booking For:",
-      inputType: "select",
-      options: ["Self", "Other"],
-      id: "bookingFor",
-    },
-    {
-      label: "Dose Number:",
-      inputType: "select",
-      options: ["First", "Second", "Third", "Booster"],
-      id: "doseNumber",
-    },
-    {
-      label: "Gender:",
-      inputType: "select",
-      options: ["Male", "Female", "Transgender"],
-      id: "gender",
-    },
-    { label: "Age:", inputType: "text", id: "age", required: true },
-    { label: "Email:", inputType: "text", id: "email", required: true },
-    {
-      label: "First Name:",
-      inputType: "text",
-      id: "firstName",
-      required: true,
-    },
-    { label: "Phone:", inputType: "text", id: "phone", required: true },
-  ];
+  const overlay = document.getElementById("hidden");
+  const slotIdField = document.getElementById("slotIdField");
+  const bookingForSelect = document.getElementById("bookingFor");
+  const doseNumberSelect = document.getElementById("doseNumber");
+  const genderSelect = document.getElementById("gender");
+  const ageInput = document.getElementById("age");
+  const emailInput = document.getElementById("email");
+  const firstNameInput = document.getElementById("firstName");
+  const phoneInput = document.getElementById("phone");
+  const confirmBtn = document.getElementById("confirmBtn");
+  const cancelBtn = document.getElementById("cancelBtn");
 
   let slotId = slot.slotId;
-  const slotIdField = document.createElement("div");
-  slotIdField.innerHTML = `<strong>Slot ID:</strong> ${slotId}`;
-  bookAppointmentFormContainer.appendChild(slotIdField);
+  slotIdField.innerHTML = `<strong>Slot Number : </strong> ${slotId}`;
 
-  let hospitalId = slot.doctorHospitalHospitalId;
-  const hospitalIdField = document.createElement("div");
-  hospitalIdField.innerHTML = `<strong>Hospital ID:</strong> ${hospitalId}`;
-  bookAppointmentFormContainer.appendChild(hospitalIdField);
+  const formData = {
+    bookingFor: "",
+    doseNumber: "",
+    gender: "",
+    age: "",
+    email: "",
+    firstName: "",
+    phone: "",
+  };
 
-  const formData = {};
+  const updateFormData = (fieldId, value) => {
+    formData[fieldId] = value;
+  };
 
-  formFields.forEach((field) => {
-    const formItem = document.createElement("div");
-    formItem.innerHTML = `<strong>${field.label}</strong>`;
-
-    if (field.inputType === "select") {
-      const select = document.createElement("select");
-      select.id = field.id;
-      field.options.forEach((option) => {
-        const optionElement = document.createElement("option");
-        optionElement.value = option.toLowerCase();
-        optionElement.textContent = option;
-        select.appendChild(optionElement);
-      });
-      formItem.appendChild(select);
-
-      // Store the initial value in formData object
-      formData[field.id] = field.options[0].toLowerCase();
-
-      // Update formData when the select value changes
-      select.addEventListener("change", (event) => {
-        formData[field.id] = event.target.value;
-      });
-    } else if (field.inputType === "text") {
-      const input = document.createElement("input");
-      input.type = field.inputType;
-      input.id = field.id;
-      formItem.appendChild(input);
-
-      // Store the initial value in formData object
-      formData[field.id] = "";
-
-      // Update formData when the input value changes
-      input.addEventListener("input", (event) => {
-        formData[field.id] = event.target.value;
-      });
-    }
-
-    bookAppointmentFormContainer.appendChild(formItem);
+  // Add event listeners for select elements
+  bookingForSelect.addEventListener("change", (event) => {
+    updateFormData("bookingFor", event.target.value);
   });
 
-  const bookBtn = document.createElement("button");
-  bookBtn.textContent = "Confirm";
-  bookBtn.style.backgroundColor = "green";
-  bookBtn.addEventListener("click", () => {
+  doseNumberSelect.addEventListener("change", (event) => {
+    updateFormData("doseNumber", event.target.value);
+  });
+
+  genderSelect.addEventListener("change", (event) => {
+    updateFormData("gender", event.target.value);
+  });
+
+  // Add event listeners for text inputs
+  ageInput.addEventListener("input", (event) => {
+    updateFormData("age", event.target.value);
+  });
+
+  emailInput.addEventListener("input", (event) => {
+    updateFormData("email", event.target.value);
+  });
+
+  firstNameInput.addEventListener("input", (event) => {
+    updateFormData("firstName", event.target.value);
+  });
+
+  phoneInput.addEventListener("input", (event) => {
+    updateFormData("phone", event.target.value);
+  });
+
+  console.log("FormData : ", formData);
+
+  // Add event listeners for buttons
+  confirmBtn.addEventListener("click", () => {
     // Call the bookAppointment function with form data
     bookAppointment(slotId, hospitalId, formData);
-    // Close the overlay and form container
-    overlay.remove();
-    bookAppointmentFormContainer.remove();
+    // Close the overlay
+    overlay.style.display = "none";
   });
-  bookAppointmentFormContainer.appendChild(bookBtn);
 
-  const closeBtn = document.createElement("button");
-  closeBtn.textContent = "Cancel";
-  closeBtn.style.backgroundColor = "red";
-  closeBtn.addEventListener("click", () => {
-    overlay.remove();
-    bookAppointmentFormContainer.remove();
+  cancelBtn.addEventListener("click", () => {
+    // Close the overlay
+    overlay.style.display = "none";
   });
-  bookAppointmentFormContainer.appendChild(closeBtn);
 
-  overlay.appendChild(bookAppointmentFormContainer);
-  document.body.appendChild(overlay);
+  // Display the overlay
+  overlay.style.display = "block";
 }
 
 async function bookAppointment(slotId, hospitalId, formData) {
