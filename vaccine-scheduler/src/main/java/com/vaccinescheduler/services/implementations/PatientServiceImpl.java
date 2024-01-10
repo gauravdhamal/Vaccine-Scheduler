@@ -25,52 +25,44 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private ModelMapper modelMapper;
     @Override
-    public List<AppointmentResponse> getAppointments(Integer patientId) throws GeneralException {
-        Optional<Person> patientById = personRepo.findById(patientId);
+    public List<AppointmentResponse> getAppointments(String username) throws GeneralException {
+        Optional<Person> patientById = personRepo.findByUsername(username);
         if(patientById.isPresent()) {
             Person patient = patientById.get();
-            if(patient.getRole().toLowerCase().endsWith("patient")) {
-                if(!patient.getAppointmentDetailsForPatients().isEmpty()) {
-                    List<AppointmentResponse> appointmentResponses = new ArrayList<>();
-                    List<AppointmentDetail> appointmentDetails = patient.getAppointmentDetailsForPatients();
-                    for(AppointmentDetail appointmentDetail : appointmentDetails) {
-                        AppointmentResponse appointmentResponse = modelMapper.map(appointmentDetail, AppointmentResponse.class);
-                        appointmentResponses.add(appointmentResponse);
-                    }
-                    return appointmentResponses;
-                } else {
-                    throw new GeneralException("No appointments have been scheduled or completed in the past, and there are no upcoming appointments either.");
+            if(!patient.getAppointmentDetailsForPatients().isEmpty()) {
+                List<AppointmentResponse> appointmentResponses = new ArrayList<>();
+                List<AppointmentDetail> appointmentDetails = patient.getAppointmentDetailsForPatients();
+                for(AppointmentDetail appointmentDetail : appointmentDetails) {
+                    AppointmentResponse appointmentResponse = modelMapper.map(appointmentDetail, AppointmentResponse.class);
+                    appointmentResponses.add(appointmentResponse);
                 }
+                return appointmentResponses;
             } else {
-                throw new GeneralException("Id : { "+patient.getPersonId()+" }, Username : { "+patient.getUsername()+" }, Role : { "+patient.getRole()+" } Selected user is not a patient enter correct patientId.");
+                throw new GeneralException("No appointments have been scheduled or completed in the past, and there are no upcoming appointments either.");
             }
         } else {
-            throw new GeneralException("Patient not found in database with ID : "+patientId);
+            throw new GeneralException("Patient not found in database with username : "+username);
         }
     }
 
     @Override
-    public List<VaccinationResponse> getVaccinationDetails(Integer patientId) throws GeneralException {
-        Optional<Person> patientById = personRepo.findById(patientId);
+    public List<VaccinationResponse> getVaccinationDetails(String username) throws GeneralException {
+        Optional<Person> patientById = personRepo.findByUsername(username);
         if(patientById.isPresent()) {
             Person patient = patientById.get();
-            if(patient.getRole().toLowerCase().endsWith("patient")) {
-                if(!patient.getVaccinationDetailsForPatients().isEmpty()) {
-                    List<VaccinationDetail> vaccinationDetailsForPatients = patient.getVaccinationDetailsForPatients();
-                    List<VaccinationResponse> vaccinationResponses = new ArrayList<>();
-                    for(VaccinationDetail vaccinationDetail : vaccinationDetailsForPatients) {
-                        VaccinationResponse vaccinationResponse = modelMapper.map(vaccinationDetail, VaccinationResponse.class);
-                        vaccinationResponses.add(vaccinationResponse);
-                    }
-                    return vaccinationResponses;
-                } else {
-                    throw new GeneralException("No any vaccination have been taken by the person with the username : { "+patient.getUsername()+" }.");
+            if(!patient.getVaccinationDetailsForPatients().isEmpty()) {
+                List<VaccinationDetail> vaccinationDetailsForPatients = patient.getVaccinationDetailsForPatients();
+                List<VaccinationResponse> vaccinationResponses = new ArrayList<>();
+                for(VaccinationDetail vaccinationDetail : vaccinationDetailsForPatients) {
+                    VaccinationResponse vaccinationResponse = modelMapper.map(vaccinationDetail, VaccinationResponse.class);
+                    vaccinationResponses.add(vaccinationResponse);
                 }
+                return vaccinationResponses;
             } else {
-                throw new GeneralException("Id : { "+patient.getPersonId()+" }, Username : { "+patient.getUsername()+" }, Role : { "+patient.getRole()+" } Selected user is not a patient enter correct patientId.");
+                throw new GeneralException("No any vaccination have been taken by the person with the username : { "+patient.getUsername()+" }.");
             }
         } else {
-            throw new GeneralException("Patient not found in database with ID : "+patientId);
+            throw new GeneralException("Patient not found in database with username : "+username);
         }
     }
 

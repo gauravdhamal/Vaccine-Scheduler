@@ -45,8 +45,8 @@ public class SecurityConfiguration {
             "/appointment/reschedule/{newSlotId}/{appointmentId}",
     };
     public static final String[] PATIENT_URIS = {
-            "/patient/appointments/{patientId}",
-            "/patient/vaccinations/{patientId}",
+            "/patient/appointments/{username}",
+            "/patient/vaccinations/{username}",
     };
     public static final String[] DOCTOR_URIS = {
             "/doctor/getHospitalByDoctorId/{doctorId}",
