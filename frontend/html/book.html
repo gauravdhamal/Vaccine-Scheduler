@@ -11,17 +11,11 @@
     <div id="navbar"></div>
 
     <div class="welcome-message">
-      <h2>Booking Page</h2>
+      <h2>Book Appointment</h2>
     </div>
 
+    <!-- For displaying vaccine names in drop-down menu. -->
     <form id="availabilityForm" class="container input-container">
-      <!-- <label for="vaccineName">Enter Vaccine Name:</label>
-      <input
-        type="text"
-        id="vaccineName"
-        placeholder="Enter vaccine name"
-        required
-      /> -->
       <label for="vaccineName">Select Vaccine : </label>
       <select id="vaccineName" required>
         <option value="">Select Option</option>
@@ -38,10 +32,10 @@
       <button type="submit">Check Availability</button>
     </form>
 
+    <!-- For displaying slots. In tabuler format -->
     <table id="slotsTable" class="container">
       <thead>
         <tr>
-          <!-- Static column headers -->
           <th>Slot Number</th>
           <th>Slot Date</th>
           <th>Slot Timing</th>
@@ -55,13 +49,27 @@
       <tbody id="slotsBody"></tbody>
     </table>
 
+    <!-- For displaying slot details. showDetails() -->
+    <div id="displayOverlay" class="hidden overlay">
+      <div id="displayDetailsContainer" class="details-container"></div>
+    </div>
+
+    <!-- For displaying booking form. showBookAppointmentForm() -->
     <div id="hidden" class="hidden overlay">
       <form id="bookAppointmentForm" class="details-container">
-        <div id="slotIdField"></div>
+        <div>
+          <label for="slotId"><strong>Slot Number:</strong></label>
+          <input
+            id="slotIdField"
+            type="text"
+            placeholder="Enter Slot Id"
+            readonly
+          />
+        </div>
         <div>
           <label for="bookingFor"><strong>Booking For:</strong></label>
           <select id="bookingFor" required>
-            <option value="">Select Option</option>
+            <option value="">Select booking for</option>
             <option value="self">Self</option>
             <option value="other">Other</option>
           </select>
@@ -69,7 +77,7 @@
         <div>
           <label for="doseNumber"><strong>Dose Number:</strong></label>
           <select id="doseNumber" required>
-            <option value="">Select Option</option>
+            <option value="">Select dose number</option>
             <option value="first">First</option>
             <option value="second">Second</option>
             <option value="third">Third</option>
@@ -91,17 +99,32 @@
         </div>
         <div>
           <label for="email"><strong>Email:</strong></label>
-          <input type="text" id="email" required />
+          <input
+            type="text"
+            id="email"
+            placeholder="Enter your email"
+            required
+          />
         </div>
         <div>
           <label for="firstName"><strong>First Name:</strong></label>
-          <input type="text" id="firstName" required />
+          <input
+            type="text"
+            id="firstName"
+            placeholder="Enter your firstName"
+            required
+          />
         </div>
         <div>
           <label for="phone"><strong>Phone:</strong></label>
-          <input type="text" id="phone" required />
+          <input
+            type="text"
+            id="phone"
+            placeholder="Enter your phone"
+            required
+          />
         </div>
-        <button type="button" id="confirmBtn" style="background-color: green">
+        <button type="submit" id="confirmBtn" style="background-color: green">
           Confirm
         </button>
         <button type="button" id="cancelBtn" style="background-color: red">

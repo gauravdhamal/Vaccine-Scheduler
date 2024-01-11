@@ -28,7 +28,7 @@ function displaySlots(slots) {
   slotsBody.innerHTML = "";
   if (slots.length === undefined || slots.length === 0) {
     slotsBody.innerHTML =
-      "<tr><td colspan='8'>No slots available for the given vaccine.</td></tr>";
+      "<tr><td colspan='8'>No slots available for the selected vaccine.</td></tr>";
     return;
   }
 
@@ -68,11 +68,10 @@ function displaySlots(slots) {
 }
 
 function showDetails(slot) {
-  const overlay = document.createElement("div");
-  overlay.classList.add("overlay");
-
-  const detailsContainer = document.createElement("div");
-  detailsContainer.classList.add("details-container");
+  const overlay = document.getElementById("displayOverlay");
+  const detailsContainer = document.getElementById("displayDetailsContainer");
+  detailsContainer.innerHTML = "";
+  overlay.style.display = "block";
 
   const keyValuePairs = [
     ["Slot Number", slot.slotId],
@@ -100,8 +99,7 @@ function showDetails(slot) {
   const closeBtn = document.createElement("button");
   closeBtn.textContent = "Close";
   closeBtn.addEventListener("click", () => {
-    overlay.remove();
-    detailsContainer.remove();
+    overlay.style.display = "none";
   });
   detailsContainer.appendChild(closeBtn);
 
@@ -110,23 +108,15 @@ function showDetails(slot) {
 }
 
 function showBookAppointmentForm(slot) {
-  console.log("slot : ", slot);
   const hospitalId = slot.doctorHospitalHospitalId;
 
   const overlay = document.getElementById("hidden");
   const slotIdField = document.getElementById("slotIdField");
-  const bookingForSelect = document.getElementById("bookingFor");
-  const doseNumberSelect = document.getElementById("doseNumber");
-  const genderSelect = document.getElementById("gender");
-  const ageInput = document.getElementById("age");
-  const emailInput = document.getElementById("email");
-  const firstNameInput = document.getElementById("firstName");
-  const phoneInput = document.getElementById("phone");
-  const confirmBtn = document.getElementById("confirmBtn");
+  const bookAppointmentForm = document.getElementById("bookAppointmentForm");
   const cancelBtn = document.getElementById("cancelBtn");
 
   let slotId = slot.slotId;
-  slotIdField.innerHTML = `<strong>Slot Number : </strong> ${slotId}`;
+  slotIdField.value = `${slotId}`;
 
   const formData = {
     bookingFor: "",
@@ -143,51 +133,41 @@ function showBookAppointmentForm(slot) {
   };
 
   // Add event listeners for select elements
-  bookingForSelect.addEventListener("change", (event) => {
-    updateFormData("bookingFor", event.target.value);
-  });
-
-  doseNumberSelect.addEventListener("change", (event) => {
-    updateFormData("doseNumber", event.target.value);
-  });
-
-  genderSelect.addEventListener("change", (event) => {
-    updateFormData("gender", event.target.value);
+  const selectElements = ["bookingFor", "doseNumber", "gender"];
+  selectElements.forEach((elementId) => {
+    const selectElement = document.getElementById(elementId);
+    selectElement.addEventListener("change", (event) => {
+      updateFormData(elementId, event.target.value);
+    });
   });
 
   // Add event listeners for text inputs
-  ageInput.addEventListener("input", (event) => {
-    updateFormData("age", event.target.value);
+  const textInputs = ["age", "email", "firstName", "phone"];
+  textInputs.forEach((inputId) => {
+    const inputElement = document.getElementById(inputId);
+    inputElement.addEventListener("input", (event) => {
+      updateFormData(inputId, event.target.value);
+    });
   });
 
-  emailInput.addEventListener("input", (event) => {
-    updateFormData("email", event.target.value);
-  });
-
-  firstNameInput.addEventListener("input", (event) => {
-    updateFormData("firstName", event.target.value);
-  });
-
-  phoneInput.addEventListener("input", (event) => {
-    updateFormData("phone", event.target.value);
-  });
-
-  console.log("FormData : ", formData);
-
-  // Add event listeners for buttons
-  confirmBtn.addEventListener("click", () => {
-    // Call the bookAppointment function with form data
-    bookAppointment(slotId, hospitalId, formData);
-    // Close the overlay
-    overlay.style.display = "none";
+  // Add event listener for the form
+  bookAppointmentForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const resultPromise = bookAppointment(slotId, hospitalId, formData);
+    resultPromise.then((result) => {
+      if (result === "Appointment booked successfully.") {
+        bookAppointmentForm.reset();
+        overlay.style.display = "none";
+        fetchSlots(slot.vaccineName);
+      }
+    });
   });
 
   cancelBtn.addEventListener("click", () => {
-    // Close the overlay
+    bookAppointmentForm.reset();
     overlay.style.display = "none";
   });
 
-  // Display the overlay
   overlay.style.display = "block";
 }
 
@@ -207,10 +187,9 @@ async function bookAppointment(slotId, hospitalId, formData) {
     const result = await response.json();
 
     if (response.ok) {
-      // Display success message
       window.alert(result.message);
+      return "Appointment booked successfully.";
     } else {
-      // Display error message
       if (
         result.message.startsWith(
           "You are not allowed to take this vaccine as your age"
@@ -219,8 +198,14 @@ async function bookAppointment(slotId, hospitalId, formData) {
         window.alert(result.message);
       } else if (result.message === "Validation failed.") {
         window.alert(result.description);
+      } else if (
+        result.message.includes("JSON parse error: Cannot deserialize")
+      ) {
+        window.alert("Invalid age. Age must be a whole number");
       } else {
-        window.alert("An error occurred while processing your request.");
+        window.alert(
+          `An error occurred while processing your request.\n ${result.message}`
+        );
       }
     }
   } catch (error) {

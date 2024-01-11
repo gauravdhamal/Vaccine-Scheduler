@@ -1,19 +1,5 @@
-label {
-  display: inline-block;
-  width: 35%;
-}
-
-input,
-select {
-  width: 40%;
-  box-sizing: border-box;
-  padding: 8px;
-  font-size: 15px;
-  margin-top: 10px;
-}
-
 #submitInput {
-  padding: 10px;
+  padding: 8px 20px;
   background-color: green;
   color: white;
   cursor: pointer;
@@ -26,4 +12,24 @@ select {
   border: 1px solid black;
   font-size: large;
   margin-top: 15px;
+}
+
+.container div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+.container div :nth-child(1) {
+  font-size: 16px;
+  width: 25%;
+}
+
+.container div :nth-child(2) {
+  box-sizing: border-box;
+  /* border: 1px solid black; */
+  width: 50%;
+  font-size: 15px;
+  padding: 6px;
 }

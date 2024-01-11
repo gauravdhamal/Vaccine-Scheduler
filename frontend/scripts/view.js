@@ -13,15 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const appointmentIdInput = document.getElementById("appointmentId");
     const appointmentId = appointmentIdInput.value;
 
-    // Fetch appointment details
-    const appointmentDetails = await getAppointmentDetails(appointmentId);
-
-    // Display appointment details in the container
-    if (appointmentDetails !== undefined) {
-      displayAppointmentDetails(appointmentDetails);
-    } else {
-      appointmentDetailsContainer.innerHTML = "";
-    }
+    getAppointmentDetails(appointmentId);
   });
 
   async function getAppointmentDetails(appointmentId) {
@@ -37,28 +29,102 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         const result = await response.json();
-        return result;
+        displayAppointmentDetails(result);
       } else {
         window.alert(`Invalid appointmentId : ${appointmentId}`);
+        appointmentDetailsContainer.style.display = "none";
       }
     } catch (error) {
       console.error("Error:", error);
       window.alert(`Error : ${error.message}`);
-      // Handle error, maybe display an error message to the user
     }
   }
 
   function displayAppointmentDetails(appointmentDetails) {
-    const appointmentDetailsHtml = `
-        <h3>Appointment Details</h3>
-        <p><strong>Appointment ID:</strong> ${appointmentDetails.appointmentDetailId}</p>
-        <p><strong>Appointment Date:</strong> ${appointmentDetails.appointmentDate}</p>
-        <p><strong>Appointment Time:</strong> ${appointmentDetails.appointmentTime}</p>
-        <p><strong>Message:</strong> ${appointmentDetails.message}</p>
-        <p><strong>Payment Detail ID:</strong> ${appointmentDetails.paymentDetailId}</p>
-        <p><strong>Payment Detail Amount:</strong> ${appointmentDetails.paymentDetailAmount}</p>
-      `;
+    appointmentDetailsContainer.style.innerHTML = "";
+    appointmentDetailsContainer.style.display = "block";
 
-    appointmentDetailsContainer.innerHTML = appointmentDetailsHtml;
+    const appointmentIdContent = document.getElementById(
+      "appointmentIdContent"
+    );
+    const appointmentDateContent = document.getElementById(
+      "appointmentDateContent"
+    );
+    const appointmentTimeContent = document.getElementById(
+      "appointmentTimeContent"
+    );
+    const appointmentMessageContent = document.getElementById(
+      "appointmentMessageContent"
+    );
+    const appointmentPaymentIdContent = document.getElementById(
+      "appointmentPaymentIdContent"
+    );
+    const appointmentPaymentAmtContent = document.getElementById(
+      "appointmentPaymentAmtContent"
+    );
+    const makePaymentBtn = document.getElementById("makePayment");
+
+    appointmentIdContent.innerHTML = appointmentDetails.appointmentDetailId;
+    appointmentDateContent.innerHTML = appointmentDetails.appointmentDate;
+    appointmentTimeContent.innerHTML = appointmentDetails.appointmentTime;
+    appointmentMessageContent.innerHTML = appointmentDetails.message;
+
+    const paymentId = appointmentDetails.paymentDetailId;
+    const paymentAmt = appointmentDetails.paymentDetailAmount;
+    if (paymentId === null || paymentAmt === null) {
+      appointmentPaymentIdContent.innerHTML = "n/a";
+      appointmentPaymentAmtContent.innerHTML = "n/a";
+    } else {
+      appointmentPaymentIdContent.innerHTML = paymentId;
+      appointmentPaymentAmtContent.innerHTML = paymentAmt;
+    }
+
+    if (paymentAmt === null) {
+      makePaymentBtn.style.display = "block";
+      makePaymentBtn.addEventListener("click", () => optionDivs());
+    } else {
+      makePaymentBtn.style.display = "none";
+    }
+  }
+
+  function optionDivs() {
+    const overlay = document.getElementById("displayOverlay");
+    const detailsContainer = document.getElementById("displayDetailsContainer");
+    overlay.style.display = "block";
+
+    const existingUserButton = document.getElementById("existingUserButton");
+    const newUserButton = document.getElementById("newUserButton");
+    const proceedPaymentButton = document.getElementById(
+      "proceedPaymentButton"
+    );
+    const existingUserOption = document.getElementById("existingUserOption");
+    const existinngUserUsernameInput = document.getElementById(
+      "existinngUserUsername"
+    );
+
+    existingUserButton.addEventListener("click", () => {
+      newUserButton.style.backgroundColor = "red";
+      existingUserButton.style.backgroundColor = "green";
+      proceedPaymentButton.style.display = "block";
+      existingUserOption.style.display = "block";
+    });
+
+    newUserButton.addEventListener("click", () => {
+      existingUserOption.style.display = "none";
+      newUserButton.style.backgroundColor = "green";
+      existingUserButton.style.backgroundColor = "red";
+      proceedPaymentButton.style.display = "block";
+    });
+
+    const closeBtn = document.getElementById("displayOptionsButton");
+    closeBtn.addEventListener("click", () => {
+      overlay.style.display = "none";
+      proceedPaymentButton.style.display = "none";
+      existingUserOption.style.display = "none";
+      newUserButton.style.backgroundColor = "rgb(219, 184, 120)";
+      existingUserButton.style.backgroundColor = "rgb(219, 184, 120)";
+      existinngUserUsernameInput.value = "";
+    });
+    detailsContainer.appendChild(closeBtn);
   }
 });

@@ -55,26 +55,12 @@ th {
   justify-content: center;
 }
 
-/* .details-container {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  max-width: 300px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-} */
-
 .details-container {
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  max-width: 300px;
+  max-width: 350px;
   width: 100%;
   position: absolute;
   top: 50%;
@@ -97,7 +83,7 @@ th {
 
 .details-container div :nth-child(2) {
   border: 1px solid black;
-  width: 150px;
+  width: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,8 +104,9 @@ th {
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  width: 40%;
-  margin: 10px auto 0px;
+  width: 50%;
+  display: block;
+  margin: 15px auto auto auto;
 }
 
 .hidden {

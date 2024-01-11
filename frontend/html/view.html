@@ -25,8 +25,68 @@
       <button type="submit">View Appointment</button>
     </form>
 
-    <div id="appointmentDetails" class="hidden container">
-      <!-- Appointment details will be appended here -->
+    <div id="appointmentDetails" class="container">
+      <h2>Appointment Details</h2>
+
+      <div>
+        <p>AppointmentId:</p>
+        <p id="appointmentIdContent">13</p>
+      </div>
+
+      <div>
+        <p>Appointment Date:</p>
+        <p id="appointmentDateContent"></p>
+      </div>
+
+      <div>
+        <p>Appointment Time:</p>
+        <p id="appointmentTimeContent"></p>
+      </div>
+
+      <div>
+        <p>Message:</p>
+        <p id="appointmentMessageContent"></p>
+      </div>
+
+      <div>
+        <p>Payment ID:</p>
+        <p id="appointmentPaymentIdContent"></p>
+      </div>
+
+      <div>
+        <p>Payment Amount:</p>
+        <p id="appointmentPaymentAmtContent"></p>
+      </div>
+
+      <div>
+        <button id="makePayment">Make payment</button>
+      </div>
+    </div>
+
+    <div id="displayOverlay" class="hidden overlay">
+      <div id="displayDetailsContainer" class="details-container">
+        <div>
+          <button id="existingUserButton">Existing user</button>
+          <button id="newUserButton">New user</button>
+        </div>
+
+        <div id="existingUserOption">
+          <label for="existinngUserUsername">Username:</label>
+          <input
+            type="text"
+            id="existinngUserUsername"
+            name="existinngUserUsername"
+            placeholder="Enter your username"
+            required
+          />
+        </div>
+
+        <div>
+          <button id="proceedPaymentButton">Proceed for payment</button>
+        </div>
+
+        <div><button id="displayOptionsButton">Close</button></div>
+      </div>
     </div>
 
     <script type="module" src="/scripts/view.js"></script>

@@ -11,78 +11,100 @@
     <div id="navbar"></div>
 
     <div class="welcome-message">
-      <h2>Payment Page</h2>
+      <h2>Make Payment</h2>
     </div>
 
     <form id="paymentForm" class="container">
-      <label for="appointmentId">Appointment ID:</label>
-      <input
-        type="text"
-        id="appointmentId"
-        placeholder="Enter Appointment ID"
-        required
-      />
-      <br />
+      <div>
+        <label for="appointmentId">Appointment ID:</label>
+        <input
+          type="text"
+          id="appointmentId"
+          placeholder="Enter Appointment ID"
+          required
+        />
+      </div>
 
-      <label for="aadhaarNumber">Aadhaar Number:</label>
-      <input
-        type="text"
-        id="aadhaarNumber"
-        placeholder="Enter Aadhaar Number"
-        required
-      />
-      <br />
+      <div>
+        <label for="aadhaarNumber">Aadhaar Number:</label>
+        <input
+          type="text"
+          id="aadhaarNumber"
+          placeholder="Enter Aadhaar Number"
+          required
+        />
+      </div>
 
-      <label for="city">City:</label>
-      <input type="text" id="city" placeholder="Enter City" required />
-      <br />
+      <div>
+        <label for="city">City:</label>
+        <input type="text" id="city" placeholder="Enter City" required />
+      </div>
 
-      <label for="email">Email:</label>
-      <input type="text" id="email" placeholder="Enter Email" required />
-      <br />
+      <div>
+        <label for="email">Email:</label>
+        <input type="text" id="email" placeholder="Enter Email" required />
+      </div>
 
-      <label for="phone">Phone:</label>
-      <input type="text" id="phone" placeholder="Enter Phone" required />
-      <br />
+      <div>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" placeholder="Enter Phone" required />
+      </div>
 
-      <label for="amount">Amount:</label>
-      <input type="text" id="amount" placeholder="Enter Amount" required />
-      <br />
+      <div>
+        <label for="amount">Amount:</label>
+        <input type="text" id="amount" placeholder="Enter Amount" required />
+      </div>
 
-      <label for="dateOfBirth">Date of Birth:</label>
-      <input
-        type="text"
-        id="dateOfBirth"
-        placeholder="Enter Date of Birth"
-        required
-      />
-      <br />
+      <div>
+        <label for="dateOfBirth">Date of Birth:</label>
+        <input
+          type="text"
+          id="dateOfBirth"
+          placeholder="Enter Date of Birth"
+          required
+        />
+      </div>
 
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" placeholder="Enter Last Name" required />
-      <br />
+      <div>
+        <label for="lastName">Last Name:</label>
+        <input
+          type="text"
+          id="lastName"
+          placeholder="Enter Last Name"
+          required
+        />
+      </div>
 
-      <label for="password">Password:</label>
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter Password"
-        required
-      />
-      <br />
+      <div>
+        <label for="username">Username:</label>
+        <input
+          type="text"
+          id="username"
+          placeholder="Enter Username"
+          required
+        />
+      </div>
 
-      <label for="paymentMethod">Payment Method:</label>
-      <select id="paymentMethod" required>
-        <option value="cash">Cash</option>
-        <option value="card">Card</option>
-      </select>
-      <br />
+      <div>
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter Password"
+          required
+        />
+      </div>
 
-      <label for="username">Username:</label>
-      <input type="text" id="username" placeholder="Enter Username" required />
-      <br />
+      <div>
+        <label for="paymentMethod">Payment Method:</label>
+        <select id="paymentMethod" required>
+          <option value="">Select Method</option>
+          <option value="cash">Cash</option>
+          <option value="card">Card</option>
+        </select>
+      </div>
 
-      <input id="submitInput" type="submit" value="Make Payment" />
+      <input id="submitInput" type="submit" value="Pay" />
     </form>
 
     <div id="paymentResult" class="container">
