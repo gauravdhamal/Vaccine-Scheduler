@@ -42,7 +42,7 @@ public class AppointmentDetailRequest {
     private String gender;
 
     @NotNull(message = "age must not be null.")
-    @Min(value = 0, message = "Age must be greater than 0.")
+    @Min(value = 1, message = "Age must be greater than 1.")
     private Integer age;
 
     @Pattern(regexp = "[6789]\\d{9}", message = "Invalid phone number. Must be a valid Indian mobile number having 10 digits. And starts with '6' or '7' or '8' or '9'")

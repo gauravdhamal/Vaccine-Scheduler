@@ -1,6 +1,7 @@
 package com.vaccinescheduler.services.implementations;
 
 import com.vaccinescheduler.dtos.other.PaymentData;
+import com.vaccinescheduler.dtos.request.ExistingPaymentDetailRequest;
 import com.vaccinescheduler.dtos.request.PaymentDetailRequest;
 import com.vaccinescheduler.dtos.response.PaymentDetailResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
@@ -128,6 +129,83 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
             }
         } else {
             throw new GeneralException("AppointmentDetail not found with ID : { "+appointmentDetailId+" }. Enter correct Id.");
+        }
+    }
+
+    @Override
+    public PaymentDetailResponse createPaymentDetailForExistingPerson(String username, ExistingPaymentDetailRequest existingPaymentDetailRequest) throws GeneralException {
+        Integer appointmentDetailId = existingPaymentDetailRequest.getAppointmentDetailId();
+        Double paidAmount  = existingPaymentDetailRequest.getPaidAmount();
+        String paymentMethod = existingPaymentDetailRequest.getPaymentMethod();
+        Optional<Person> personByUsername = personRepo.findByUsername(username);
+        if(personByUsername.isPresent()) {
+            Person patient = personByUsername.get();
+            Optional<AppointmentDetail> appointmentDetailById = appointmentDetailRepo.findById(appointmentDetailId);
+            if(appointmentDetailById.isPresent()) {
+                AppointmentDetail appointmentDetail = appointmentDetailById.get();
+                if(appointmentDetail.getPaymentDetail() == null) {
+                    LocalDate appointmentDate = appointmentDetail.getAppointmentDate();
+                    String appointmentTime = appointmentDetail.getAppointmentTime();
+                    String startTimeString = appointmentTime.substring(0,5);
+                    String endTimeString = appointmentTime.substring(8,appointmentTime.length());
+                    LocalTime startTime = LocalTime.parse(startTimeString);
+                    LocalTime endTime = LocalTime.parse(endTimeString);
+                    LocalTime currentTime = LocalTime.now();
+                    LocalDate currentDate = LocalDate.now();
+                    if(appointmentDate.isAfter(currentDate) || (appointmentDate.isEqual(currentDate) && (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)))) {
+                        Vaccine vaccine = appointmentDetail.getVaccine();
+                        Double requiredAmount = vaccine.getDiscountedPrice();
+                        if(paidAmount.equals(requiredAmount)) {
+                            patient.getAppointmentDetailsForPatients().add(appointmentDetail);
+                            patient = personRepo.save(patient);
+                            PaymentDetail paymentDetail = new PaymentDetail();
+                            paymentDetail.setCreatedDateTime(LocalDateTime.now());
+                            paymentDetail.setAmount(paidAmount);
+                            paymentDetail.setPaymentMethod(paymentMethod);
+                            paymentDetail.setTransactionStatus("success");
+                            paymentDetail.setAppointmentDetail(appointmentDetail);
+                            paymentDetail.setPatient(patient);
+                            paymentDetail = paymentDetailRepo.save(paymentDetail);
+                            appointmentDetail.setPaymentDetail(paymentDetail);
+                            appointmentDetail.setPatient(patient);
+                            Person doctor = appointmentDetail.getDoctor();
+                            doctor.getDoctorAppointmentDetails().add(appointmentDetail);
+                            personRepo.save(doctor);
+                            Hospital hospital = appointmentDetail.getHospital();
+                            hospital.getPaymentDetails().add(paymentDetail);
+                            hospitalRepo.save(hospital);
+                            PaymentDetailResponse paymentDetailResponse = modelMapper.map(paymentDetail, PaymentDetailResponse.class);
+
+                            PaymentData paymentData = new PaymentData();
+                            paymentData.setPaymentMethod(paymentMethod);
+                            paymentData.setNotified(true);
+                            paymentData.setHospitalName(hospital.getHospitalName());
+                            paymentData.setPaidAmount(paidAmount);
+                            paymentData.setPatientCity(patient.getAddress().getCity());
+                            paymentData.setPatientEmail(patient.getAddress().getEmail());
+                            paymentData.setPatientAge(patient.getAge());
+                            paymentData.setPatientName(patient.getFirstName());
+                            paymentData.setPatientPhone(patient.getAddress().getPhone());
+                            paymentData.setPatientGender(patient.getGender());
+                            Exchange exchange = new DefaultExchange(new DefaultCamelContext());
+                            exchange.getIn().setBody(paymentData);
+                            producerTemplate.send("seda:processPaymentNotification", exchange);
+
+                            return paymentDetailResponse;
+                        } else {
+                            throw new GeneralException("You need to pay the amount : { "+requiredAmount+" }. You entered : { "+paidAmount+" }. Please enter proper amount.");
+                        }
+                    } else {
+                        throw new GeneralException("Sorry you missed your appointment it was on : { "+appointmentDate+" } & time : { "+appointmentTime+" }. Kindly reschedule it and then do payment.");
+                    }
+                } else {
+                    throw new GeneralException("Payment already made for this appointment can't proceed . Payment Id : { "+appointmentDetail.getPaymentDetail().getPaymentId()+" }.");
+                }
+            } else {
+                throw new GeneralException("AppointmentDetail not found with ID : { "+appointmentDetailId+" }. Enter correct Id.");
+            }
+        } else {
+            throw new GeneralException("Person not found with username : "+username);
         }
     }
 

@@ -2,6 +2,7 @@ package com.vaccinescheduler.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +20,6 @@ public class GlobalExceptionHandler {
         myErrorDetails.setTimeStamp(LocalDateTime.now());
         myErrorDetails.setMessage(generalException.getMessage());
         myErrorDetails.setDescription(webRequest.getDescription(false));
-        generalException.printStackTrace();
         return new ResponseEntity<MyErrorDetails>(myErrorDetails, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -49,6 +49,7 @@ public class GlobalExceptionHandler {
         myErrorDetails.setDescription(webRequest.getDescription(false));
         return new ResponseEntity<>(myErrorDetails, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MyErrorDetails> exceptionHandler(Exception exception, WebRequest webRequest) {
         System.out.println("Inside exceptionHandler");

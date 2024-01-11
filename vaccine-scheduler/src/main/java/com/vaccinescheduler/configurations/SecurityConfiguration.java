@@ -40,6 +40,7 @@ public class SecurityConfiguration {
             "/appointment/get/{appointmentDetailId}",
             "/appointment/book/{slotId}/{hospitalId}",
             "/payment/pay/{appointmentDetailId}",
+            "/payment/pay/existing/{username}",
             "/person/create",
             "/email/send",
             "/appointment/reschedule/{newSlotId}/{appointmentId}",

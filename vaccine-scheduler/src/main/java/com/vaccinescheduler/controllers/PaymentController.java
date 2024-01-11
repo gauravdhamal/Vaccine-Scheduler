@@ -1,5 +1,6 @@
 package com.vaccinescheduler.controllers;
 
+import com.vaccinescheduler.dtos.request.ExistingPaymentDetailRequest;
 import com.vaccinescheduler.dtos.request.PaymentDetailRequest;
 import com.vaccinescheduler.dtos.response.PaymentDetailResponse;
 import com.vaccinescheduler.exceptions.GeneralException;
@@ -21,6 +22,11 @@ public class PaymentController {
     public ResponseEntity<PaymentDetailResponse> makePayment(@PathVariable(value = "appointmentDetailId") Integer appointmentDetailId, @Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException, IOException {
         PaymentDetailResponse paymentDetailResponse = paymentDetailService.createPaymentDetail(appointmentDetailId, paymentDetailRequest);
         return new ResponseEntity<>(paymentDetailResponse, HttpStatus.CREATED);
+    }
+    @PostMapping("/pay/existing/{username}")
+    public ResponseEntity<PaymentDetailResponse> createPaymentDetailForExistingPerson(@PathVariable(value = "username") String username,@Valid @RequestBody ExistingPaymentDetailRequest existingPaymentDetailRequest) throws GeneralException {
+        PaymentDetailResponse paymentDetailForExistingPerson = paymentDetailService.createPaymentDetailForExistingPerson(username, existingPaymentDetailRequest);
+        return new ResponseEntity<>(paymentDetailForExistingPerson, HttpStatus.OK);
     }
     @PutMapping("/update/{paymentDetailId}")
     public ResponseEntity<PaymentDetailResponse> updatePayment(@PathVariable(value = "paymentDetailId") Integer paymentDetailId,@Valid @RequestBody PaymentDetailRequest paymentDetailRequest) throws GeneralException {

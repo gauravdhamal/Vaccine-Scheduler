@@ -51,9 +51,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
         if(appointmentDetailById.isPresent()) {
             AppointmentDetail appointmentDetail = appointmentDetailById.get();
             AppointmentDetailResponse appointmentDetailResponse = modelMapper.map(appointmentDetail, AppointmentDetailResponse.class);
-            String message = "Dear " + appointmentDetail.getFirstName() + ", your appointment has been booked. "
-                    + "\nWe look forward to providing you with excellent service. "
-                    + "\nDetails: \nGender - " + appointmentDetail.getGender() + ", \nAge - " + appointmentDetail.getAge() + ", \nPhone - " + appointmentDetail.getPhone() + ", \nEmail - " + appointmentDetail.getEmail();
+            String message = "Dear " + appointmentDetail.getFirstName() + " you have to pay total amount INR. " + appointmentDetail.getVaccine().getDiscountedPrice() +" Ignore if already paid.";
             appointmentDetailResponse.setMessage(message);
             return appointmentDetailResponse;
         } else {
@@ -124,9 +122,8 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                 String gender = appointmentDetailRequest.getGender();
                                                 String phone = appointmentDetailRequest.getPhone();
                                                 String email = appointmentDetailRequest.getEmail();
-                                                String message = "Dear " + firstName + ", your appointment has been booked. "
-                                                        + "We look forward to providing you with excellent service. "
-                                                        + "Details: Gender - " + gender + ", Age - " + currentAge + ", Phone - " + phone + ", Email - " + email + "\n\nPlease note appointmentId for future reference : "+appointmentDetail.getAppointmentDetailId();
+                                                String message = "Dear " + firstName + ", your appointment has been booked. You have to pay total amount INR. " + requiredVaccine.getDiscountedPrice() +"."
+                                                        + "\n\nPlease note appointmentId for future reference : "+appointmentDetail.getAppointmentDetailId();
                                                 if(todayStartedButYetNotEnded) message = message + ". You are having very less time as your slotTime will end soon. Kindly make payment ASAP and take the vaccination.";
 
                                                 AppointmentData appointmentData = new AppointmentData();
