@@ -23,6 +23,7 @@ public class SlotResponse {
     private String vaccineName;
     private Double vaccineOriginalPrice;
     private String vaccineDiscount;
+    private Double vaccineDiscountedPrice;
     private String requiredAgeRange;
     private Integer doctorHospitalHospitalId;
     private String doctorHospitalHospitalName;

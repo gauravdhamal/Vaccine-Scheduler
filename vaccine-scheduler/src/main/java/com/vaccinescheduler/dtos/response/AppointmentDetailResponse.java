@@ -18,7 +18,13 @@ public class AppointmentDetailResponse {
     private Integer appointmentDetailId;
     private LocalDate appointmentDate;
     private String appointmentTime;
+    private String firstName;
+    private String gender;
+    private Integer age;
+    private String phone;
+    private String email;
     private String message;
+    private Double vaccineDiscountedPrice;
     private Integer paymentDetailId;
     private Integer paymentDetailAmount;
 }

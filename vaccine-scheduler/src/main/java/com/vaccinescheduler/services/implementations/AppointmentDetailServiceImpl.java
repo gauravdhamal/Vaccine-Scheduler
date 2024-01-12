@@ -215,8 +215,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                             Integer age = appointmentDetail.getAge();
                             String phone = appointmentDetail.getPhone();
                             String email = appointmentDetail.getEmail();
-                            String message = "Dear " + firstName + ", your appointment has been rescheduled. Kindle make payment if not done already."
-                                    + "Details: Gender - " + gender + ", Age - " + age + ", Phone - " + phone + ", Email - " + email;
+                            String message = "Dear " + firstName + ", your appointment has been rescheduled. Kindle make payment if not done already.";
                             appointmentDetailResponse.setMessage(message);
 
                             AppointmentData appointmentData = new AppointmentData();

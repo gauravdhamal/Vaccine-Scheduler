@@ -44,6 +44,7 @@ public class SecurityConfiguration {
             "/person/create",
             "/email/send",
             "/appointment/reschedule/{newSlotId}/{appointmentId}",
+            "/person/byUsername/{username}",
     };
     public static final String[] PATIENT_URIS = {
             "/patient/appointments/{username}",
@@ -82,7 +83,6 @@ public class SecurityConfiguration {
             "/payment/delete/{paymentDetailId}",
             "/person/update/{personId}",
             "/person/get/{personId}",
-            "/person/byUsername/{username}",
             "/person/byAadhaarNumber/{aadhaarNumber}",
             "/person/delete/{personId}",
             "/person/all",
