@@ -143,7 +143,10 @@ if (jwtToken) {
             window.alert(`${data.message}`);
           }
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) => {
+          console.error("Error:", error);
+          window.alert(`Error : ${error.message}`);
+        });
     }
 
     function getVaccinationDetails() {
@@ -194,10 +197,15 @@ if (jwtToken) {
               tableBody.appendChild(row);
             });
           } else {
+            tableHeader.innerHTML = "";
+            tableBody.innerHTML = "";
             window.alert(data.message);
           }
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) => {
+          console.error("Error:", error);
+          window.alert(`Error : ${error.message}`);
+        });
     }
 
     const logoutBtn = document.getElementById("logout-button");

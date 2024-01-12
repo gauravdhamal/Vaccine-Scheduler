@@ -64,7 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     const makePaymentBtn = document.getElementById("makePayment");
 
-    appointmentIdContent.innerHTML = appointmentDetails.appointmentDetailId;
+    const appointmentId = appointmentDetails.appointmentDetailId;
+    appointmentIdContent.innerHTML = appointmentId;
     appointmentDateContent.innerHTML = appointmentDetails.appointmentDate;
     appointmentTimeContent.innerHTML = appointmentDetails.appointmentTime;
     appointmentMessageContent.innerHTML = appointmentDetails.message;
@@ -76,44 +77,123 @@ document.addEventListener("DOMContentLoaded", () => {
       appointmentPaymentAmtContent.innerHTML = "n/a";
     } else {
       appointmentPaymentIdContent.innerHTML = paymentId;
-      appointmentPaymentAmtContent.innerHTML = paymentAmt;
+      appointmentPaymentAmtContent.innerHTML = `Rs. ${paymentAmt}`;
     }
 
     if (paymentAmt === null) {
       makePaymentBtn.style.display = "block";
-      makePaymentBtn.addEventListener("click", () => optionDivs());
+      makePaymentBtn.addEventListener("click", () =>
+        displayOptions(appointmentId)
+      );
     } else {
       makePaymentBtn.style.display = "none";
     }
   }
 
-  function optionDivs() {
+  function displayOptions(appointmentId) {
     const overlay = document.getElementById("displayOverlay");
     const detailsContainer = document.getElementById("displayDetailsContainer");
     overlay.style.display = "block";
 
     const existingUserButton = document.getElementById("existingUserButton");
     const newUserButton = document.getElementById("newUserButton");
+
+    const existingUserOption = document.getElementById("existingUserOption");
     const proceedPaymentButton = document.getElementById(
       "proceedPaymentButton"
     );
-    const existingUserOption = document.getElementById("existingUserOption");
-    const existinngUserUsernameInput = document.getElementById(
-      "existinngUserUsername"
+    const optionFormAptIdLabel = document.getElementById(
+      "optionFormAptIdLabel"
+    );
+    const optionFormAptIdInput = document.getElementById(
+      "optionFormAptIdInput"
+    );
+    const optionFormUsernameLabel = document.getElementById(
+      "optionFormUsernameLabel"
+    );
+    const optionFormUsernameInput = document.getElementById(
+      "optionFormUsernameInput"
+    );
+    const optionFormProceedInput = document.getElementById(
+      "optionFormProceedInput"
     );
 
+    optionFormAptIdInput.value = appointmentId;
+
     existingUserButton.addEventListener("click", () => {
-      newUserButton.style.backgroundColor = "red";
       existingUserButton.style.backgroundColor = "green";
-      proceedPaymentButton.style.display = "block";
+      newUserButton.style.backgroundColor = "red";
+      proceedPaymentButton.style.display = "none";
       existingUserOption.style.display = "block";
+      optionFormAptIdLabel.style.display = "block";
+      optionFormAptIdInput.style.display = "block";
+      optionFormUsernameLabel.style.display = "block";
+      optionFormUsernameInput.style.display = "block";
+      optionFormProceedInput.style.display = "block";
     });
 
     newUserButton.addEventListener("click", () => {
-      existingUserOption.style.display = "none";
       newUserButton.style.backgroundColor = "green";
       existingUserButton.style.backgroundColor = "red";
       proceedPaymentButton.style.display = "block";
+      existingUserOption.style.display = "block";
+      optionFormAptIdLabel.style.display = "block";
+      optionFormAptIdInput.style.display = "block";
+      optionFormUsernameLabel.style.display = "none";
+      optionFormUsernameInput.style.display = "none";
+      optionFormProceedInput.style.display = "none";
+    });
+
+    proceedPaymentButton.addEventListener("click", () => {
+      setCookie(appointmentId, null, false);
+      window.alert("Redirecting to payment page...");
+      window.location.href = "/html/payment.html";
+    });
+
+    const existingUserOptionForm = document.getElementById(
+      "existingUserOptionForm"
+    );
+    existingUserOptionForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      let formData = new FormData(event.target);
+      let username = formData.get("existinngUserUsername");
+      let appointmentIds = formData.get("appointmentId");
+      console.log("appointmentIds : ", appointmentIds);
+      console.log("Username : ", username);
+
+      var requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+
+      fetch(
+        `http://localhost:8888/person/byUsername/${username}`,
+        requestOptions
+      )
+        .then(async (response) => {
+          const data = await response.json();
+          if (response.ok) {
+            let aadhaarNumber = data.aadhaarNumber;
+            const confirmed = window.confirm(
+              `'${aadhaarNumber}' is this your aadhaar number?`
+            );
+            if (confirmed) {
+              setCookie(appointmentId, username, true);
+              window.alert("Redirecting to payment page...");
+              window.location.href = "/html/payment.html";
+            } else {
+              window.alert("Please enter the correct username to proceed.");
+            }
+            return data;
+          } else {
+            window.alert(`${data.message}\n\nEnter valid username.`);
+          }
+        })
+        .then((result) => console.log(result))
+        .catch((error) => {
+          console.log("error", error);
+          window.alert(`Error : ${error.message}`);
+        });
     });
 
     const closeBtn = document.getElementById("displayOptionsButton");
@@ -123,8 +203,25 @@ document.addEventListener("DOMContentLoaded", () => {
       existingUserOption.style.display = "none";
       newUserButton.style.backgroundColor = "rgb(219, 184, 120)";
       existingUserButton.style.backgroundColor = "rgb(219, 184, 120)";
-      existinngUserUsernameInput.value = "";
+      optionFormUsernameInput.value = "";
     });
     detailsContainer.appendChild(closeBtn);
+  }
+
+  function setCookie(appointmentId, username, isExistingUser) {
+    console.log("Setting cookie");
+    if (isExistingUser) {
+      document.cookie = `appointmentId=${appointmentId};`;
+      document.cookie = `username=${username};`;
+      document.cookie = `existingUser=${encodeURIComponent(
+        JSON.stringify(isExistingUser)
+      )};`;
+    } else {
+      document.cookie = `appointmentId=${appointmentId};`;
+      document.cookie = `username=${username};`;
+      document.cookie = `existingUser=${encodeURIComponent(
+        JSON.stringify(isExistingUser)
+      )};`;
+    }
   }
 });

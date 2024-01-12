@@ -11,7 +11,7 @@
     <div id="navbar"></div>
 
     <div class="welcome-message">
-      <h2>View Appointment Page</h2>
+      <h2>View Appointment</h2>
     </div>
 
     <form id="viewAppointmentForm" class="container input-container">
@@ -71,14 +71,43 @@
         </div>
 
         <div id="existingUserOption">
-          <label for="existinngUserUsername">Username:</label>
-          <input
-            type="text"
-            id="existinngUserUsername"
-            name="existinngUserUsername"
-            placeholder="Enter your username"
-            required
-          />
+          <form id="existingUserOptionForm">
+            <div>
+              <label id="optionFormAptIdLabel" for="appointmentId"
+                >Appointment ID:</label
+              >
+              <input
+                id="optionFormAptIdInput"
+                name="appointmentId"
+                type="number"
+                value="0000"
+                readonly
+              />
+            </div>
+
+            <div>
+              <label id="optionFormUsernameLabel" for="existinngUserUsername"
+                >Username:</label
+              >
+              <input
+                id="optionFormUsernameInput"
+                type="text"
+                id="existinngUserUsername"
+                name="existinngUserUsername"
+                placeholder="Enter your username"
+                required
+              />
+            </div>
+
+            <div>
+              <input
+                id="optionFormProceedInput"
+                name="optionFormProceedInput"
+                type="submit"
+                value="Proceed for payment"
+              />
+            </div>
+          </form>
         </div>
 
         <div>

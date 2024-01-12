@@ -52,6 +52,7 @@ async function rescheduleAppointment(appointmentId, newSlotId) {
 // Function to display reschedule result
 function displayRescheduleResult(result) {
   const resultContainer = document.getElementById("rescheduleResult");
+  resultContainer.style.display = "block";
 
   if (result.appointmentDetailId) {
     const rescheduleHtml = `
@@ -60,8 +61,8 @@ function displayRescheduleResult(result) {
         <p><strong>New Appointment Date:</strong> ${result.appointmentDate}</p>
         <p><strong>New Appointment Time:</strong> ${result.appointmentTime}</p>
         <p><strong>Message:</strong> ${result.message}</p>
-        <p><strong>Payment Detail ID:</strong> ${result.paymentDetailId}</p>
-        <p><strong>Payment Detail Amount:</strong> ${result.paymentDetailAmount}</p>
+        <p><strong>Transaction ID:</strong> ${result.paymentDetailId}</p>
+        <p><strong>Paid Amount: </strong> Rs. ${result.paymentDetailAmount}</p>
       `;
 
     resultContainer.innerHTML = rescheduleHtml;
@@ -73,5 +74,6 @@ function displayRescheduleResult(result) {
 // Function to display reschedule error
 function displayRescheduleError(errorMessage) {
   const resultContainer = document.getElementById("rescheduleResult");
+  resultContainer.style.display = "block";
   resultContainer.innerHTML = `<p style="color: red;">${errorMessage}</p>`;
 }

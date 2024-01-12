@@ -29,6 +29,7 @@ function displaySlots(slots) {
   if (slots.length === undefined || slots.length === 0) {
     slotsBody.innerHTML =
       "<tr><td colspan='8'>No slots available for the selected vaccine.</td></tr>";
+    window.alert(`No slots available for the selected vaccine.`);
     return;
   }
 
@@ -85,6 +86,7 @@ function showDetails(slot) {
     ["Vaccine Name", slot.vaccineName],
     ["Vaccine Original Price", slot.vaccineOriginalPrice],
     ["Vaccine Discount", slot.vaccineDiscount],
+    ["Vaccine Discount Price", slot.vaccineDiscountedPrice],
     ["Required Age Range", slot.requiredAgeRange],
     // ["Hospital Id", slot.doctorHospitalHospitalId],
     ["Hospital Name", slot.doctorHospitalHospitalName],
@@ -92,7 +94,9 @@ function showDetails(slot) {
 
   keyValuePairs.forEach(([key, value]) => {
     const detailItem = document.createElement("div");
-    detailItem.innerHTML = `<strong>${key}:</strong> ${value}`;
+    if (key === "Vaccine Original Price" || key === "Vaccine Discount Price")
+      detailItem.innerHTML = `<strong>${key}:</strong> Rs. ${value}`;
+    else detailItem.innerHTML = `<strong>${key}:</strong> ${value}`;
     detailsContainer.appendChild(detailItem);
   });
 
@@ -210,5 +214,6 @@ async function bookAppointment(slotId, hospitalId, formData) {
     }
   } catch (error) {
     console.error("Error:", error);
+    window.alert(`Error : ${error.message}`);
   }
 }

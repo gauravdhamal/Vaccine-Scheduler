@@ -2,6 +2,11 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background-image: url("/images/bkg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
 }
 
 .options-container {
@@ -23,6 +28,7 @@ body {
   background-color: #007bff;
   width: 500px; /* Adjust as needed */
   border-radius: 100px;
+  margin: 10px auto;
 }
 
 .options-container .small-options {
