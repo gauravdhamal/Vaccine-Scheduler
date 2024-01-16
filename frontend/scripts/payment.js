@@ -94,7 +94,12 @@ document.addEventListener("DOMContentLoaded", function () {
     paymentForm.addEventListener("submit", (event) => {
       event.preventDefault();
       console.log("paymentForm called from if block : ");
-      payForExistingUser();
+      payForExistingUser().then((boolean) => {
+        if (boolean === true) {
+          console.log("Resetting payment form.");
+          paymentForm.reset();
+        }
+      });
     });
   } else {
     console.log("Create new user");
@@ -111,12 +116,18 @@ document.addEventListener("DOMContentLoaded", function () {
       phoneField.value = appointment.phone;
       amountField.value = appointment.vaccineDiscountedPrice;
       ageField.value = appointment.age;
+      dateOfBirthField.value = appointment.dateOfBirth;
     });
 
     paymentForm.addEventListener("submit", (event) => {
       event.preventDefault();
       console.log("paymentForm called from else block : ");
-      payForNewUser();
+      payForNewUser().then((boolean) => {
+        if (boolean === true) {
+          console.log("Resetting payment form.");
+          paymentForm.reset();
+        }
+      });
     });
   }
 });
@@ -172,6 +183,7 @@ async function payForNewUser() {
       document.cookie = `username=null;`;
       document.cookie = `existingUser=null;`;
       window.alert(`Payment success. ID : ${result.paymentId}`);
+      return true;
     } else {
       if (result.message === "Validation failed.") {
         window.alert(`Description : ${result.description}`);
@@ -219,6 +231,7 @@ async function payForExistingUser() {
       document.cookie = `username=null;`;
       document.cookie = `existingUser=null;`;
       window.alert(`Payment success. ID : ${result.paymentId}`);
+      return true;
     } else {
       if (result.message === "Validation failed.") {
         window.alert(`Description : ${result.description}`);
@@ -290,6 +303,7 @@ async function fetchAppointmentData(appointmentId) {
     const appointmentData = await response.json();
 
     if (response.ok) {
+      console.log("appointmentData : ", appointmentData);
       return appointmentData;
     } else {
       window.alert(appointmentData.message);

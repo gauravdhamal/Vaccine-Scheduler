@@ -146,7 +146,7 @@ function showBookAppointmentForm(slot) {
   });
 
   // Add event listeners for text inputs
-  const textInputs = ["age", "email", "firstName", "phone"];
+  const textInputs = ["dateOfBirth", "email", "firstName", "phone"];
   textInputs.forEach((inputId) => {
     const inputElement = document.getElementById(inputId);
     inputElement.addEventListener("input", (event) => {
