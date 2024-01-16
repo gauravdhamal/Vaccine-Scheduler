@@ -21,6 +21,7 @@ public class AppointmentDetailResponse {
     private String firstName;
     private String gender;
     private Integer age;
+    private LocalDate dateOfBirth;
     private String phone;
     private String email;
     private String message;

@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 import com.opencsv.CSVWriter;
@@ -26,7 +27,9 @@ public class CsvServiceImpl implements CsvService {
         String patientName = appointmentDetailRequest.getFirstName();
         LocalDate appointmentDate = slot.getSlotDate();
         String appointmentTime = slot.getStartTime() + " - " + slot.getEndTime();
-        Integer patientAge = appointmentDetailRequest.getAge();
+        LocalDate dateOfBirth = appointmentDetailRequest.getDateOfBirth();
+        Period period = Period.between(dateOfBirth, LocalDate.now());
+        Integer patientAge = period.getYears();
         String patientGender = appointmentDetailRequest.getGender();
         String patientPhone = appointmentDetailRequest.getPhone();
         String patientEmail = appointmentDetailRequest.getEmail();

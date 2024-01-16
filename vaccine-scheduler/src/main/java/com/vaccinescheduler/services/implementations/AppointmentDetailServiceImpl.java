@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,9 +91,13 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                         if(vaccineAvailabilityCheck) {
                                             Integer minAgeReq = requiredVaccine.getMinAge();
                                             Integer maxAgeReq = requiredVaccine.getMaxAge();
-                                            Integer currentAge = appointmentDetailRequest.getAge();
-                                            if(currentAge >= minAgeReq && currentAge <= maxAgeReq) {
+//                                            Integer currentAge = appointmentDetailRequest.getAge();
+                                            LocalDate dateOfBirth = appointmentDetailRequest.getDateOfBirth();
+                                            Period period = Period.between(dateOfBirth, currentDate);
+                                            int ageInYears = period.getYears();
+                                            if(ageInYears >= minAgeReq && ageInYears <= maxAgeReq) {
                                                 AppointmentDetail appointmentDetail = modelMapper.map(appointmentDetailRequest, AppointmentDetail.class);
+                                                appointmentDetail.setAge(ageInYears);
                                                 appointmentDetail.setAppointmentDate(slotDate);
                                                 appointmentDetail.setVaccine(requiredVaccine);
                                                 appointmentDetail.setCreatedAt(LocalDateTime.now());
@@ -134,7 +139,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
                                                 appointmentData.setHospitalCity(hospital.getHospitalName());
                                                 appointmentData.setHospitalContact(hospital.getAddress().getPhone());
                                                 appointmentData.setHospitalName(hospital.getHospitalName());
-                                                appointmentData.setPatientAge(currentAge);
+                                                appointmentData.setPatientAge(ageInYears);
                                                 appointmentData.setPatientEmail(email);
                                                 appointmentData.setPatientName(firstName);
                                                 appointmentData.setPatientGender(gender);
@@ -147,7 +152,7 @@ public class AppointmentDetailServiceImpl implements AppointmentDetailService {
 
                                                 return appointmentDetailResponse;
                                             } else {
-                                                throw new GeneralException("You are not allowed to take this vaccine as your age : "+currentAge+" is not in the range of : ( "+minAgeReq+" - "+maxAgeReq+" ).");
+                                                throw new GeneralException("You are not allowed to take this vaccine as your age : "+ageInYears+" is not in the range of : ( "+minAgeReq+" - "+maxAgeReq+" ).");
                                             }
                                         } else {
                                             throw new GeneralException("Your selected vaccine ( ID : "+requiredVaccine.getVaccineId()+", Name : "+requiredVaccine.getVaccineName()+" ) is not available in inventory. Check after some time.");

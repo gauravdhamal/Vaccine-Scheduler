@@ -4,8 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -41,9 +43,14 @@ public class AppointmentDetailRequest {
     @Pattern(regexp = "^(?i)(male|female|transgender)$", message = "Invalid gender. Must be 'male', 'female', or 'transgender'.")
     private String gender;
 
-    @NotNull(message = "age must not be null.")
-    @Min(value = 1, message = "Age must be greater than 1.")
-    private Integer age;
+//    @NotNull(message = "age must not be null.")
+//    @Min(value = 1, message = "Age must be greater than 1.")
+//    private Integer age;
+
+    @Past(message = "DateOfBirth must be in past.")
+    @NotNull(message = "dateOfBirth must not null.")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate dateOfBirth;
 
     @Pattern(regexp = "[6789]\\d{9}", message = "Invalid phone number. Must be a valid Indian mobile number having 10 digits. And starts with '6' or '7' or '8' or '9'")
     private String phone;

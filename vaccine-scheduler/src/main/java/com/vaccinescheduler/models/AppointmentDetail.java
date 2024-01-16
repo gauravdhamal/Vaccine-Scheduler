@@ -28,6 +28,7 @@ public class AppointmentDetail {
     private String phone;
     private String email;
     private Boolean vaccinated;
+    private LocalDate dateOfBirth;
 
     /**
      * Bidirectional
